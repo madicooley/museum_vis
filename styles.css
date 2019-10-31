@@ -42,6 +42,12 @@ p {
   pointer-events: none;
 }
 
+.vl {
+  /* VERTICLE LINE */
+  border-left: 3px solid black;
+  height: 250px;
+}
+
 /* IDS */
 #outline {
   /* FOR MAP OUTLINE */
