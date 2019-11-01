@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>MuseumVis</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://d3js.org/d3.v5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
+  <script src="js/map.js" async></script>
+  <script src="js/script.js" async></script>
+</head>
+
+<body>
+  <div style="float:left; border-right:3px solid black; padding: 20px">
+    <h1>Museum+Vis</h1>
+    <h2>The secret life of museum artifacts</h2>
+  </div>
+  <div style="display: flex">
+    <p style="padding:20px; transform: translate (20,0)">A museum typically only shows <strong>2-4%</strong> of it's collection.</p>
+  </div>
+
+  <!-- CONTAINER FOR THE MAP -->
+  <div class="wrapper">
+    <div class="innerWrapper">
+      <div class="view"><svg id="map-chart"></svg></div>
+      <div id="country-detail">
+        <span class="header"></span>
+      </div>
+
+    </div>
+</body>
+
+</html>

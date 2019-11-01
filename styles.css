@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+/* ELEMENTS */
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 6em;
+  text-transform: uppercase;
+  margin: 0px;
+}
+
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: capitalize;
+  font-size: 3em;
+}
+
+p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2em;
+}
+
+/* CLASSES */
+.boundary {
+  /* FOR COUNTRY OUTLINE */
+  fill: none;
+  stroke: #fff;
+  stroke-width: .8px;
+}
+
+.countries {
+  /* FOR COUNTRY FILL */
+  fill: #d9d9d9;
+}
+
+.graticule {
+  /* FOR GRATICULES */
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .2;
+  pointer-events: none;
+}
+
+.vl {
+  /* VERTICLE LINE */
+  border-left: 3px solid black;
+  height: 250px;
+}
+
+/* IDS */
+#outline {
+  /* FOR MAP OUTLINE */
+  stroke: black;
+  stroke-width: 1px;
+}
