@@ -13,6 +13,7 @@ from data_init import column_args
 import pycountry_convert as pc
 
 def main():
+    # set max size of row
     csv.field_size_limit(sys.maxsize)
 
     file_dict = {}
@@ -22,8 +23,15 @@ def main():
         museum_name = extractMuseum(file)
         file_dict[museum_name] = file
 
-    os.remove("cleaned-data.csv")
+    # remove csv if it already exists and then create it
+    try:
+        os.remove("cleaned-data.csv")
+    except OSError:
+        pass
     out = csv.writer(open("cleaned-data.csv", "w"))
+
+    # add header to csv file
+    out.writerow(['artifact_name', 'countr_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
 
     processCanada(file_dict['canada-science-and-technology-museums'], out)
     # printHead(5)
