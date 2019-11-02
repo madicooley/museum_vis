@@ -35,7 +35,8 @@ def main():
 
     # processCanada(file_dict['canada-science-and-technology-museums'], out)
     # processCleveland(file_dict['cleveland-museum-of-art'], out)
-    processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
+    # processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
+    # processMet(file_dict['metropolitan-museum-of-art'], out)
 
     # printHead(5)
 
@@ -163,6 +164,36 @@ def processCoopHew(file, out):
 
                 out.writerow([museum_name] + possbile_row)
 
+'''
+Function to process the met museum dataset
+'''
+def processMet(file, out):
+    museum_name = extractMuseum(file)
+    reader = csv.reader(open(file, 'rU'))
+
+    for i, row in enumerate(reader):
+        if i > 0: # skips header row of csv file
+            possbile_row = [row[j] for j in column_args[museum_name]]
+
+            if '' not in possbile_row:
+                # process acquisition date 
+                date_str = (possbile_row[2])[0:(possbile_row[2]).find('.')]
+                if(is_number(date_str)):
+                    if(len(date_str) == 2): # processes acquisition number with leading 2 digits
+                        possbile_row[2] = '19' + date_str
+                    else: # handles acquisition number with leading 2 digits
+                        possbile_row[2] = date_str
+                else:
+                    possbile_row[2] = None
+
+                # append continent
+                try: 
+                    possbile_row.append(getContinent(possbile_row[1]))
+                except:
+                    # country isnt listed 
+                    pass
+
+                out.writerow([museum_name] + possbile_row)
 
 
 '''
@@ -171,6 +202,16 @@ A helper function that retrieves the continent that a country belondgs to
 def getContinent(country):
     country_code  = pc.country_name_to_country_alpha2(country, cn_name_format="default")
     return pc.country_alpha2_to_continent_code(country_code)
+
+'''
+A helper function to check if strings are numeric
+'''
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 if __name__ == "__main__":
     main()
