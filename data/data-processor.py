@@ -31,9 +31,10 @@ def main():
     out = csv.writer(open("cleaned-data.csv", "w"))
 
     # add header to csv file
-    out.writerow(['artifact_name', 'countr_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
+    out.writerow(['museum', 'artifact_name', 'countr_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
 
-    processCanada(file_dict['canada-science-and-technology-museums'], out)
+    # processCanada(file_dict['canada-science-and-technology-museums'], out)
+    processCleveland(file_dict['cleveland-museum-of-art'], out)
     # printHead(5)
 
 '''
@@ -85,18 +86,53 @@ def processCanada(file, out):
 
                 # append continent
                 try: 
-                    country_code  = pc.country_name_to_country_alpha2(possbile_row[1], cn_name_format="default")
-                    possbile_row.append(pc.country_alpha2_to_continent_code(country_code))
+                    possbile_row.append(getContinent(possbile_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
-                try:
-                    possbile_row[5]
-                    out.writerow(possbile_row)
+
+                out.writerow([museum_name] + possbile_row)
+                # try:
+                #     possbile_row[5]
+                #     out.writerow([museum_name] + possbile_row)
+                # except:
+                #     # continent no listed for country
+                #     pass
+
+'''
+Function to process the cleveland museum of art dataset
+'''
+def processCleveland(file, out):
+    museum_name = extractMuseum(file)
+    reader = csv.reader(open(file, 'rU'))
+
+    for i, row in enumerate(reader):
+        if i > 0: # skips header row of csv file
+            possbile_row = [row[j] for j in column_args[museum_name]]
+
+            if '' not in possbile_row:
+                # extract country information
+                if possbile_row[1].find(',') != -1:
+                    possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find(',')]
+
+                # extract acquisition year
+                acq_date = possbile_row[2]
+                possbile_row[2] = acq_date[0: acq_date.find('.')]
+
+                # append continent
+                try: 
+                    possbile_row.append(getContinent(possbile_row[1]))
                 except:
-                    # continent no listed for country
+                    # country isnt listed 
                     pass
+
+
+                out.writerow([museum_name] + possbile_row)
+            
+def getContinent(country):
+    country_code  = pc.country_name_to_country_alpha2(country, cn_name_format="default")
+    return pc.country_alpha2_to_continent_code(country_code)
 
 if __name__ == "__main__":
     main()
