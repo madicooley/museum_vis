@@ -34,7 +34,9 @@ def main():
     out.writerow(['museum', 'artifact_name', 'countr_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
 
     # processCanada(file_dict['canada-science-and-technology-museums'], out)
-    processCleveland(file_dict['cleveland-museum-of-art'], out)
+    # processCleveland(file_dict['cleveland-museum-of-art'], out)
+    processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
+
     # printHead(5)
 
 '''
@@ -130,6 +132,42 @@ def processCleveland(file, out):
 
                 out.writerow([museum_name] + possbile_row)
             
+'''
+Function to process the cooper-hewitt dataset
+'''
+def processCoopHew(file, out):
+    museum_name = extractMuseum(file)
+    reader = csv.reader(open(file, 'rU'))
+
+    for i, row in enumerate(reader):
+        if i > 0: # skips header row of csv file
+            possbile_row = [row[j] for j in column_args[museum_name]]
+
+            if '' not in possbile_row:
+                # process created_date
+                if 'ca' in possbile_row[3] and len(possbile_row[3]) > 8: # handles circa qualifier, which corresponds with an encoding bug
+                    possbile_row[3] = None
+                elif 'ca' in possbile_row[3] and len(possbile_row[3]) == 8: # handles circa without endoding errors
+                    possbile_row[3] = (possbile_row[3])[(possbile_row[3]).find(' ')]
+                elif len(possbile_row[3]) == 4 and possbile_row[3].isdigit():
+                    pass
+                else:
+                    possbile_row[3] = None
+
+                # append continent
+                try: 
+                    possbile_row.append(getContinent(possbile_row[1]))
+                except:
+                    # country isnt listed 
+                    pass
+
+                out.writerow([museum_name] + possbile_row)
+
+
+
+'''
+A helper function that retrieves the continent that a country belondgs to
+'''
 def getContinent(country):
     country_code  = pc.country_name_to_country_alpha2(country, cn_name_format="default")
     return pc.country_alpha2_to_continent_code(country_code)
