@@ -18,6 +18,6 @@ column_args = {
     'metropolitan-museum-of-art': [5,31,0,22,6],
     'museum-of-modern-art': [0,4,15,8,9],
     'penn-museum': [3,6,12,10,14],
-    'williams-college-museum-of-art': []
+    'minneapolis-institute-of-art': ['title', 'country', 'creditline', 'dated', 'title']
 
 }

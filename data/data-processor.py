@@ -11,6 +11,7 @@ import glob
 import csv
 from data_init import column_args
 import pycountry_convert as pc
+import json
 
 def main():
     # set max size of row
@@ -34,14 +35,15 @@ def main():
     out = csv.writer(open("cleaned-data.csv", "w"))
 
     # add header to csv file
-    out.writerow(['museum', 'artifact_name', 'countr_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
+    out.writerow(['museum', 'artifact_name', 'country_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
 
     # processCanada(file_dict['canada-science-and-technology-museums'], out)
     # processCleveland(file_dict['cleveland-museum-of-art'], out)
     # processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
     # processMet(file_dict['metropolitan-museum-of-art'], out)
     # processMoma(file_dict['museum-of-modern-art'], country_dict, out)
-    processPenn(file_dict['penn-museum'], out)
+    # processPenn(file_dict['penn-museum'], out)
+    processMia(out)
 
 
     # printHead(5)
@@ -67,11 +69,11 @@ def printHead(rowNum):
         print(museum_name)
         for i, row in enumerate(csv.reader(open(file, 'rU'), delimiter = museum_delimitere)):
             if i < rowNum:
-                possbile_row = [row[j] for j in column_args[museum_name]]
-                if '' in possbile_row:
+                possible_row = [row[j] for j in column_args[museum_name]]
+                if '' in possible_row:
                     print('missing vals')
                 else:
-                    print(possbile_row)
+                    print(possible_row)
 
 '''
 Function to process the canada science and technology museums dataset
@@ -83,28 +85,28 @@ def processCanada(file, out):
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
             try: 
-                possbile_row = [row[j] for j in column_args[museum_name]]
+                possible_row = [row[j] for j in column_args[museum_name]]
             except:
                 # row isnt populated enough
                 pass
             
-            if '' not in possbile_row and possbile_row[1] != 'Unknown': # check that row has all necessary data
+            if '' not in possible_row and possible_row[1] != 'Unknown': # check that row has all necessary data
                 # extract acquisition date
-                acq_date = possbile_row[2]
-                possbile_row[2] = acq_date[0: acq_date.find('.')]
+                acq_date = possible_row[2]
+                possible_row[2] = acq_date[0: acq_date.find('.')]
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
                 # try:
-                #     possbile_row[5]
-                #     out.writerow([museum_name] + possbile_row)
+                #     possible_row[5]
+                #     out.writerow([museum_name] + possible_row)
                 # except:
                 #     # continent no listed for country
                 #     pass
@@ -118,26 +120,26 @@ def processCleveland(file, out):
 
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
-            possbile_row = [row[j] for j in column_args[museum_name]]
+            possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possbile_row:
+            if '' not in possible_row:
                 # extract country information
-                if possbile_row[1].find(',') != -1:
-                    possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find(',')]
+                if possible_row[1].find(',') != -1:
+                    possible_row[1] = (possible_row[1])[0:(possible_row[1]).find(',')]
 
                 # extract acquisition year
-                acq_date = possbile_row[2]
-                possbile_row[2] = acq_date[0: acq_date.find('.')]
+                acq_date = possible_row[2]
+                possible_row[2] = acq_date[0: acq_date.find('.')]
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
             
 '''
 Function to process the cooper-hewitt dataset
@@ -148,27 +150,27 @@ def processCoopHew(file, out):
 
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
-            possbile_row = [row[j] for j in column_args[museum_name]]
+            possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possbile_row:
+            if '' not in possible_row:
                 # process created_date
-                if 'ca' in possbile_row[3] and len(possbile_row[3]) > 8: # handles circa qualifier, which corresponds with an encoding bug
-                    possbile_row[3] = None
-                elif 'ca' in possbile_row[3] and len(possbile_row[3]) == 8: # handles circa without endoding errors
-                    possbile_row[3] = (possbile_row[3])[(possbile_row[3]).find(' ')]
-                elif len(possbile_row[3]) == 4 and possbile_row[3].isdigit():
+                if 'ca' in possible_row[3] and len(possible_row[3]) > 8: # handles circa qualifier, which corresponds with an encoding bug
+                    possible_row[3] = None
+                elif 'ca' in possible_row[3] and len(possible_row[3]) == 8: # handles circa without endoding errors
+                    possible_row[3] = (possible_row[3])[(possible_row[3]).find(' ')]
+                elif len(possible_row[3]) == 4 and possible_row[3].isdigit():
                     pass
                 else:
-                    possbile_row[3] = None
+                    possible_row[3] = None
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
 
 '''
 Function to process the met museum dataset
@@ -179,27 +181,27 @@ def processMet(file, out):
 
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
-            possbile_row = [row[j] for j in column_args[museum_name]]
+            possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possbile_row:
+            if '' not in possible_row:
                 # process acquisition date 
-                date_str = (possbile_row[2])[0:(possbile_row[2]).find('.')]
+                date_str = (possible_row[2])[0:(possible_row[2]).find('.')]
                 if(is_number(date_str)):
                     if(len(date_str) == 2): # processes acquisition number with leading 2 digits
-                        possbile_row[2] = '19' + date_str
+                        possible_row[2] = '19' + date_str
                     else: # handles acquisition number with leading 2 digits
-                        possbile_row[2] = date_str
+                        possible_row[2] = date_str
                 else:
-                    possbile_row[2] = None
+                    possible_row[2] = None
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
 
 '''
 Function to process the moma dataset
@@ -210,31 +212,31 @@ def processMoma(file, country_dict, out):
 
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
-            possbile_row = [row[j] for j in column_args[museum_name]]
+            possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possbile_row:
+            if '' not in possible_row:
                 # process country name
-                possbile_row[1] = possbile_row[1][1: len(possbile_row[1])-1]
+                possible_row[1] = possible_row[1][1: len(possible_row[1])-1]
                 try:
-                    possbile_row[1] = country_dict[possbile_row[1]]
+                    possible_row[1] = country_dict[possible_row[1]]
                 except:
-                    possbile_row[1] = None
+                    possible_row[1] = None
 
                 # process acquisition date
-                possbile_row[2] = possbile_row[2][:4]
+                possible_row[2] = possible_row[2][:4]
 
                 # process created date
-                if not (is_number(possbile_row[3])):
-                    possbile_row[3] = None
+                if not (is_number(possible_row[3])):
+                    possible_row[3] = None
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
 
 '''
 Function to process the penn-museum dataset
@@ -245,32 +247,86 @@ def processPenn(file, out):
 
     for i, row in enumerate(reader):
         if i > 0: # skips header row of csv file
-            possbile_row = [row[j] for j in column_args[museum_name]]
+            possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possbile_row:
+            if '' not in possible_row:
                 # process country name
-                if(possbile_row[1].isalpha()):
+                if(possible_row[1].isalpha()):
                     pass
                 else:
-                    possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find('|')]
-                    if possbile_row[1].find('(') > 0:
-                        # print((possbile_row[1])[0:(possbile_row[1]).find('(')-1])
-                        possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find('(')-1]
+                    possible_row[1] = (possible_row[1])[0:(possible_row[1]).find('|')]
+                    if possible_row[1].find('(') > 0:
+                        # print((possible_row[1])[0:(possible_row[1]).find('(')-1])
+                        possible_row[1] = (possible_row[1])[0:(possible_row[1]).find('(')-1]
 
                 # process acquisition date
-                possbile_row[2] = possbile_row[2][-4:]
+                possible_row[2] = possible_row[2][-4:]
 
                 # process creation date
-                possbile_row[3] = str(abs(int(possbile_row[3]))) if is_number(possbile_row[3]) else None
+                possible_row[3] = str(abs(int(possible_row[3]))) if is_number(possible_row[3]) else None
 
                 # append continent
                 try: 
-                    possbile_row.append(getContinent(possbile_row[1]))
+                    possible_row.append(getContinent(possible_row[1]))
                 except:
                     # country isnt listed 
                     pass
 
-                out.writerow([museum_name] + possbile_row)
+                out.writerow([museum_name] + possible_row)
+
+'''
+Function to process mia dataset
+'''
+def processMia(out):
+    # for file in sorted(glob.glob("./raw-data/minneapolis-institute-of-art/*/*-*.json")):
+    #     print(file)
+    for file in sorted(glob.glob("./raw-data/minneapolis-institute-of-art/*/*.json")):
+        try:
+            json_data = json.load((open(file, 'rU')))
+            possible_row = [(json_data[j]).encode("utf-8") for j in column_args['minneapolis-institute-of-art']]
+
+            # process acquisition date
+            date_possibilities = [int(s) for s in possible_row[2].split() if s.isdigit()]
+            if len(date_possibilities) > 0:
+                possible_row[2] = date_possibilities[0]
+            else:
+                possible_row[2] = None
+
+            # process created date
+            if is_number(possible_row[3]):
+                possible_row[3] = possible_row[3]
+            elif possible_row[3].find('c.') > 0: 
+                ind = possible_row[3].find('c.')
+                if is_number(possible_row[3][ind+2][ind+6]):
+                    possible_row[3] = possible_row[3][ind+2][ind+6]
+                elif is_number(possible_row[3][ind+2][ind+5]):
+                    possible_row[3] = possible_row[3][ind+2][ind+5]
+                else:
+                    possible_row[3] = None
+            else:
+                possible_row[3] = None
+
+            # process country
+            if possible_row[1] == 'England' or possible_row[1] == 'Scotland':
+                possible_row[1] = 'United Kingdom'
+
+            # process created date
+            if not (is_number(possible_row[3])):
+                possible_row[3] = None
+
+            # append continent
+            try: 
+                possible_row.append(getContinent(possible_row[1]))
+            except:
+                # country isnt listed 
+                pass
+
+            out.writerow(['minneapolis-institute-of-art'] + possible_row)
+        except:
+            pass
+
+        # print(possible_row)
+        # break
 
 '''
 A helper function that retrieves the continent that a country belondgs to
