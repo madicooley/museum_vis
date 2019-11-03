@@ -20,8 +20,11 @@ def main():
 
     # read in all csv files and store them in a dictionary
     for file in sorted(glob.glob("./raw-data/*-*.csv")):
-        museum_name = extractMuseum(file)
-        file_dict[museum_name] = file
+        file_name = extractMuseum(file)
+        file_dict[file_name] = file
+
+    # create dictionary to convert nationality 
+    country_dict = createDemonyms()
 
     # remove csv if it already exists and then create it
     try:
@@ -37,6 +40,9 @@ def main():
     # processCleveland(file_dict['cleveland-museum-of-art'], out)
     # processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
     # processMet(file_dict['metropolitan-museum-of-art'], out)
+    # processMoma(file_dict['museum-of-modern-art'], country_dict, out)
+    processPenn(file_dict['penn-museum'], out)
+
 
     # printHead(5)
 
@@ -195,6 +201,76 @@ def processMet(file, out):
 
                 out.writerow([museum_name] + possbile_row)
 
+'''
+Function to process the moma dataset
+'''
+def processMoma(file, country_dict, out):
+    museum_name = extractMuseum(file)
+    reader = csv.reader(open(file, 'rU'))
+
+    for i, row in enumerate(reader):
+        if i > 0: # skips header row of csv file
+            possbile_row = [row[j] for j in column_args[museum_name]]
+
+            if '' not in possbile_row:
+                # process country name
+                possbile_row[1] = possbile_row[1][1: len(possbile_row[1])-1]
+                try:
+                    possbile_row[1] = country_dict[possbile_row[1]]
+                except:
+                    possbile_row[1] = None
+
+                # process acquisition date
+                possbile_row[2] = possbile_row[2][:4]
+
+                # process created date
+                if not (is_number(possbile_row[3])):
+                    possbile_row[3] = None
+
+                # append continent
+                try: 
+                    possbile_row.append(getContinent(possbile_row[1]))
+                except:
+                    # country isnt listed 
+                    pass
+
+                out.writerow([museum_name] + possbile_row)
+
+'''
+Function to process the penn-museum dataset
+'''
+def processPenn(file, out):
+    museum_name = extractMuseum(file)
+    reader = csv.reader(open(file, 'rU'))
+
+    for i, row in enumerate(reader):
+        if i > 0: # skips header row of csv file
+            possbile_row = [row[j] for j in column_args[museum_name]]
+
+            if '' not in possbile_row:
+                # process country name
+                if(possbile_row[1].isalpha()):
+                    pass
+                else:
+                    possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find('|')]
+                    if possbile_row[1].find('(') > 0:
+                        # print((possbile_row[1])[0:(possbile_row[1]).find('(')-1])
+                        possbile_row[1] = (possbile_row[1])[0:(possbile_row[1]).find('(')-1]
+
+                # process acquisition date
+                possbile_row[2] = possbile_row[2][-4:]
+
+                # process creation date
+                possbile_row[3] = str(abs(int(possbile_row[3]))) if is_number(possbile_row[3]) else None
+
+                # append continent
+                try: 
+                    possbile_row.append(getContinent(possbile_row[1]))
+                except:
+                    # country isnt listed 
+                    pass
+
+                out.writerow([museum_name] + possbile_row)
 
 '''
 A helper function that retrieves the continent that a country belondgs to
@@ -212,6 +288,16 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+'''
+A helper function to create a mapping from nationality to country
+'''
+def createDemonyms():
+    country_dict = {}
+    demCsv = csv.reader(open('./demonyms.csv', 'rU'))
+    for row in demCsv:
+        country_dict[row[0]] = row[1]
+    return country_dict
 
 if __name__ == "__main__":
     main()

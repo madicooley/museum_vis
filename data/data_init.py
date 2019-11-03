@@ -13,12 +13,11 @@ value array represents:
 
 column_args = {
     'canada-science-and-technology-museums': [1,6,0,9,2],
-    # 'canada-science-and-technology-museums': [],
     'cleveland-museum-of-art': [5,13,1,10,3],
     'cooper-hewitt-smithsonian-design-museum': [24,34,35,2,5],
     'metropolitan-museum-of-art': [5,31,0,22,6],
     'museum-of-modern-art': [0,4,15,8,9],
-    'penn-museum': [3,6,12,12,14],
+    'penn-museum': [3,6,12,10,14],
     'williams-college-museum-of-art': []
 
 }
