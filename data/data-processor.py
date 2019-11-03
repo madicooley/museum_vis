@@ -12,6 +12,7 @@ import csv
 from data_init import column_args
 import pycountry_convert as pc
 import json
+import pandas as pd
 
 def main():
     # set max size of row
@@ -29,24 +30,23 @@ def main():
 
     # remove csv if it already exists and then create it
     try:
+        os.remove("concat-data.csv")
         os.remove("cleaned-data.csv")
     except OSError:
         pass
-    out = csv.writer(open("cleaned-data.csv", "w"))
+    out = csv.writer(open("concat-data.csv", "w"))
 
     # add header to csv file
     out.writerow(['museum', 'artifact_name', 'country_of_origin', 'acquisition_date', 'created_date', 'description', 'continent'])
 
-    # processCanada(file_dict['canada-science-and-technology-museums'], out)
-    # processCleveland(file_dict['cleveland-museum-of-art'], out)
-    # processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
-    # processMet(file_dict['metropolitan-museum-of-art'], out)
-    # processMoma(file_dict['museum-of-modern-art'], country_dict, out)
-    # processPenn(file_dict['penn-museum'], out)
+    processCanada(file_dict['canada-science-and-technology-museums'], out)
+    processCleveland(file_dict['cleveland-museum-of-art'], out)
+    processCoopHew(file_dict['cooper-hewitt-smithsonian-design-museum'], out)
+    processMet(file_dict['metropolitan-museum-of-art'], out)
+    processMoma(file_dict['museum-of-modern-art'], country_dict, out)
+    processPenn(file_dict['penn-museum'], out)
     processMia(out)
-
-
-    # printHead(5)
+    cleanCSV()
 
 '''
 Function to take a file name and isolate the name of the museum
@@ -354,6 +354,10 @@ def createDemonyms():
     for row in demCsv:
         country_dict[row[0]] = row[1]
     return country_dict
+
+def cleanCSV():
+    data = pd.read_csv(open('./concat-data.csv', 'rU'), usecols=[0,1,2,3,4,5,6])
+    data.dropna().to_csv('cleaned-data.csv', index=False)
 
 if __name__ == "__main__":
     main()
