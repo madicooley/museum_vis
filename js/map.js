@@ -17,6 +17,9 @@ class CountryData {
 }
 
 class Map {
+  /**
+   * Test comment
+   */
   constructor(data) {
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
   }
