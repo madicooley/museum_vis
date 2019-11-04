@@ -7,7 +7,6 @@ class CountryData {
    * @param region the country region
    */
   constructor(type, id, properties, geometry, region) {
-
     this.type = type;
     this.id = id;
     this.properties = properties;
@@ -22,10 +21,15 @@ class Map {
    */
   constructor(data) {
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
+
+    console.log(data);
+    // this.nameArray = data.population.map(d => d.geo.toUpperCase());;
   }
 
   drawMap(world) {
     let svg = d3.select("svg#map-chart");
+    svg.attr("height", 800).attr("width", 800);
+
     let height = parseInt(svg.attr("height"));
     let width = parseInt(svg.attr("width"));
     let path = d3.geoPath()
@@ -39,7 +43,10 @@ class Map {
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
 
-      let index = this.nameArray.indexOf(country.id);
+      // console.log(country);
+
+      // let index = this.nameArray.indexOf(country.id);
+      let index = "temp"; //TODO
       let region = 'countries';
 
       if (index > -1) {
