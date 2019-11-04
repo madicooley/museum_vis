@@ -40,31 +40,89 @@ class DataPortrait {
     yearWidths.push(this.third.length / length)
     yearWidths.push(this.fourth.length / length)
 
-    console.log(yearWidths)
 
     let frameWidth = 238
+    let frameHeight = 360
+    let rectWidth = [0]
 
-    let portrait = svg
+    let portraitColors = svg
       .selectAll("rect")
       .data(yearWidths)
       .join("rect")
-      .attr("height", 360)
-      .attr("width", d => d * frameWidth)
-      .style("fill", (d, i) => this.colors[i])
-      .attr("x", (d, i) => {
-        let current = d * frameWidth
-        for ()
+      .attr("height", frameHeight)
+      .attr("width", (d, i) => {
+        rectWidth.push((d * frameWidth) + rectWidth[i]);
+        return d * frameWidth
       })
+      .style("fill", (d, i) => this.colors[i])
+      .attr("x", (d, i) => rectWidth[i])
+      .attr("transform", "translate(7,5)")
 
     let frame = svg.append("rect")
       .classed("frame", true)
       .attr("width", frameWidth)
       .attr("border", 20)
-      .attr("height", 360)
+      .attr("height", frameHeight)
       .style("stroke", "black")
       .style("stroke-width", 5)
       .style("fill", "none")
       .attr("transform", "translate(5,5)")
+
+    let artifactLine = svg.append("line")
+      .attr("x1", frameWidth / 2)
+      .attr("y1", frameHeight)
+      .attr("x2", frameWidth)
+      .attr("y2", frameHeight - (frameWidth / 2))
+      .style("stroke", "black")
+      .style("stroke-width", 5)
+      .attr("transform", "translate(5,5)")
+
+    let countries = this.countries.length
+    countries = countries / 5;
+    countries = Math.round(countries)
+    console.log(countries)
+    let countryArray = []
+
+    for (let i = 0; i < countries; i++) {
+      countryArray.push(i)
+    }
+
+    let countryDots = svg
+      .selectAll("circle")
+      .data(countryArray)
+      .join("circle")
+
+    let j = 0;
+    countryDots
+      .attr("r", 5)
+      .attr("cx", function(d, i) {
+        if (i < 6) {
+          if (i % 2 === 0) {
+            return (i * 10) + 10
+          } else {
+            return (i * 10) + 15
+          }
+        } else {
+          if (i % 2 === 0) {
+            j = j + 1
+            return (j * 10) + 10
+          } else {
+            j = j + 1
+            return (j * 10) + 15
+          }
+        }
+      })
+      .attr("cy", function(d, i) {
+        if (i < 10) {
+          return (i * 10) + 10
+        } else if (i >= 10 && i < 20) {
+          return ((i - 10) * 10) + 10
+        } else {
+          return ((i - 20) * 10) + 10
+        }
+      })
+      .attr("transform", "translate(20,20)")
+
 
   }
 
