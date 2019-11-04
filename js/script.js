@@ -9,9 +9,9 @@
 //
 //     worldMap.drawMap(mapData);
 
-d3.csv("data/raw-data/canada-science-and-technology-museums.csv").then(canada => {
-  const dataPortrait = new DataPortrait()
-  dataPortrait.dataSummary(canada);
+d3.csv("data/cleaned-data.csv").then(museums => {
+  const dataPortrait = new DataPortrait(museums)
+  dataPortrait.dataSummary(museums);
 })
 // });
 // })
