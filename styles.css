@@ -110,6 +110,9 @@ p {
 }
 
 #museumTabContainer {
-
   display: flex;
+}
+
+.selectedTab {
+  fill: grey;
 }

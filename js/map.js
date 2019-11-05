@@ -25,9 +25,15 @@ class Map {
 
     console.log(data);
     // this.nameArray = data.population.map(d => d.geo.toUpperCase());;
+
+     //For the museum tabs
+    this.tabNum = {tab: 1};
+    this.numMuseums = null;
   }
 
   drawMap(world) {
+    let that = this;
+
     let svg = d3.select("svg#map-chart");
     svg.attr("height", 500).attr("width", 800);
 
@@ -146,9 +152,24 @@ class Map {
         .attr("transform", "translate(50, 40)");
 
     //Add the circle nav. little things
-    tab.append("circle").attr("id", "museumOne").classed("museumCircles", true);
-    tab.append("circle").attr("id", "museumTwo").classed("museumCircles", true);
-    tab.append("circle").attr("id", "museumThree").classed("museumCircles", true);
+    tab.append("circle").attr("id", "museum1").classed("museumCircles", true);
+    tab.append("circle").attr("id", "museum2").classed("museumCircles", true);
+    tab.append("circle").attr("id", "museum3").classed("museumCircles", true);
+
+    this.numMuseums = 3; //Added three museum tabs!!
+
+    tab.selectAll(".museumCircles")
+      .attr("r", 6)
+      .attr("stroke", "grey")
+      .attr("fill", "white")
+      .attr("cx", 10)
+      .attr("cy", 10);
+
+    tab.select("#museum1").attr("transform", "translate(50, 100)");
+    tab.select("#museum2").attr("transform", "translate(75, 100)");
+    tab.select("#museum3").attr("transform", "translate(100, 100)");
+
+    tab.select("#museum1").classed("selectedTab", true);
 
     //Add the nav. triagle buttons
     var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
@@ -158,32 +179,44 @@ class Map {
     tab.append('polyline').attr("id", "museumTriangle")
         .attr('points', trianglePoints)
         .style('fill', 'grey')
-        .attr("transform", "translate(40, 105) rotate(75)")
+        .attr("transform", "translate(40, 105) rotate(75) scale(1.2)")
         .attr("rx", 2)
         .attr("ry", 2)
         .on("click", function(d, i) {
             console.log("clicked 1");
+            that.switchTab("left");
         });
 
     tab.append('polyline').attr("id", "museumTriangle")
         .attr('points', trianglePoints)
         .style('fill', 'grey')
-        .attr("transform", "translate(125, 105) rotate(5)")
+        .attr("transform", "translate(125, 105) rotate(10) scale(1.2)")
         .on("click", function(d, i) {
             console.log("clicked 2");
+            that.switchTab("right");
         });
 
-    tab.selectAll(".museumCircles")
-      .attr("r", 6)
-      .attr("fill", "grey")
-      .attr("cx", 10)
-      .attr("cy", 10);
-
-    tab.select("#museumOne").attr("transform", "translate(50, 100)");
-    tab.select("#museumTwo").attr("transform", "translate(75, 100)");
-    tab.select("#museumThree").attr("transform", "translate(100, 100)");
-
   };
+
+  switchTab(which) {
+    if (which == "left") {
+      this.tabNum.tab--;
+      if (this.tabNum.tab < 1 ) {
+        this.tabNum.tab = this.numMuseums;  //rolls around
+      }
+
+    } else if (which == "right") {
+      this.tabNum.tab++;
+      if (this.tabNum.tab > this.numMuseums ) {
+        this.tabNum.tab = 1;  //rolls around
+      }
+    }
+
+    let tab = d3.select('.view').select("#museumTabContainer");
+    tab.select(".selectedTab").classed("selectedTab", false);
+    tab.select("#museum"+this.tabNum.tab).classed("selectedTab", true);
+
+  }
 
 
 
