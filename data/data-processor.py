@@ -131,6 +131,8 @@ def processCleveland(file, out):
                 acq_date = possible_row[2]
                 possible_row[2] = possible_row[2][0: possible_row[2].find('.')]
 
+                # extract created_date
+                possible_row[3] = possible_row[3] if float(possible_row[3]) < 2019 else -int(possible_row[3])
 
                 # append continent
                 try: 
@@ -194,6 +196,9 @@ def processMet(file, out):
                         possible_row[2] = date_str
                 else:
                     possible_row[2] = None
+
+                # extract created_date
+                possible_row[3] = possible_row[3] if float(possible_row[3]) < 2019 else -int(possible_row[3])
 
                 # append continent
                 try: 
@@ -368,7 +373,7 @@ def cleanCSV():
     # cleans rows that have inaccurately coded dates
     data = data[data.acquisition_date > 1800]
     data = data[data.acquisition_date < 2019]
-    data = data[data.created_date < 2019]
+    
     data.to_csv('cleaned-data.csv', index=False)
 
 if __name__ == "__main__":

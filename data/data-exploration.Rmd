@@ -34,7 +34,7 @@ museum_data_abs = subset(museum_data, created_date > 0)
 ```
 
 ```{r}
-ggplot(museum_data_abs, aes(x=created_date)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Date")
+ggplot(museum_data_abs, aes(x=created_date, color=museum)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Date")
 ```
 
 
