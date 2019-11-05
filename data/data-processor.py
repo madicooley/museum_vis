@@ -93,7 +93,7 @@ def processCanada(file, out):
             if '' not in possible_row and possible_row[1] != 'Unknown': # check that row has all necessary data
                 # extract acquisition date
                 acq_date = possible_row[2]
-                possible_row[2] = acq_date[0: acq_date.find('.')]
+                possible_row[2] = acq_date[0: 4]
 
                 # append continent
                 try: 
@@ -129,7 +129,10 @@ def processCleveland(file, out):
 
                 # extract acquisition year
                 acq_date = possible_row[2]
-                possible_row[2] = acq_date[0: acq_date.find('.')]
+                possible_row[2] = possible_row[2][0: possible_row[2].find('.')]
+
+                # extract created_date
+                possible_row[3] = possible_row[3] if float(possible_row[3]) < 2019 else -int(possible_row[3])
 
                 # append continent
                 try: 
@@ -194,6 +197,9 @@ def processMet(file, out):
                 else:
                     possible_row[2] = None
 
+                # extract created_date
+                possible_row[3] = possible_row[3] if float(possible_row[3]) < 2019 else -int(possible_row[3])
+
                 # append continent
                 try: 
                     possible_row.append(getContinent(possible_row[1]))
@@ -249,7 +255,7 @@ def processPenn(file, out):
         if i > 0: # skips header row of csv file
             possible_row = [row[j] for j in column_args[museum_name]]
 
-            if '' not in possible_row:
+            if '' not in possible_row and is_number(possible_row[2][-4:]):
                 # process country name
                 if(possible_row[1].isalpha()):
                     pass
@@ -263,7 +269,11 @@ def processPenn(file, out):
                 possible_row[2] = possible_row[2][-4:]
 
                 # process creation date
-                possible_row[3] = str(abs(int(possible_row[3]))) if is_number(possible_row[3]) else None
+                possible_row[3] = int(possible_row[3]) if is_number(possible_row[3]) else None
+
+                # process data entry error for creation date
+                if possible_row[3] > 2019:
+                    possible_row[3] = None
 
                 # append continent
                 try: 
@@ -355,9 +365,16 @@ def createDemonyms():
         country_dict[row[0]] = row[1]
     return country_dict
 
+'''
+A function to drop missing values and create cleaned-data.csv
+'''
 def cleanCSV():
-    data = pd.read_csv(open('./concat-data.csv', 'rU'), usecols=[0,1,2,3,4,5,6])
-    data.dropna().to_csv('cleaned-data.csv', index=False)
+    data = pd.read_csv(open('./concat-data.csv', 'rU'), usecols=[0,1,2,3,4,5,6]).dropna()
+    # cleans rows that have inaccurately coded dates
+    data = data[data.acquisition_date > 1800]
+    data = data[data.acquisition_date < 2019]
+    
+    data.to_csv('cleaned-data.csv', index=False)
 
 if __name__ == "__main__":
     main()
