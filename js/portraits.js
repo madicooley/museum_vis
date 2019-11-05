@@ -21,55 +21,53 @@ class DataPortrait {
       })
     }
 
+    this.artifacts = []
     for (let countries of this.museumData) {
       let countrySet = new Set(countries["countries"])
       countries["countries"] = [...countrySet]
+      this.artifacts.push(countries.artifacts)
     }
 
-    console.log(this.museumData)
-
-
-    //
-    //
-    // this.countries = [
-    //   "Mauritania ", "Belize ", "Montserrat ", "Holy See ", "Palau ", "South Africa ", "Togo ", "Virgin Islands(British)", "Estonia ", "Iceland ", "Turks and Caicos Islands ", "Wales ", "Republic of Ireland ", "Croatia ", "Saint Barthelemy ", "Saudi Arabia ", "Tanzania ", "Solomon Islands ", "England ", "Benin ", "Burundi ", "Malaysia ", "Lebanon ", "Cameroon ", "Mayotte ", "Andorra ", "Czech Republic ", "Mongolia ", "Cook Islands ", "New Caledonia ", "Fiji ", "Aruba ", "Indonesia ", "Namibia", "Botswana ", "Grenada ", "New Zealand ", "Italy ", "Hong Kong ", "Guernsey ", "Rwanda ", "Japan ", "Vietnam ", "Maldives ", "Cuba ", "Kiribati ", "Republic of the Congo ", "Papua New Guinea ", "Brazil ", "Turkey ", "Qatar ", "Faroe Islands ", "Suriname ", "Brunei ", "Azerbaijan ", "Bahrain ", "North Korea ", "Nigeria ", "Mozambique ", "Kenya ", "Norfolk Island ", "United Kingdom ", "Djibouti ", "Dominica ", "Gabon ", "Anguilla ", "Burkina Faso ", "Somalia ", "United Arab Emirates ", "Saint Lucia ", "Saint Kitts and Nevis ", "Guadeloupe ", "Kuwait ", "Uruguay ", "Russia ", "Austria ", "Sweden ", "Taiwan ", "Poland ", "Svalbard and Jan Mayen ", "United States Minor Outlying Island ", "Laos ", "Venezuela ", "Belarus ", "Scotland ", "Guatemala ", "American Samoa ", "Norway ", "South Sudan ", "Afghanistan ", "Ukraine ", "Liechtenstein ", "Thailand ", "Bermuda ", "Senegal ", "Bulgaria ", "Eritrea ", "Ivory Coast ", "Lithuania ", "South Georgia "
-    // ]
-    //
-    // this.artifacts = 100
-
     this.colors = ["#b5a5e3", "#b1af00", "#ff5b1a", "#e2a333", "#5b7769"]
+
+    this.artifactScale = d3.scaleOrdinal()
+      .domain([d3.min(this.artifacts), d3.max(this.artifacts)])
+      .range([1, 5])
+
 
   }
 
   dataSummary(data) {
-    console.log("this is Museums!", data[0])
-
+    let i = 0;
     for (let museum of this.museumData) {
-      this.drawPortrait(museum)
+      this.drawPortrait(museum, i)
+      i++
     }
 
   }
 
-  drawPortrait(museum) {
-    let svg = d3.select("#portraits")
+  drawPortrait(museum, i) {
+    let svg = d3.select("#portraits").attr("width", "100%").attr("height", 500)
+
     console.log("Drawing:", museum)
-    svg.attr("width", "100%").attr("height", 500)
+    svg = svg.append("g").attr("id", museum.museum).attr("width", "100%").attr("height", 500)
 
 
-    let length = museum.countries.length
+    let length = museum.years.length
 
-    let bc = museum.years.filter(d => {
-      console.log("d:", d)
-      return d === 0 || d < 0
-    })
+    let bc = museum.years.filter(d => d === 0 || d < 0)
     let first = museum.years.filter(d => d >= 0 && d < 501)
     let second = museum.years.filter(d => d >= 501 && d < 1001)
     let third = museum.years.filter(d => d >= 1001 && d < 1501)
-    let fourth = museum.years.filter(d => d.years >= 1501)
-    console.log("BC", bc, first, second, third, fourth)
+    let fourth = museum.years.filter(d => d >= 1501)
+
 
     let yearWidths = []
-    // yearWidths.push(this.bc.length / length) yearWidths.push(this.first.length / length) yearWidths.push(this.second.length / length) yearWidths.push(this.third.length / length) yearWidths.push(this.fourth.length / length)
+    yearWidths.push(bc.length / length)
+    yearWidths.push(first.length / length)
+    yearWidths.push(second.length / length)
+    yearWidths.push(third.length / length)
+    yearWidths.push(fourth.length / length)
 
 
     let frameWidth = 238
@@ -99,19 +97,21 @@ class DataPortrait {
       .style("fill", "none")
       .attr("transform", "translate(5,5)")
 
-    let artifactLine = svg.append("line")
+    let lineWidth = this.artifactScale(museum.artifacts)
+
+    let artifactLine = svg
+      .append("line")
       .attr("x1", frameWidth / 2)
       .attr("y1", frameHeight)
       .attr("x2", frameWidth)
       .attr("y2", frameHeight - (frameWidth / 2))
       .style("stroke", "black")
-      .style("stroke-width", 5)
+      .style("stroke-width", lineWidth)
       .attr("transform", "translate(5,5)")
 
-    let countries = this.countries.length
+    let countries = museum.countries.length
     countries = countries / 5;
     countries = Math.round(countries)
-    console.log(countries)
     let countryArray = []
 
     for (let i = 0; i < countries; i++) {
@@ -127,11 +127,11 @@ class DataPortrait {
     countryDots
       .attr("r", 5)
       .attr("cx", function(d, i) {
-        if (i < 6) {
+        if (i < 10) {
           if (i % 2 === 0) {
             return (i * 10) + 10
           } else {
-            return (i * 10) + 15
+            return (i * 10) + 20
           }
         } else {
           if (i % 2 === 0) {
@@ -139,7 +139,7 @@ class DataPortrait {
             return (j * 10) + 10
           } else {
             j = j + 1
-            return (j * 10) + 15
+            return (j * 10) + 20
           }
         }
       })
@@ -155,6 +155,7 @@ class DataPortrait {
       .attr("transform", "translate(20,20)")
 
 
+    svg.attr("transform", `translate(${i*(frameWidth +50)},20)`).attr("margin", 20)
   }
 
 
