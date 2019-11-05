@@ -1,0 +1,40 @@
+---
+title: "Data Exploration for Museum Viz"
+author: "Cole Polychronis"
+date: "11/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Description
+
+In this document, we explore the structure and contents of our cleaned data csv file, to understand how to effectively visualize it, as well as to identify any interesting datapoints to highlight.
+
+## Preliminaries
+
+Load necessary packages:
+
+```{r, message = FALSE}
+library(ggplot2)
+```
+
+```{r}
+museum_data_raw <- read.csv("cleaned-data.csv", header = TRUE)
+museum_data <- data.frame(museum_data_raw)
+str(museum_data)
+```
+
+```{r}
+museum_data_abs = subset(museum_data, created_date > 0)
+```
+
+```{r}
+ggplot(museum_data_abs, aes(x=created_date)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Date")
+```
+
+
