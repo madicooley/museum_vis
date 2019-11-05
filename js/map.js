@@ -20,15 +20,21 @@ class Map {
    * Test comment
    */
   constructor(data) {
+    this.museumData = data.geoData;
+    this.countryData = data.countryCodes;
+
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
 
     console.log(data);
-    // this.nameArray = data.population.map(d => d.geo.toUpperCase());;
 
      //For the museum tabs
     this.tabNum = {tab: 1};
     this.numMuseums = null;
+  }
+
+  getCountryName() {
+
   }
 
   drawMap(world) {
@@ -39,24 +45,27 @@ class Map {
 
     let height = parseInt(svg.attr("height"));
     let width = parseInt(svg.attr("width"));
-    let path = d3.geoPath()
-      .projection(this.projection);
+    let path = d3.geoPath().projection(this.projection);
 
 
     //------CONVERT DATA TO GEOJSON--------
     let geojson = topojson.feature(world, world.objects.countries);
-    console.log("GeoJSON", geojson);
+    // console.log("GeoJSON", geojson);
 
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
-      // console.log(country);
-
-      // let index = this.nameArray.indexOf(country.id);
       let index = "temp"; //todo
       let region = 'countries';
 
+      for(i=0; i < this.countryData.length; i++) {
+        if (this.countryData[i].code == country.id) {
+          region = this.countryData[i].country;
+        }
+      }
+
+      //TODO not if statement needs cleaned up
       if (index > -1) {
-        region = this.populationData[index].region;
+        region = this.countryData[index].region;
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
       } else {
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
@@ -64,6 +73,7 @@ class Map {
 
     });
 
+    // console.log(this.museumData);
     // console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
@@ -73,12 +83,19 @@ class Map {
       .join("path")
       .attr("d", path)
       .classed("countries", true)
-      .attr("id", d => d.id)
+      .attr("id", d => d.region)
       .attr("class", function(d) {
-        return d === null ?
-          "countries" : d.region
+        // return d === null ?
+        //   "countries" : d.region
+        return "countries"
       })
-      .classed("boundary", true)
+      .classed("boundary", true);
+
+      for(var i = 0; i < this.museumData.length; i++) {
+          // console.log(this.museumData[i]);
+          let country = this.museumData[i].country;
+
+      }
 
 
     let graticule = d3.geoGraticule();
@@ -91,6 +108,11 @@ class Map {
     svg.append("path").datum(circle)
       .attr("id", "outline")
       .attr("d", path);
+
+    //Add Museum Data to Map! TODO: needs work
+
+
+
 
 
     //Create the slider
@@ -195,6 +217,8 @@ class Map {
             console.log("clicked 2");
             that.switchTab("right");
         });
+
+
 
   };
 

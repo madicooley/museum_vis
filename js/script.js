@@ -30,8 +30,10 @@ async function loadFile(file) {
 
 async function loadData() { //this is probably overkill
   let geoData = await loadFile('data/temp_data.csv');
+  let cc = await loadFile('data/country_code_web.csv');  // This to get the country names from the country codes
 
   return {
-    'geoData': geoData
+    'geoData': geoData,
+    'countryCodes': cc
   };
 }
