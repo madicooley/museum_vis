@@ -13,6 +13,7 @@ from data_init import column_args
 import pycountry_convert as pc
 import json
 import pandas as pd
+import numpy as np
 
 def main():
     # set max size of row
@@ -45,7 +46,7 @@ def main():
     processMet(file_dict['metropolitan-museum-of-art'], out)
     processMoma(file_dict['museum-of-modern-art'], country_dict, out)
     processPenn(file_dict['penn-museum'], out)
-    processMia(out)
+    # processMia(out)
     cleanCSV()
 
 '''
@@ -343,7 +344,7 @@ A helper function that retrieves the continent that a country belondgs to
 '''
 def getContinent(country):
     country_code  = pc.country_name_to_country_alpha2(country, cn_name_format="default")
-    return pc.country_alpha2_to_continent_code(country_code)
+    return (pc.country_alpha2_to_continent_code(country_code)) + "_cont"
 
 '''
 A helper function to check if strings are numeric
@@ -369,6 +370,7 @@ def createDemonyms():
 A function to drop missing values and create cleaned-data.csv
 '''
 def cleanCSV():
+
     data = pd.read_csv(open('./concat-data.csv', 'rU'), usecols=[0,1,2,3,4,5,6]).dropna()
     # cleans rows that have inaccurately coded dates
     data = data[data.acquisition_date > 1800]
