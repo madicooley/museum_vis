@@ -28,8 +28,10 @@ class Map {
 
     console.log(data);
 
-     //For the museum tabs
-    this.tabNum = {tab: 1};
+    //For the museum tabs
+    this.tabNum = {
+      tab: 1
+    };
     this.numMuseums = null;
   }
 
@@ -57,7 +59,7 @@ class Map {
       let index = "temp"; //todo
       let region = 'countries';
 
-      for(i=0; i < this.countryData.length; i++) {
+      for (i = 0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
           region = this.countryData[i].country;
         }
@@ -91,11 +93,11 @@ class Map {
       })
       .classed("boundary", true);
 
-      for(var i = 0; i < this.museumData.length; i++) {
-          // console.log(this.museumData[i]);
-          let country = this.museumData[i].country;
+    for (var i = 0; i < this.museumData.length; i++) {
+      // console.log(this.museumData[i]);
+      let country = this.museumData[i].country;
 
-      }
+    }
 
 
     let graticule = d3.geoGraticule();
@@ -123,17 +125,17 @@ class Map {
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
     let yearSlider = d3.select('#activeYear-bar')
-        .append('div').classed('slider-wrap', true)
-        .append('input').classed('slider', true)
-        .attr('type', 'range')
-        .attr('min', 1800)
-        .attr('max', 2020)
-        .attr('value', this.activeYear)
-        .attr("transform", "translate(10,0)");
+      .append('div').classed('slider-wrap', true)
+      .append('input').classed('slider', true)
+      .attr('type', 'range')
+      .attr('min', 1800)
+      .attr('max', 2020)
+      .attr('value', this.activeYear)
+      .attr("transform", "translate(10,0)");
 
     let sliderLabel = d3.select('.slider-wrap')
-        .append('div').classed('slider-label', true)
-        .append('svg');
+      .append('div').classed('slider-label', true)
+      .append('svg');
 
     let sliderText = sliderLabel.append('text').text(this.activeYear);
 
@@ -141,12 +143,12 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-        console.log("here");
-        // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-        //
-        // that.updateYear(this.value);
-        //
-        // sliderText.text(this.value).attr('x', yearScale(this.value));
+      console.log("here");
+      // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
+      //
+      // that.updateYear(this.value);
+      //
+      // sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
 
@@ -155,23 +157,23 @@ class Map {
     let tab = view.select("#museumTabContainer").attr("transform", "translate(200, -400)");
 
     tab.append("g").attr("id", "museumTextBox")
-        .attr("height", 100)
-        .attr("width", 100)
-        .attr("transform", "translate(10, 10)");
+      .attr("height", 100)
+      .attr("width", 100)
+      .attr("transform", "translate(10, 10)");
 
     tab.select("#museumTextBox").append("text").text("Test Title")
-        .attr("font-size", "12")
-        .attr("font-weight", "Bold")
-        .attr("fill", "grey")
-        .attr("font-family", "sans-serif")
-        .attr("transform", "translate(50, 20)");
+      .attr("font-size", "12")
+      .attr("font-weight", "Bold")
+      .attr("fill", "grey")
+      .attr("font-family", "sans-serif")
+      .attr("transform", "translate(50, 20)");
 
     tab.select("#museumTextBox").append("text").text("Test Subtitle")
-        .attr("font-size", "12")
-        .attr("font-weight", "normal")
-        .attr("fill", "grey")
-        .attr("font-family", "sans-serif")
-        .attr("transform", "translate(50, 40)");
+      .attr("font-size", "12")
+      .attr("font-weight", "normal")
+      .attr("fill", "grey")
+      .attr("font-family", "sans-serif")
+      .attr("transform", "translate(50, 40)");
 
     //Add the circle nav. little things
     tab.append("circle").attr("id", "museum1").classed("museumCircles", true);
@@ -199,24 +201,24 @@ class Map {
     console.log(trianglePoints);
 
     tab.append('polyline').attr("id", "museumTriangle")
-        .attr('points', trianglePoints)
-        .style('fill', 'grey')
-        .attr("transform", "translate(40, 105) rotate(75) scale(1.2)")
-        .attr("rx", 2)
-        .attr("ry", 2)
-        .on("click", function(d, i) {
-            console.log("clicked 1");
-            that.switchTab("left");
-        });
+      .attr('points', trianglePoints)
+      .style('fill', 'grey')
+      .attr("transform", "translate(40, 105) rotate(75) scale(1.2)")
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .on("click", function(d, i) {
+        console.log("clicked 1");
+        that.switchTab("left");
+      });
 
     tab.append('polyline').attr("id", "museumTriangle")
-        .attr('points', trianglePoints)
-        .style('fill', 'grey')
-        .attr("transform", "translate(125, 105) rotate(10) scale(1.2)")
-        .on("click", function(d, i) {
-            console.log("clicked 2");
-            that.switchTab("right");
-        });
+      .attr('points', trianglePoints)
+      .style('fill', 'grey')
+      .attr("transform", "translate(125, 105) rotate(10) scale(1.2)")
+      .on("click", function(d, i) {
+        console.log("clicked 2");
+        that.switchTab("right");
+      });
 
 
 
@@ -225,20 +227,20 @@ class Map {
   switchTab(which) {
     if (which == "left") {
       this.tabNum.tab--;
-      if (this.tabNum.tab < 1 ) {
-        this.tabNum.tab = this.numMuseums;  //rolls around
+      if (this.tabNum.tab < 1) {
+        this.tabNum.tab = this.numMuseums; //rolls around
       }
 
     } else if (which == "right") {
       this.tabNum.tab++;
-      if (this.tabNum.tab > this.numMuseums ) {
-        this.tabNum.tab = 1;  //rolls around
+      if (this.tabNum.tab > this.numMuseums) {
+        this.tabNum.tab = 1; //rolls around
       }
     }
 
     let tab = d3.select('.view').select("#museumTabContainer");
     tab.select(".selectedTab").classed("selectedTab", false);
-    tab.select("#museum"+this.tabNum.tab).classed("selectedTab", true);
+    tab.select("#museum" + this.tabNum.tab).classed("selectedTab", true);
 
   }
 
