@@ -19,9 +19,11 @@ class Map {
   /**
    * Test comment
    */
-  constructor(data) {
+  constructor(data, updateYear) {
     this.museumData = data.geoData;
     this.countryData = data.countryCodes;
+
+    this.updateYear = updateYear;
 
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
@@ -50,7 +52,7 @@ class Map {
       let index = "temp"; //todo
       let region = 'countries';
 
-      for(i=0; i < this.countryData.length; i++) {
+      for(let i=0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
           region = this.countryData[i].country;
         }
@@ -84,11 +86,10 @@ class Map {
       })
       .classed("boundary", true);
 
-      for(var i = 0; i < this.museumData.length; i++) {
-          // console.log(this.museumData[i]);
-          let country = this.museumData[i].country;
-
-      }
+      // for(var i = 0; i < this.museumData.length; i++) {
+      //     // console.log(this.museumData[i]);
+      //     let country = this.museumData[i].country;
+      // }
 
 
     let graticule = d3.geoGraticule();
@@ -132,12 +133,12 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-        console.log("here");
+        console.log("here", this.value);
         // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-        //
-        // that.updateYear(this.value);
-        //
-        // sliderText.text(this.value).attr('x', yearScale(this.value));
+
+        that.updateYear(this.value);
+
+        sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
 
