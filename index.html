@@ -2,35 +2,52 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MuseumVis</title>
-  <link rel="stylesheet" href="styles.css" />
+  <!-- <link rel="stylesheet" href="styles.css" /> -->
+  <link rel="stylesheet" href="bulma.css" />
   <script src="https://d3js.org/d3.v5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
   <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
   <script src="js/map.js" async></script>
   <script src="js/museumTabs.js" async></script>
   <script src="js/script.js" async></script>
+  <script src="js/portraits.js" async></script>
 </head>
 
 <body>
-  <div style="float:left; border-right:3px solid black; padding: 20px">
-    <h1>Museum+Vis</h1>
-    <h2>The secret life of museum artifacts</h2>
-  </div>
-  <div style="display: flex">
-    <p style="padding:20px; transform: translate (20,0)">A museum typically only shows <strong>2-4%</strong> of it's collection.</p>
+  <div class="columns" style="padding-bottom: 30px">
+    <div class="column is-two-fifths" style="border-right:3px solid black; padding: 20px">
+      <h1>Museum+Vis</h1>
+      <h2>The secret life of museum artifacts</h2>
+    </div>
+    <div class="column">
+      <p style="padding:20px; transform: translate (20,0)">A museum typically only shows <strong>2-4%</strong> of it's collection.</p>
+    </div>
   </div>
 
   <!-- CONTAINER FOR THE MAP -->
-  <div class="wrapper">
-    <div class="innerWrapper">
-      <div class="view"><svg id="map-chart"></svg></div>
-      <div id="country-detail">
-        <span class="header"></span>
-      </div>
-
+  <div class="columns is-vcentered">
+    <div class="column is-two-thirds">
+      <svg id="map-chart"></svg>
     </div>
+    <div class="column">
+      <svg id="museumTabContainer">
+      </svg>
+    </div>
+    <div class="column">
+      <svg id="portraits">
+      </svg>
+    </div>
+  </div>
+
 </body>
+<script>
+  d3.csv("data/cleaned-data.csv").then(museums => {
+    const dataPortrait = new DataPortrait(museums)
+    dataPortrait.dataSummary(museums);
+  })
+</script>
 
 </html>

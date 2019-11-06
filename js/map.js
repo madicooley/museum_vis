@@ -109,23 +109,23 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.select('.view');
+    let view = d3.select('#map-chart');
     view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
     let yearSlider = d3.select('#activeYear-bar')
-        .append('div').classed('slider-wrap', true)
-        .append('input').classed('slider', true)
-        .attr('type', 'range')
-        .attr('min', 1800)
-        .attr('max', 2020)
-        .attr('value', this.activeYear)
-        .attr("transform", "translate(10,0)");
+      .append('div').classed('slider-wrap', true)
+      .append('input').classed('slider', true)
+      .attr('type', 'range')
+      .attr('min', 1800)
+      .attr('max', 2020)
+      .attr('value', this.activeYear)
+      .attr("transform", "translate(10,0)");
 
     let sliderLabel = d3.select('.slider-wrap')
-        .append('div').classed('slider-label', true)
-        .append('svg');
+      .append('div').classed('slider-label', true)
+      .append('svg');
 
     let sliderText = sliderLabel.append('text').text(this.activeYear);
 

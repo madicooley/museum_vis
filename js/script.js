@@ -36,7 +36,7 @@ async function loadFile(file) {
   return data;
 }
 
-async function loadData() { //this is probably overkill
+async function loadData() {
   let geoData = await loadFile('data/temp_data.csv');
   let cc = await loadFile('data/country_code_web.csv');  // This to get the country names from the country codes
   let bios = await loadFile('data/museum-bio.csv');
