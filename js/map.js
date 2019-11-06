@@ -119,7 +119,7 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.select('.view');
+    let view = d3.select('#map-chart');
     view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
@@ -153,8 +153,8 @@ class Map {
 
 
     //Create the tab thing?
-    view.append("svg").attr('id', 'museumTabContainer');
-    let tab = view.select("#museumTabContainer").attr("transform", "translate(200, -400)");
+    // view.append("svg").attr('id', 'museumTabContainer');
+    let tab = d3.select("#museumTabContainer") //.attr("transform", "translate(0, 100)");
 
     tab.append("g").attr("id", "museumTextBox")
       .attr("height", 100)
