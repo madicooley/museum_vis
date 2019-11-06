@@ -10,6 +10,7 @@
   <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
   <script src="js/map.js" async></script>
   <script src="js/script.js" async></script>
+  <script src="js/portraits.js" async></script>
 </head>
 
 <body>
@@ -28,8 +29,15 @@
       <div id="country-detail">
         <span class="header"></span>
       </div>
-
+      <div class="view"><svg id="portraits"></svg></div>
     </div>
+
 </body>
+<script>
+  d3.csv("data/cleaned-data.csv").then(museums => {
+    const dataPortrait = new DataPortrait(museums)
+    dataPortrait.dataSummary(museums);
+  })
+</script>
 
 </html>
