@@ -21,7 +21,12 @@ Load necessary packages:
 
 ```{r, message = FALSE}
 library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tidyr)
 ```
+
+Load data for museum artifacts:
 
 ```{r}
 museum_data_raw <- read.csv("cleaned-data.csv", header = TRUE)
@@ -29,12 +34,102 @@ museum_data <- data.frame(museum_data_raw)
 str(museum_data)
 ```
 
+## Exploration of Creation Dates
+
 ```{r}
-museum_data_abs = subset(museum_data, created_date > 0)
+museum_data_abs = subset(museum_data, created_date >= 0)
 ```
 
 ```{r}
-ggplot(museum_data_abs, aes(x=created_date, color=museum)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Date")
+ggplot(museum_data_abs, aes(x=created_date)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Dates Faceted by Museum (After Common Era)") + facet_grid(museum ~ .) +
+    theme(strip.text.y = element_text(angle = 0, hjust = 0))
 ```
+
+From these histograms, we can see several interesting patterns or characteristics of the data. For one, we can see that both the Canada Science and Tech Museums and the MOMA have artifacts that are exclusively created within the last 200 years. We can also see that the collections for the Cooper-Hewitt and the Minneapolis Institute have relatively recently created collections, spanning back to about 500 years ago.
+
+Additionally, we can see that with respect to the Cleveland Museum of Art, the Met, and the Penn Museum, while their collections are clustered closer to common day, they are in possession of artifacts that span back centuries and that it is likely these museums that posses artifacts that are dated to before the common era.
+
+```{r}
+museum_data_bc = subset(museum_data, created_date < 0)
+```
+
+```{r}
+ggplot(museum_data_bc, aes(x=created_date)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Dates Faceted by Museum (Before Common Era)") + facet_grid(museum ~ .) +
+    theme(strip.text.y = element_text(angle = 0, hjust = 0))
+```
+
+Subsetting the data to include only artifacts that were developed before the Common Era (B.C. or B.C.E), we can see that it was in fact the three museums from earlier that possess artifacts dating back to before the Common Era. However, these seem to date back to roughly 10,000 B.C. or earlier, with only a few artifacts dating back to earlier. Below, we plot the histogram for artifacts that date back to 10,000 B.C. or earlier, with a table of the remaining artifacts that date back earlier.
+
+```{r}
+museum_data_bc_10000 = subset(museum_data, created_date < 0 & created_date > -10000)
+```
+
+```{r}
+ggplot(museum_data_bc_10000, aes(x=created_date)) + geom_histogram(bins = 100) + labs(title = "Histogram of Creation Dates Faceted by Museum (Before Common Era)") + facet_grid(museum ~ .) +
+    theme(strip.text.y = element_text(angle = 0, hjust = 0))
+```
+
+```{r}
+museum_data_pre_10000 = subset(museum_data, created_date < -10000)
+count(museum_data_pre_10000, "museum")
+```
+
+From this histogram and table, we can see that both the Met and the Penn museum artifacts that are B.C. were largely created about 2500 B.C. or earlier. Adiitionally, the Cleveland Museum has relatively few artifacts that are dated to before the Common Era. Finally, from the table, we can see that the Penn Museum has the vast majority of artifacts that date back to before 10,000 B.C., with the Met having a few as well.
+
+## Exploration of Acquisition Dates
+
+```{r}
+ggplot(museum_data, aes(x=acquisition_date)) + geom_histogram(bins = 50) + labs(title = "Histogram of Acquisition Dates Faceted by Museum") + facet_grid(museum ~ .) +
+    theme(strip.text.y = element_text(angle = 0, hjust = 0))
+```
+
+From these histograms of acquisition dates, we can see that there is a substantial amount of collection during the 1900's, especially for the Met and the Penn Musuem. Additionally for these two musuems, we can see that there is specifically a large amount of collection in the decade leading up to the second World War. In this same vein, we can see that the Cleveland Museum and the Minneapolis Institute has a substantial amount of collection during the 1920's, which could possibly be due, in part, to the first World War. 
+
+Moving on, we see that the Cleveland Museum, the Minneapolis Institute, and especially the MOMA acquired a large amount of artifacts during the 1960's and the early 1970's. The Met collected a lot of artifacts during the 1970's and early 1980's. Finally, and perhaps unsurpisingly, the Canada Science and Tech Museums and the MOMA colelcted a substantial amount of artifacts after the 2000's.
+
+## Exploration of Continent
+
+```{r}
+ggplot(museum_data, aes(continent)) + geom_bar() + labels(title = "Number of artifacts from each Continent (aggregate)")
+```
+
+Something surprising from this the above histogram is that we can see that no North American art is represented. This is a symptom of the fact that for all of the North American art presented in these museums, there was not a record of both acquisition date and creation date for any of them. While this does point to the fact that we may be ommitting some art from North America, it also indicates how small the collection from North America is in order to be ommitted in this way.
+
+From this histogram, we can see that there is a clear bias towards collecting and presenting European art. Additionally, we can see that there is a large amount of artifacts collected from Africa and Asia, which potentially could be a manifestation of the colonialist tradition. Before we explore this more, we first look to see if this trend holds for each museum. 
+
+```{r}
+count_museum_by_cont = data.frame(summarise(group_by(museum_data, museum, continent), count=n()))
+
+ggplot(count_museum_by_cont, aes(fill=museum, y=count, x=continent)) + geom_bar(position="dodge", stat="identity") + labs(title = "Number of Artifacts from each Museum grouped by Continent")
+```
+
+From this grouped bar chart, we can see that by a significant margin, the Met has the greatest amount of artifacts from both Africa and Asia. Similarly, the MOMA contains the greatest amount of artifacts from Europe. As hinted at in the earlier bar chart, there are very few artifacts from Oceania and South America. The Met has the has the largest number of Oceania artifacts by far and has the majority of artifacts from South America, but the MOMA and Penn Museum also hold a significant number of artifacts from South America. We can explore how these look per museum in the stacked bar chart below.
+
+```{r}
+ggplot(count_museum_by_cont, aes(x = museum, y = count, fill = continent)) + 
+    geom_bar(position = "fill",stat = "identity") +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme(axis.text.x = element_text(angle = 90)) + 
+    scale_x_discrete(labels=c("canada", "cleveland", "cooper-hewitt", "metropolitan", "minneapolis", "moma", "penn")) +
+    labs(title = "Percentage of Artifacts from each Continent seperated by Museum")
+```
+
+From this chart, we can see that for every museum except for the Metropolitan Museum and the Penn Museum, the majority of artifacts (over 50%) come from Europe. For the Metropolitan Museum, we can see that over 50% of artifacts come from Africa, and for the Penn museum, roughly 50% of artifacts come from Asia. 
+
+Further, from this chart we can see that the Minneapolis Institute of Art is the least diverse musuem, collecting artifacts almost exclusively from Europe. To this end, we pull up of a table of the artifacts from the MIA.
+
+```{r}
+subset(count_museum_by_cont, museum == "minneapolis-institute-of-art")
+```
+
+From here, we can see that only 20 artifacts in the MIA are not european, with all but one coming from Asia.
+
+From visual inspection, we can see that the Met and the Penn seem to boast the most diverse selection of artifacts, though they still skew very heavily towards Africa and Asia.
+
+
+
+
+
+
 
 

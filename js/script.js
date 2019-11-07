@@ -38,8 +38,14 @@ async function loadFile(file) {
 
 async function loadData() {
   let geoData = await loadFile('data/temp_data.csv');
-  let cc = await loadFile('data/country_code_web.csv');  // This to get the country names from the country codes
   let bios = await loadFile('data/museum-bio.csv');
+
+  // let geoData = await loadFile('data/cleaned-data.csv').then(d => {
+  //   for(let row of d){
+  //     row.continent = row.continent.substring(0,2)
+  //   }
+  // });
+  let cc = await loadFile('data/country_code_web.csv'); // This to get the country names from the country codes
 
   return {
     'geoData': geoData,
