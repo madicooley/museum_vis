@@ -46,7 +46,7 @@ def main():
     processMet(file_dict['metropolitan-museum-of-art'], out)
     processMoma(file_dict['museum-of-modern-art'], country_dict, out)
     processPenn(file_dict['penn-museum'], out)
-    # processMia(out)
+    processMia(out)
     cleanCSV()
 
 '''
