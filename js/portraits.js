@@ -47,10 +47,10 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-    let svg = d3.select("#portraits").attr("width", "100%").attr("height", 500)
+    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
 
     console.log("Drawing:", museum)
-    svg = svg.append("g").attr("id", museum.museum).attr("width", "100%").attr("height", 500)
+    svg = svg.append("g").attr("id", museum.museum) //.attr("width", 100).attr("height", 500)
 
 
     let length = museum.years.length
@@ -70,8 +70,8 @@ class DataPortrait {
     yearWidths.push(fourth.length / length)
 
 
-    let frameWidth = 238
-    let frameHeight = 360
+    let frameWidth = 238 * .3
+    let frameHeight = 360 * .3
     let rectWidth = [0]
 
     let portraitColors = svg
@@ -124,6 +124,7 @@ class DataPortrait {
       .join("circle")
 
     let j = 0;
+    let k = 3
     countryDots
       .attr("r", 5)
       .attr("cx", function(d, i) {
@@ -133,13 +134,21 @@ class DataPortrait {
           } else {
             return (i * 10) + 20
           }
-        } else {
+        } else if (i >= 10 && i < 20) {
           if (i % 2 === 0) {
             j = j + 1
             return (j * 10) + 10
           } else {
             j = j + 1
             return (j * 10) + 20
+          }
+        } else {
+          if (i % 2 === 0) {
+            k = k + 1
+            return (k * 10) + 10
+          } else {
+            k = k + 1
+            return (k * 10) + 20
           }
         }
       })
@@ -152,13 +161,26 @@ class DataPortrait {
           return ((i - 20) * 10) + 10
         }
       })
-      .attr("transform", "translate(20,20)")
+      .attr("transform", "translate(7,20) scale(.5)")
 
-
-    svg.attr("transform", `translate(${i*(frameWidth +50)},20)`).attr("margin", 20)
+    let ticker = i
+    svg
+      .attr("transform", function() {
+        if (ticker < 4) {
+          if (ticker === 0) {
+            return `translate(0,${frameHeight*.2})`
+          } else {
+            return `translate(0,${ticker*1.2*frameHeight+(frameHeight*.2)})`
+          }
+        } else {
+          ticker = ticker - 4
+          if (ticker === 0) {
+            return `translate(${frameWidth*1.2},${frameHeight*.2})`
+          } else {
+            return `translate(${frameWidth*1.2},${ticker*1.2*frameHeight+(frameHeight*.2)})`
+          }
+        }
+      })
+      .attr("margin", 20)
   }
-
-
-
-
 }
