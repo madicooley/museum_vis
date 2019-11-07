@@ -28,11 +28,12 @@ class Map {
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
 
-    console.log(data);
+    console.log("WorldMap:", data);
 
   }
 
   drawMap(world) {
+    console.log("world", world)
     let that = this;
 
     let svg = d3.select("svg#map-chart");
@@ -52,7 +53,7 @@ class Map {
       let index = "temp"; //todo
       let region = 'countries';
 
-      for(let i=0; i < this.countryData.length; i++) {
+      for (let i = 0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
           region = this.countryData[i].country;
         }
@@ -86,10 +87,10 @@ class Map {
       })
       .classed("boundary", true);
 
-      // for(var i = 0; i < this.museumData.length; i++) {
-      //     // console.log(this.museumData[i]);
-      //     let country = this.museumData[i].country;
-      // }
+    // for(var i = 0; i < this.museumData.length; i++) {
+    //     // console.log(this.museumData[i]);
+    //     let country = this.museumData[i].country;
+    // }
 
 
     let graticule = d3.geoGraticule();
@@ -109,7 +110,7 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.select('#map-chart');
+    let view = d3.selectAll('.column');
     view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
@@ -133,17 +134,39 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-        console.log("here", this.value);
-        // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
+      console.log("here", this.value);
+      // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
 
-        that.updateYear(this.value);
+      that.updateYear(this.value);
 
-        sliderText.text(this.value).attr('x', yearScale(this.value));
+      sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
 
+    this.drawMuseum("canada-science-and-technology-museums", world)
   };
 
+  drawMuseum(museum, world) {
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && d.acquisition_date === this.updateYear)
+    console.log(selectedMuseumData)
 
+    //add bubbles to the countries
+    svg.append("g")
+      .attr("class", "bubble")
+      .selectAll("circle")
+      .data(topojson.feature(world, world.objects.countries).features
+        .sort(function(a, b) {
+          return b.properties.population - a.properties.population;
+        }))
+      .enter().append("circle")
+      .attr("transform", function(d) {
+        return "translate(" + path.centroid(d) + ")";
+      })
+      .attr("r", function(d) {
+        return radius(d.properties.population);
+      });
+
+
+  }
 
 }
