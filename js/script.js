@@ -1,7 +1,15 @@
 loadData().then(data => {
+  let that = this;
+  
+  function updateYear(year) {
+    that.activeYear = year;
+  }
 
   // Creates the view objects
-  const worldMap = new Map(data);
+  const worldMap = new Map(data, updateYear);
+  const museumTabs = new MuseumTabs(data.museumBios);
+  museumTabs.drawMuseumTabs();
+
 
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
@@ -30,6 +38,8 @@ async function loadFile(file) {
 
 async function loadData() {
   let geoData = await loadFile('data/temp_data.csv');
+  let bios = await loadFile('data/museum-bio.csv');
+
   // let geoData = await loadFile('data/cleaned-data.csv').then(d => {
   //   for(let row of d){
   //     row.continent = row.continent.substring(0,2)
@@ -39,6 +49,7 @@ async function loadData() {
 
   return {
     'geoData': geoData,
-    'countryCodes': cc
+    'countryCodes': cc,
+    'museumBios': bios
   };
 }
