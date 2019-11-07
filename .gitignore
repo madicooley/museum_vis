@@ -1,6 +1,5 @@
 .DS_Store
-<<<<<<< HEAD
+
 *.pyc
-=======
-*.pyc
->>>>>>> dbef8a26a04b6e9422a8fb5b543fd2957d479a4f
+
+/data/raw-data/
