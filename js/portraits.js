@@ -148,7 +148,7 @@ class DataPortrait {
             return (k * 10) + 10
           } else {
             k = k + 1
-            return (k * 10) + 20
+            return (k * 10)
           }
         }
       })
@@ -158,7 +158,7 @@ class DataPortrait {
         } else if (i >= 10 && i < 20) {
           return ((i - 10) * 10) + 10
         } else {
-          return ((i - 20) * 10) + 10
+          return ((i - 20) * 10 - 10)
         }
       })
       .attr("transform", "translate(7,20) scale(.5)")
