@@ -19,23 +19,16 @@ class Map {
   /**
    * Test comment
    */
-  constructor(data) {
+  constructor(data, updateYear) {
     this.museumData = data.geoData;
     this.countryData = data.countryCodes;
+
+    this.updateYear = updateYear;
 
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
 
     console.log(data);
-
-    //For the museum tabs
-    this.tabNum = {
-      tab: 1
-    };
-    this.numMuseums = null;
-  }
-
-  getCountryName() {
 
   }
 
@@ -59,7 +52,7 @@ class Map {
       let index = "temp"; //todo
       let region = 'countries';
 
-      for (i = 0; i < this.countryData.length; i++) {
+      for(let i=0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
           region = this.countryData[i].country;
         }
@@ -93,11 +86,10 @@ class Map {
       })
       .classed("boundary", true);
 
-    for (var i = 0; i < this.museumData.length; i++) {
-      // console.log(this.museumData[i]);
-      let country = this.museumData[i].country;
-
-    }
+      // for(var i = 0; i < this.museumData.length; i++) {
+      //     // console.log(this.museumData[i]);
+      //     let country = this.museumData[i].country;
+      // }
 
 
     let graticule = d3.geoGraticule();
@@ -112,8 +104,6 @@ class Map {
       .attr("d", path);
 
     //Add Museum Data to Map! TODO: needs work
-
-
 
 
 
@@ -143,106 +133,16 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-      console.log("here");
-      // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-      //
-      // that.updateYear(this.value);
-      //
-      // sliderText.text(this.value).attr('x', yearScale(this.value));
+        console.log("here", this.value);
+        // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
+
+        that.updateYear(this.value);
+
+        sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
 
-    //Create the tab thing?
-    // view.append("svg").attr('id', 'museumTabContainer');
-    let tab = d3.select("#museumTabContainer") //.attr("transform", "translate(0, 100)");
-
-    tab.append("g").attr("id", "museumTextBox")
-      .attr("height", 100)
-      .attr("width", 100)
-      .attr("transform", "translate(10, 10)");
-
-    tab.select("#museumTextBox").append("text").text("Test Title")
-      .attr("font-size", "12")
-      .attr("font-weight", "Bold")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
-      .attr("transform", "translate(50, 20)");
-
-    tab.select("#museumTextBox").append("text").text("Test Subtitle")
-      .attr("font-size", "12")
-      .attr("font-weight", "normal")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
-      .attr("transform", "translate(50, 40)");
-
-    //Add the circle nav. little things
-    tab.append("circle").attr("id", "museum1").classed("museumCircles", true);
-    tab.append("circle").attr("id", "museum2").classed("museumCircles", true);
-    tab.append("circle").attr("id", "museum3").classed("museumCircles", true);
-
-    this.numMuseums = 3; //Added three museum tabs!!
-
-    tab.selectAll(".museumCircles")
-      .attr("r", 6)
-      .attr("stroke", "grey")
-      .attr("fill", "white")
-      .attr("cx", 10)
-      .attr("cy", 10);
-
-    tab.select("#museum1").attr("transform", "translate(50, 100)");
-    tab.select("#museum2").attr("transform", "translate(75, 100)");
-    tab.select("#museum3").attr("transform", "translate(100, 100)");
-
-    tab.select("#museum1").classed("selectedTab", true);
-
-    //Add the nav. triagle buttons
-    var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
-
-    console.log(trianglePoints);
-
-    tab.append('polyline').attr("id", "museumTriangle")
-      .attr('points', trianglePoints)
-      .style('fill', 'grey')
-      .attr("transform", "translate(40, 105) rotate(75) scale(1.2)")
-      .attr("rx", 2)
-      .attr("ry", 2)
-      .on("click", function(d, i) {
-        console.log("clicked 1");
-        that.switchTab("left");
-      });
-
-    tab.append('polyline').attr("id", "museumTriangle")
-      .attr('points', trianglePoints)
-      .style('fill', 'grey')
-      .attr("transform", "translate(125, 105) rotate(10) scale(1.2)")
-      .on("click", function(d, i) {
-        console.log("clicked 2");
-        that.switchTab("right");
-      });
-
-
-
   };
-
-  switchTab(which) {
-    if (which == "left") {
-      this.tabNum.tab--;
-      if (this.tabNum.tab < 1) {
-        this.tabNum.tab = this.numMuseums; //rolls around
-      }
-
-    } else if (which == "right") {
-      this.tabNum.tab++;
-      if (this.tabNum.tab > this.numMuseums) {
-        this.tabNum.tab = 1; //rolls around
-      }
-    }
-
-    let tab = d3.select('.view').select("#museumTabContainer");
-    tab.select(".selectedTab").classed("selectedTab", false);
-    tab.select("#museum" + this.tabNum.tab).classed("selectedTab", true);
-
-  }
 
 
 
