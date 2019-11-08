@@ -385,7 +385,7 @@ Helper function for cleanCSV, which pulls country code for each row
 '''
 def getCC(country):
     try:
-        return pc.country_name_to_country_alpha2(country, cn_name_format = "default")
+        return pc.country_name_to_country_alpha3(country, cn_name_format = "default")
     except:
         return None
 
