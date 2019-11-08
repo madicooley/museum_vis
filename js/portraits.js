@@ -1,5 +1,6 @@
 class DataPortrait {
-  constructor(data) {
+  constructor(data, map) {
+    this.map = map;
     this.data = data
     let museumNames = []
 
@@ -185,6 +186,6 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      .on("click", d => console.log("Hellow!", museum.museum)) //.id))
+      .on("click", d => this.map.drawMuseum(museum.museum, 2000))
   }
 }

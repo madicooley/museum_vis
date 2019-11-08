@@ -9,6 +9,8 @@ loadData().then(data => {
   const worldMap = new Map(data, updateYear);
   const museumTabs = new MuseumTabs(data.museumBios);
   museumTabs.drawMuseumTabs();
+  const dataPortrait = new DataPortrait(data.geoData, worldMap)
+  dataPortrait.dataSummary(data.geoData);
 
 
   // here we load the map data
