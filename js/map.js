@@ -21,7 +21,7 @@ class Map {
    */
   constructor(data, updateYear) {
     this.museumData = data.geoData;
-    this.countryData = data.countryCodes;
+    // this.countryData = data.countryCodes;
 
     this.updateYear = updateYear;
 
@@ -50,17 +50,19 @@ class Map {
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
       let index = "temp"; //todo
-      let region = 'countries';
+      let region = 'none';
 
-      for(let i=0; i < this.countryData.length; i++) {
-        if (this.countryData[i].code == country.id) {
-          region = this.countryData[i].country;
-        }
-      }
+      console.log(country);
+
+      // for(let i=0; i < this.countryData.length; i++) {
+      //   if (this.countryData[i].code == country.id) {
+      //     region = this.countryData[i].country;
+      //   }
+      // }
 
       //TODO not if statement needs cleaned up
       if (index > -1) {
-        region = this.countryData[index].region;
+        // region = this.countryData[index].region;
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
       } else {
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
@@ -69,7 +71,7 @@ class Map {
     });
 
     // console.log(this.museumData);
-    // console.log("CountryData", countryData);
+    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
@@ -78,10 +80,11 @@ class Map {
       .join("path")
       .attr("d", path)
       .classed("countries", true)
-      .attr("id", d => d.region)
+      .attr("id", d => d.id)
       .attr("class", function(d) {
+        console.log(d);
         // return d === null ?
-        //   "countries" : d.region
+          // "countries" : d.id
         return "countries"
       })
       .classed("boundary", true);
@@ -101,7 +104,7 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.select('#map-chart');
+    let view = d3.select('.column.is-two-thirds');
     view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
@@ -130,13 +133,15 @@ class Map {
     });
 
     //Hardcoded values for museum and year
-    console.log("The Year Is:", this.activeYear)
-    this.drawMuseumColor("canada-science-and-technology-museums", this.activeYear);
+    console.log("The Year Is:", "1988.0")
+    this.drawMuseumColor("canada-science-and-technology-museums", 1988.0);
 
   };
 
   drawMuseumColor(museum, centroids, year) {
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
+    console.log(this.museumData);
+    // let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year);
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum);
     console.log("Filtered Museum Data", selectedMuseumData)
 
     //create object of number of artifacts per country
@@ -167,33 +172,28 @@ class Map {
       .range([1, 20])
 
     let opacityScale = d3.scaleLinear()
-      .domain([0, 1000])
-      .range([0, 10000])  //TODO
+      .domain([0, 5000])
+      .range([0, 1.0])  //TODO
       .nice();
+
+    let colorScale = d3.scaleOrdinal()
+             .domain([0, 30000])
+             .range(["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949",
+                     "#af7aa1","#ff9da7","#9c755f","#bab0ab"]);
 
     let svg = d3.select("svg#map-chart");
 
-    // for(var i = 0; i < this.museumData.length; i++) {
-    //     let country = this.museumData[i].country_of_origin;
-    //     // console.log(country);
-    //
-    //
-    //
-    //     // console.log(d3.select(country_path).style('fill'));
-    //
-    //     // change the opacity here
-    //     // country_path.style("fill", function (d, index, element) {
-    //     //     console.log(element[index].style.fill);
-    //     //   })
-    //
-    // }
+    for(var i = 0; i < artifacts.length; i++) {
+        let country = artifacts[i].country;
+        // console.log(country);
+        console.log(colorScale(artifacts[i].number));
 
-    // let country_path = svg.select("path#"+country)  //Selecting the country's path!
-    //         .style("fill", "#FFCA28")
-            // .style("opacity", function(d, i) {
-            //
-            //
-            // });
+        let country_path = svg.select("path#"+country)  //Selecting the country's path!
+                .style("fill", colorScale(artifacts[i].number))
+                // .style("opacity", colorScale(artifacts[i].number));
+
+    }
+
 
     // add bubbles to the countries
      // svg.append("g")

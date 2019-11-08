@@ -42,7 +42,6 @@ class MuseumTabs {
       })
       .classed("container", true)
       .attr("transform", function(d, i) {
-          console.log(i);
           if (i==0) {
             return "translate(0, 0)";
           } else {
