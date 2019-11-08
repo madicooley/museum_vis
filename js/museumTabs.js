@@ -28,12 +28,12 @@ class MuseumTabs {
       .attr("transform", "translate(-100, -100)") //-400
       .attr("width", 300)
       .attr("height", 200)
-      .attr("border", 10)
+    // .attr("border", 10)
 
     tab.append("rect")
       .attr("width", 300)
       .attr("height", 200)
-      .attr("border", 10)
+      // .attr("border", 10)
       .attr("rx", 10)
       .attr("ry", 10)
       .style("fill", "#c3c3c3")
@@ -71,7 +71,7 @@ class MuseumTabs {
       .attr("font-weight", "Bold")
       // .attr("fill", "grey")
       .attr("font-family", 'Oswald') //"sans-serif")
-      .attr("transform", "translate(50, 40)");
+      .attr("transform", "translate(30, 40)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
@@ -81,7 +81,7 @@ class MuseumTabs {
       // .attr("font-weight", "normal")
       // .attr("fill", "grey")
       .attr("font-family", 'Montserrat')
-      .attr("transform", "translate(50, 60)");
+      .attr("transform", "translate(30, 60)");
 
     // tab.selectAll(".museumTextBox").append("text")
     //     .text(function(d) {
