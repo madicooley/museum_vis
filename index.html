@@ -31,6 +31,7 @@
   <div class="columns is-vcentered">
     <div class="column is-two-thirds">
       <svg id="map-chart"></svg>
+      <div id="activeYear-bar"></div>
     </div>
     <div class="column">
       <svg id="museumTabContainer">
@@ -43,11 +44,5 @@
   </div>
 
 </body>
-<script>
-  d3.csv("data/cleaned-data.csv").then(museums => {
-    const dataPortrait = new DataPortrait(museums)
-    dataPortrait.dataSummary(museums);
-  })
-</script>
 
 </html>

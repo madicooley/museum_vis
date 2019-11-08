@@ -27,12 +27,14 @@ class Map {
 
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
+    this.centroids = [];
 
-    console.log(data);
+    console.log("WorldMap:", data);
 
   }
 
   drawMap(world) {
+    console.log("world", world)
     let that = this;
 
     let svg = d3.select("svg#map-chart");
@@ -47,14 +49,15 @@ class Map {
     let geojson = topojson.feature(world, world.objects.countries);
     // console.log("GeoJSON", geojson);
 
+
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
       let index = "temp"; //todo
       let region = 'countries';
 
-      for(let i=0; i < this.countryData.length; i++) {
+      for (let i = 0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
-          region = this.countryData[i].country;
+          region = this.countryData[i].country
         }
       }
 
@@ -69,28 +72,27 @@ class Map {
     });
 
     // console.log(this.museumData);
-    // console.log("CountryData", countryData);
+    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
+
     let worldMap = svg.selectAll("path")
       .data(countryData)
       .join("path")
       .attr("d", path)
       .classed("countries", true)
-      .attr("id", d => d.region)
+      .attr("id", d => d.id)
       .attr("class", function(d) {
-        // return d === null ?
-        //   "countries" : d.region
+        that.centroids.push({
+          country: d.id,
+          centroid: path.centroid(d)
+        })
         return "countries"
       })
       .classed("boundary", true);
 
-      // for(var i = 0; i < this.museumData.length; i++) {
-      //     // console.log(this.museumData[i]);
-      //     let country = this.museumData[i].country;
-      // }
-
+    // console.log("Centroid", centroids)
 
     let graticule = d3.geoGraticule();
     svg.append('path').datum(graticule).attr('class', "graticule").attr('d', path);
@@ -109,8 +111,8 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.select('#map-chart');
-    view.append('div').attr('id', 'activeYear-bar');
+    // let view = d3.select('.column is-two-thirds');
+    // view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
@@ -133,17 +135,156 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-        console.log("here", this.value);
-        // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-
-        that.updateYear(this.value);
-
-        sliderText.text(this.value).attr('x', yearScale(this.value));
+      console.log("here", this.value);
+      // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
+      that.updateYear(this.value);
+      that.activeYear = this.value;
+      // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
+      sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
+    //Hardcoded values for museum and year
+    console.log("The Year Is:",
+      this.activeYear)
+    this.drawMuseum("canada-science-and-technology-museums", 2000)
 
   };
 
+  drawMuseum(museum, year) {
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
+    console.log("Filtered Museum Data", selectedMuseumData)
+
+    //create object of number of artifacts per country
+    let countries = []
+
+    for (let country of selectedMuseumData) {
+      countries.push(country.country_code)
+    }
+    //remove duplicates
+    let countrySet = new Set(countries)
+    countries = [...countrySet]
+
+    let artifacts = []
+    //create an object of the countries with the total number of artifacts
+    for (let n of countries) {
+      let filtData = selectedMuseumData.filter(d => d.country_code === n)
+      artifacts.push({
+        number: filtData.map(y => y.artifact_name).length,
+        country: n
+      })
+    }
+    console.log("ARTIFACTS", artifacts)
+    //create scales
+    let domainVal = d3.extent(artifacts, d => +d.number)
+
+    let bubbleScale = d3.scaleSqrt()
+      .domain(domainVal)
+      .range([1, 20])
 
 
-}
+    let svg = d3.select("svg#map-chart");
+
+    let that = this
+
+    // d3.selectAll("circle.bubbles")
+    //   .remove("circle")
+    //   .duration(750)
+    //   .ease(d3.easeLinear)
+
+    let bubbles = svg.append("g")
+      .selectAll("circle")
+      .data(artifacts)
+
+    let enter = bubbles.enter()
+      .append("circle")
+      .classed("bubbles", true)
+
+
+
+    bubbles.exit().remove("circle")
+    // .transition()
+    // .duration(750)
+    // .ease(d3.easeLinear)
+
+    bubbles = bubbles.merge(enter)
+
+    bubbles.attr("transform", function(d) {
+        let selectedCountry = that.centroids.filter(x => x.country == d.country)
+        // console.log("SELECTED COUNTRY", d.country)
+        return "translate(" + selectedCountry[0].centroid + ")"
+      })
+      .transition()
+      .duration(750)
+      .ease(d3.easeLinear)
+      .attr("r", d => bubbleScale(d.number))
+      .style("fill", "rgba(35, 29, 150, 0.70)")
+
+
+
+    // this.drawLegend(domainVal[0], domainVal[1]);
+  }
+
+  drawLegend(min, max) {
+    let height = 460
+    let width = 460
+    let svg = d3.select("#map-chart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+    let size = d3.scaleSqrt()
+      .domain([min, max])
+      .range([1, 100])
+
+    let valuesToShow = [10, 50, max]
+    let xCircle = 230
+    let xLabel = 380
+    let yCircle = 330
+
+
+    let legend = svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("circle")
+      .attr("cx", xCircle)
+      .attr("cy", function(d) {
+        return yCircle - size(d)
+      })
+      .attr("r", function(d) {
+        return size(d)
+      })
+      .style("fill", "none")
+      .attr("stroke", "black")
+
+    // Add legend: segments
+    legend
+      .append("line")
+      .attr('x1', function(d) {
+        return xCircle + size(d)
+      })
+      .attr('x2', xLabel)
+      .attr('y1', function(d) {
+        return yCircle - size(d)
+      })
+      .attr('y2', function(d) {
+        return yCircle - size(d)
+      })
+      .attr('stroke', 'black')
+      .style('stroke-dasharray', ('2,2'))
+
+    // Add legend: labels
+    svg
+      .append("text")
+      .attr('x', xLabel)
+      .attr('y', function(d) {
+        return yCircle - size(d)
+      })
+      .text(function(d) {
+        return d
+      })
+      .style("font-size", 10)
+      .attr('alignment-baseline', 'middle')
+  }
+
+} //this is for the class

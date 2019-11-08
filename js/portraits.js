@@ -1,5 +1,6 @@
 class DataPortrait {
-  constructor(data) {
+  constructor(data, map) {
+    this.map = map;
     this.data = data
     let museumNames = []
 
@@ -50,7 +51,7 @@ class DataPortrait {
     let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
 
     console.log("Drawing:", museum)
-    svg = svg.append("g").attr("id", museum.museum) //.attr("width", 100).attr("height", 500)
+    svg = svg.append("g") //.attr("id", museum.museum).attr("class", "porButton")
 
 
     let length = museum.years.length
@@ -86,16 +87,6 @@ class DataPortrait {
       .style("fill", (d, i) => this.colors[i])
       .attr("x", (d, i) => rectWidth[i])
       .attr("transform", "translate(7,5)")
-
-    let frame = svg.append("rect")
-      .classed("frame", true)
-      .attr("width", frameWidth)
-      .attr("border", 20)
-      .attr("height", frameHeight)
-      .style("stroke", "black")
-      .style("stroke-width", 5)
-      .style("fill", "none")
-      .attr("transform", "translate(5,5)")
 
     let lineWidth = this.artifactScale(museum.artifacts)
 
@@ -182,5 +173,19 @@ class DataPortrait {
         }
       })
       .attr("margin", 20)
+
+    let frame = svg
+      .append("rect")
+      .attr("width", frameWidth)
+      .attr("border", 20)
+      .attr("height", frameHeight)
+      .style("stroke", "black")
+      .style("stroke-width", 5)
+      // .style("fill", "none")
+      .style("fill", "rgba(35, 29, 150, 0)")
+      .attr("transform", "translate(5,5)")
+      .attr("id", museum.museum)
+      .attr("class", "porButton")
+      .on("click", d => this.map.drawMuseum(museum.museum, 2000))
   }
 }
