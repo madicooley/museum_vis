@@ -185,26 +185,106 @@ class Map {
     let svg = d3.select("svg#map-chart");
 
     let that = this
-    // add bubbles to the countries
-    svg.append("g")
-      .attr("class", "bubble")
+
+    // d3.selectAll("circle.bubbles")
+    //   .remove("circle")
+    //   .duration(750)
+    //   .ease(d3.easeLinear)
+
+    let bubbles = svg.append("g")
       .selectAll("circle")
       .data(artifacts)
-      .enter()
-      .append("circle")
-      .attr("transform", function(d) {
-        // d.country === "United States of America" ? d.country = "United States" : d.country === "Taiwan" ? d.country = "Japan" : d.country === "Federal Republic of Germany" ? d.country = "Germany" : d.country === "United Kingdom" ? d.country = "United Kingdom of Great Britain and Northern Ireland" : d.country
-        let selectedCountry = that.centroids.filter(x => x.country == d.country) //.attr("path")
-        // let selectedCountry = world.filter(x => x.region === d.country)
-        console.log("SELECTED COUNTRY", d.country)
 
+    let enter = bubbles.enter()
+      .append("circle")
+      .classed("bubbles", true)
+
+
+
+    bubbles.exit().remove("circle")
+    // .transition()
+    // .duration(750)
+    // .ease(d3.easeLinear)
+
+    bubbles = bubbles.merge(enter)
+
+    bubbles.attr("transform", function(d) {
+        let selectedCountry = that.centroids.filter(x => x.country == d.country)
+        // console.log("SELECTED COUNTRY", d.country)
         return "translate(" + selectedCountry[0].centroid + ")"
       })
+      .transition()
+      .duration(750)
+      .ease(d3.easeLinear)
       .attr("r", d => bubbleScale(d.number))
       .style("fill", "rgba(35, 29, 150, 0.70)")
 
 
 
+    // this.drawLegend(domainVal[0], domainVal[1]);
+  }
+
+  drawLegend(min, max) {
+    let height = 460
+    let width = 460
+    let svg = d3.select("#map-chart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+    let size = d3.scaleSqrt()
+      .domain([min, max])
+      .range([1, 100])
+
+    let valuesToShow = [10, 50, max]
+    let xCircle = 230
+    let xLabel = 380
+    let yCircle = 330
+
+
+    let legend = svg
+      .selectAll("legend")
+      .data(valuesToShow)
+      .enter()
+      .append("circle")
+      .attr("cx", xCircle)
+      .attr("cy", function(d) {
+        return yCircle - size(d)
+      })
+      .attr("r", function(d) {
+        return size(d)
+      })
+      .style("fill", "none")
+      .attr("stroke", "black")
+
+    // Add legend: segments
+    legend
+      .append("line")
+      .attr('x1', function(d) {
+        return xCircle + size(d)
+      })
+      .attr('x2', xLabel)
+      .attr('y1', function(d) {
+        return yCircle - size(d)
+      })
+      .attr('y2', function(d) {
+        return yCircle - size(d)
+      })
+      .attr('stroke', 'black')
+      .style('stroke-dasharray', ('2,2'))
+
+    // Add legend: labels
+    svg
+      .append("text")
+      .attr('x', xLabel)
+      .attr('y', function(d) {
+        return yCircle - size(d)
+      })
+      .text(function(d) {
+        return d
+      })
+      .style("font-size", 10)
+      .attr('alignment-baseline', 'middle')
   }
 
 } //this is for the class
