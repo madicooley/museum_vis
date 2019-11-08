@@ -25,9 +25,18 @@ class MuseumTabs {
     // let view = d3.selectAll('.column');
     // view.append("svg").attr('id', 'museumTabContainer');
     let tab = d3.select("#museumTabContainer")
-      .attr("transform", "translate(-100, 10)") //-400
-      .attr("width", 250)
-      .attr("height", 200);
+      .attr("transform", "translate(-100, -100)") //-400
+      .attr("width", 300)
+      .attr("height", 200)
+      .attr("border", 10)
+
+    tab.append("rect")
+      .attr("width", 300)
+      .attr("height", 200)
+      .attr("border", 10)
+      .attr("rx", 10)
+      .attr("ry", 10)
+      .style("fill", "#c3c3c3")
 
     tab.selectAll("g").data(that.data)
       .enter()
@@ -56,23 +65,23 @@ class MuseumTabs {
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
-        return d.museumName;
+        return d.museumName.toUpperCase();
       })
-      .attr("font-size", "12")
+      .attr("font-size", "1.2rem")
       .attr("font-weight", "Bold")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
-      .attr("transform", "translate(50, 20)");
+      // .attr("fill", "grey")
+      .attr("font-family", 'Oswald') //"sans-serif")
+      .attr("transform", "translate(50, 40)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.location;
       })
-      .attr("font-size", "12")
-      .attr("font-weight", "normal")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
-      .attr("transform", "translate(50, 40)");
+      .attr("font-size", ".8rem")
+      // .attr("font-weight", "normal")
+      // .attr("fill", "grey")
+      .attr("font-family", 'Montserrat')
+      .attr("transform", "translate(50, 60)");
 
     // tab.selectAll(".museumTextBox").append("text")
     //     .text(function(d) {
