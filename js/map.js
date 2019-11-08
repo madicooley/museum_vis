@@ -155,7 +155,6 @@ class Map {
   drawMuseum(museum) {
     this.activeMuseum = museum;
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
-    console.log(selectedMuseumData)
     //create object of number of artifacts per country
     // let countries = []
     this.countries = []
@@ -198,18 +197,10 @@ class Map {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
         return "translate(" + selectedCountry[0].centroid + ")"
       })
-      // .on("mouseover", function(d) {
-      //   let rect = d3.select('rect.tooltip')
-      //   rect.transition()		
-      //     .duration(200)		
-      //     .style("opacity", .9);		
-      //   rect	
-      //     .attr("x", (d3.event.pageX))		
-      //     .attr("y", (d3.event.pageY - 28))
-      //     .append('text')
-      //     .html('Country: ' + d.country + "<br/>"  + 'Artifacts: ' + d.number);
-      //   console.log(d)
-      // })
+      .on("mouseover", function(d) {
+        d3.select(this).append('svg:title')
+          .text(d.number + ' artifacts acquired from ' + d.country)
+      })
       .transition()
       // .duration(750)
       .ease(d3.easeLinear)
