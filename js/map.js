@@ -101,7 +101,10 @@ class Map {
       .attr("id", "outline")
       .attr("d", path);
 
-    //Add Museum Data to Map! TODO: needs work
+    // add group that dots will append to 
+    d3.select('svg#map-chart')
+      .append('g')
+      .attr('id', 'bubble-group')
 
 
 
@@ -150,18 +153,19 @@ class Map {
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
 
     //create object of number of artifacts per country
-    let countries = []
+    // let countries = []
+    this.countries = []
 
     for (let country of selectedMuseumData) {
-      countries.push(country.country_code)
+      this.countries.push(country.country_code)
     }
     //remove duplicates
-    let countrySet = new Set(countries)
-    countries = [...countrySet]
+    let countrySet = new Set(this.countries)
+    this.countries = [...countrySet]
 
     let artifacts = []
     //create an object of the countries with the total number of artifacts
-    for (let n of countries) {
+    for (let n of this.countries) {
       let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,
@@ -177,26 +181,17 @@ class Map {
       .range([1, 20])
 
 
-    let svg = d3.select("svg#map-chart");
+    let bubbleGroup = d3.select("g#bubble-group");
 
     let that = this
 
-    let bubbles = svg.append("g")
-      .selectAll("circle")
+    let bubbles = bubbleGroup
+      .selectAll('circle')
       .data(artifacts)
-
-    let enter = bubbles.enter()
-      .append("circle")
-      .classed("bubbles", true)
-
-
-
-    bubbles.exit().remove("circle")
-    bubbles = bubbles.merge(enter)
-
-    bubbles.attr("transform", function(d) {
+      .join('circle')
+      .classed('bubbles', true)
+      .attr('transform', (d) => {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
-        // console.log("SELECTED COUNTRY", d.country)
         return "translate(" + selectedCountry[0].centroid + ")"
       })
       .transition()
@@ -204,10 +199,6 @@ class Map {
       .ease(d3.easeLinear)
       .attr("r", d => bubbleScale(d.number))
       .style("fill", "rgba(35, 29, 150, 0.70)")
-
-
-
-    // this.drawLegend(domainVal[0], domainVal[1]);
   }
 
   drawLegend(min, max) {
