@@ -28,6 +28,7 @@ class Map {
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
 
+
     console.log("WorldMap:", data);
 
   }
@@ -47,6 +48,7 @@ class Map {
     //------CONVERT DATA TO GEOJSON--------
     let geojson = topojson.feature(world, world.objects.countries);
     // console.log("GeoJSON", geojson);
+
 
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
@@ -70,10 +72,11 @@ class Map {
     });
 
     // console.log(this.museumData);
-    // console.log("CountryData", countryData);
+    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
+    let centroids = []
     let worldMap = svg.selectAll("path")
       .data(countryData)
       .join("path")
@@ -81,17 +84,15 @@ class Map {
       .classed("countries", true)
       .attr("id", d => d.region)
       .attr("class", function(d) {
-        // return d === null ?
-        //   "countries" : d.region
+        centroids.push({
+          country: d.region,
+          centroid: path.centroid(d)
+        })
         return "countries"
       })
       .classed("boundary", true);
 
-    // for(var i = 0; i < this.museumData.length; i++) {
-    //     // console.log(this.museumData[i]);
-    //     let country = this.museumData[i].country;
-    // }
-
+    // console.log("Centroid", centroids)
 
     let graticule = d3.geoGraticule();
     svg.append('path').datum(graticule).attr('class', "graticule").attr('d', path);
@@ -136,37 +137,69 @@ class Map {
     yearSlider.on('input', function() {
       console.log("here", this.value);
       // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-
       that.updateYear(this.value);
 
       sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
+    //Hardcoded values for museum and year
+    this.drawMuseum("canada-science-and-technology-museums", centroids, 2000)
 
-    this.drawMuseum("canada-science-and-technology-museums", world)
   };
 
-  drawMuseum(museum, world) {
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && d.acquisition_date === this.updateYear)
-    console.log(selectedMuseumData)
+  drawMuseum(museum, centroids, year) {
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
+    console.log("Filtered Museum Data", selectedMuseumData)
 
-    //add bubbles to the countries
+    //create object of number of artifacts per country
+    let countries = []
+
+    for (let country of selectedMuseumData) {
+      countries.push(country.country_of_origin)
+    }
+    //remove duplicates
+    let countrySet = new Set(countries)
+    countries = [...countrySet]
+
+    let artifacts = []
+    //create an object of the countries with the total number of artifacts
+    for (let n of countries) {
+      let filtData = selectedMuseumData.filter(d => d.country_of_origin === n)
+      artifacts.push({
+        number: filtData.map(y => y.artifact_name).length,
+        country: n
+      })
+    }
+    console.log("ARTIFACTS", artifacts)
+    //create scales
+    let domainVal = d3.extent(artifacts, d => +d.number)
+
+    let bubbleScale = d3.scaleSqrt()
+      .domain(domainVal)
+      .range([1, 20])
+
+
+    let svg = d3.select("svg#map-chart");
+
+    // add bubbles to the countries
     svg.append("g")
       .attr("class", "bubble")
       .selectAll("circle")
-      .data(topojson.feature(world, world.objects.countries).features
-        .sort(function(a, b) {
-          return b.properties.population - a.properties.population;
-        }))
-      .enter().append("circle")
+      .data(artifacts)
+      .enter()
+      .append("circle")
       .attr("transform", function(d) {
-        return "translate(" + path.centroid(d) + ")";
+        d.country === "United States of America" ? d.country = "United States" : d.country === "Taiwan" ? d.country = "Japan" : d.country === "Federal Republic of Germany" ? d.country = "Germany" : d.country === "United Kingdom" ? d.country = "United Kingdom of Great Britain and Northern Ireland" : d.country
+        let selectedCountry = centroids.filter(x => x.country == d.country) //.attr("path")
+        // let selectedCountry = world.filter(x => x.region === d.country)
+        console.log("SELECTED COUNTRY", d.country)
+
+        return "translate(" + selectedCountry[0].centroid + ")"
       })
-      .attr("r", function(d) {
-        return radius(d.properties.population);
-      });
+      .attr("r", d => bubbleScale(d.number))
+      .style("fill", "rgba(35, 29, 150, 0.84)")
 
 
   }
 
-}
+} //this is for the class
