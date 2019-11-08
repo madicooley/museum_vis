@@ -111,8 +111,8 @@ class Map {
 
     //Create the slider
     this.activeYear = 2000; //TODO
-    let view = d3.selectAll('.column');
-    view.append('div').attr('id', 'activeYear-bar');
+    // let view = d3.select('.column is-two-thirds');
+    // view.append('div').attr('id', 'activeYear-bar');
 
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
@@ -138,11 +138,14 @@ class Map {
       console.log("here", this.value);
       // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
       that.updateYear(this.value);
-
+      that.activeYear = this.value;
+      // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
       sliderText.text(this.value).attr('x', yearScale(this.value));
     });
 
     //Hardcoded values for museum and year
+    console.log("The Year Is:",
+      this.activeYear)
     this.drawMuseum("canada-science-and-technology-museums", centroids, 2000)
 
   };
@@ -198,6 +201,7 @@ class Map {
       })
       .attr("r", d => bubbleScale(d.number))
       .style("fill", "rgba(35, 29, 150, 0.84)")
+
 
 
   }

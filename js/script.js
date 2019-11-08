@@ -13,7 +13,6 @@ loadData().then(data => {
 
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
-
     worldMap.drawMap(mapData);
 
   });
