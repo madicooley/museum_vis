@@ -285,6 +285,12 @@ h2 {
   font-size: 1.5rem;
 }
 
+p#museumDescription {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  color: 'grey';
+}
+
 p {
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
@@ -469,7 +475,7 @@ pre {
 }
 
 body {
-  color: black;
+  /* color: black; */
   font-size: 1em;
   font-weight: 400;
   line-height: 1.5;
