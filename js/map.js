@@ -26,15 +26,12 @@ class Map {
     this.updateYear = updateYear;
 
     this.activeYear = null;
+    this.activeCountries = [];
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
     this.centroids = [];
-
-    console.log("WorldMap:", data);
-
   }
 
   drawMap(world) {
-    console.log("world", world)
     let that = this;
 
     let svg = d3.select("svg#map-chart");
@@ -72,7 +69,6 @@ class Map {
     });
 
     // console.log(this.museumData);
-    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
@@ -152,7 +148,6 @@ class Map {
 
   drawMuseum(museum, year) {
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
-    console.log("Filtered Museum Data", selectedMuseumData)
 
     //create object of number of artifacts per country
     let countries = []
@@ -173,7 +168,7 @@ class Map {
         country: n
       })
     }
-    console.log("ARTIFACTS", artifacts)
+
     //create scales
     let domainVal = d3.extent(artifacts, d => +d.number)
 
@@ -186,11 +181,6 @@ class Map {
 
     let that = this
 
-    // d3.selectAll("circle.bubbles")
-    //   .remove("circle")
-    //   .duration(750)
-    //   .ease(d3.easeLinear)
-
     let bubbles = svg.append("g")
       .selectAll("circle")
       .data(artifacts)
@@ -202,10 +192,6 @@ class Map {
 
 
     bubbles.exit().remove("circle")
-    // .transition()
-    // .duration(750)
-    // .ease(d3.easeLinear)
-
     bubbles = bubbles.merge(enter)
 
     bubbles.attr("transform", function(d) {

@@ -50,7 +50,6 @@ class DataPortrait {
   drawPortrait(museum, i) {
     let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
 
-    console.log("Drawing:", museum)
     svg = svg.append("g") //.attr("id", museum.museum).attr("class", "porButton")
 
 
