@@ -27,7 +27,7 @@ class Map {
 
     this.activeYear = null;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
-
+    this.centroids = [];
 
     console.log("WorldMap:", data);
 
@@ -76,7 +76,7 @@ class Map {
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
-    let centroids = []
+
     let worldMap = svg.selectAll("path")
       .data(countryData)
       .join("path")
@@ -84,7 +84,7 @@ class Map {
       .classed("countries", true)
       .attr("id", d => d.id)
       .attr("class", function(d) {
-        centroids.push({
+        that.centroids.push({
           country: d.id,
           centroid: path.centroid(d)
         })
@@ -146,11 +146,11 @@ class Map {
     //Hardcoded values for museum and year
     console.log("The Year Is:",
       this.activeYear)
-    this.drawMuseum("canada-science-and-technology-museums", centroids, 2000)
+    this.drawMuseum("canada-science-and-technology-museums", 2000)
 
   };
 
-  drawMuseum(museum, centroids, year) {
+  drawMuseum(museum, year) {
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
     console.log("Filtered Museum Data", selectedMuseumData)
 
@@ -184,6 +184,7 @@ class Map {
 
     let svg = d3.select("svg#map-chart");
 
+    let that = this
     // add bubbles to the countries
     svg.append("g")
       .attr("class", "bubble")
@@ -193,7 +194,7 @@ class Map {
       .append("circle")
       .attr("transform", function(d) {
         // d.country === "United States of America" ? d.country = "United States" : d.country === "Taiwan" ? d.country = "Japan" : d.country === "Federal Republic of Germany" ? d.country = "Germany" : d.country === "United Kingdom" ? d.country = "United Kingdom of Great Britain and Northern Ireland" : d.country
-        let selectedCountry = centroids.filter(x => x.country == d.country) //.attr("path")
+        let selectedCountry = that.centroids.filter(x => x.country == d.country) //.attr("path")
         // let selectedCountry = world.filter(x => x.region === d.country)
         console.log("SELECTED COUNTRY", d.country)
 
