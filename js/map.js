@@ -57,7 +57,7 @@ class Map {
 
       for (let i = 0; i < this.countryData.length; i++) {
         if (this.countryData[i].code == country.id) {
-          region = this.countryData[i].country;
+          region = this.countryData[i].country
         }
       }
 
@@ -82,10 +82,10 @@ class Map {
       .join("path")
       .attr("d", path)
       .classed("countries", true)
-      .attr("id", d => d.region)
+      .attr("id", d => d.id)
       .attr("class", function(d) {
         centroids.push({
-          country: d.region,
+          country: d.id,
           centroid: path.centroid(d)
         })
         return "countries"
@@ -158,7 +158,7 @@ class Map {
     let countries = []
 
     for (let country of selectedMuseumData) {
-      countries.push(country.country_of_origin)
+      countries.push(country.country_code)
     }
     //remove duplicates
     let countrySet = new Set(countries)
@@ -167,7 +167,7 @@ class Map {
     let artifacts = []
     //create an object of the countries with the total number of artifacts
     for (let n of countries) {
-      let filtData = selectedMuseumData.filter(d => d.country_of_origin === n)
+      let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,
         country: n
@@ -192,7 +192,7 @@ class Map {
       .enter()
       .append("circle")
       .attr("transform", function(d) {
-        d.country === "United States of America" ? d.country = "United States" : d.country === "Taiwan" ? d.country = "Japan" : d.country === "Federal Republic of Germany" ? d.country = "Germany" : d.country === "United Kingdom" ? d.country = "United Kingdom of Great Britain and Northern Ireland" : d.country
+        // d.country === "United States of America" ? d.country = "United States" : d.country === "Taiwan" ? d.country = "Japan" : d.country === "Federal Republic of Germany" ? d.country = "Germany" : d.country === "United Kingdom" ? d.country = "United Kingdom of Great Britain and Northern Ireland" : d.country
         let selectedCountry = centroids.filter(x => x.country == d.country) //.attr("path")
         // let selectedCountry = world.filter(x => x.region === d.country)
         console.log("SELECTED COUNTRY", d.country)
@@ -200,7 +200,7 @@ class Map {
         return "translate(" + selectedCountry[0].centroid + ")"
       })
       .attr("r", d => bubbleScale(d.number))
-      .style("fill", "rgba(35, 29, 150, 0.84)")
+      .style("fill", "rgba(35, 29, 150, 0.70)")
 
 
 
