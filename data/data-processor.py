@@ -375,8 +375,19 @@ def cleanCSV():
     # cleans rows that have inaccurately coded dates
     data = data[data.acquisition_date > 1800]
     data = data[data.acquisition_date < 2019]
+    data['country_code'] = data.apply(lambda row: getCC(row.country_of_origin), axis = 1)  
+    data = data.dropna()  
     
     data.to_csv('cleaned-data.csv', index=False)
+
+'''
+Helper function for cleanCSV, which pulls country code for each row
+'''
+def getCC(country):
+    try:
+        return pc.country_name_to_country_alpha2(country, cn_name_format = "default")
+    except:
+        return None
 
 if __name__ == "__main__":
     main()
