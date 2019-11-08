@@ -177,11 +177,11 @@ class Map {
     }
 
     //create scales
-    let domainVal = d3.extent(artifacts, d => +d.number)
+    let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d/Math.PI)) // create scale to consider data as area, not radius
 
-    let bubbleScale = d3.scaleSqrt()
+    let bubbleScale = d3.scaleLinear()
       .domain(domainVal)
-      .range([1, 20])
+      .range([5, 20])
 
 
     let bubbleGroup = d3.select("g#bubble-group");
@@ -204,7 +204,7 @@ class Map {
       .transition()
       // .duration(750)
       .ease(d3.easeLinear)
-      .attr("r", d => bubbleScale(d.number))
+      .attr("r", d => bubbleScale(Math.sqrt(d.number/Math.PI))) // scale using area, not radius
       .style("fill", "rgba(35, 29, 150, 0.70)")
   }
 
