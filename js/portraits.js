@@ -50,7 +50,7 @@ class DataPortrait {
     let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
 
     console.log("Drawing:", museum)
-    svg = svg.append("g").attr("id", museum.museum) //.attr("width", 100).attr("height", 500)
+    svg = svg.append("g").attr("id", museum.museum).attr("class", "porButton")
 
 
     let length = museum.years.length
@@ -182,5 +182,8 @@ class DataPortrait {
         }
       })
       .attr("margin", 20)
+
+    d3.selectAll(".porButton")
+      .on("click", d => console.log("Hellow!", d.id)) //not clicking the group..
   }
 }
