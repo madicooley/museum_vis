@@ -25,7 +25,8 @@ class Map {
 
     this.updateYear = updateYear;
 
-    this.activeYear = null;
+    this.activeYear = 2000;
+    this.activeMuseum = null;
     this.activeCountries = [];
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
     this.centroids = [];
@@ -106,6 +107,11 @@ class Map {
       .append('g')
       .attr('id', 'bubble-group')
 
+    // add div for tooltip
+    d3.select('svg#map-chart')
+      .append('rect')
+      .classed('tooltip', true)
+
 
 
     //Create the slider
@@ -134,24 +140,22 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-      console.log("here", this.value);
       // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
       that.updateYear(this.value);
       that.activeYear = this.value;
       // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
       sliderText.text(this.value).attr('x', yearScale(this.value));
+      if(that.activeMuseum){
+        that.drawMuseum(that.activeMuseum)
+      }
     });
-
-    //Hardcoded values for museum and year
-    console.log("The Year Is:",
-      this.activeYear)
-    this.drawMuseum("canada-science-and-technology-museums", 2000)
 
   };
 
-  drawMuseum(museum, year) {
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
-
+  drawMuseum(museum) {
+    this.activeMuseum = museum;
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
+    console.log(selectedMuseumData)
     //create object of number of artifacts per country
     // let countries = []
     this.countries = []
@@ -194,8 +198,20 @@ class Map {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
         return "translate(" + selectedCountry[0].centroid + ")"
       })
+      // .on("mouseover", function(d) {
+      //   let rect = d3.select('rect.tooltip')
+      //   rect.transition()		
+      //     .duration(200)		
+      //     .style("opacity", .9);		
+      //   rect	
+      //     .attr("x", (d3.event.pageX))		
+      //     .attr("y", (d3.event.pageY - 28))
+      //     .append('text')
+      //     .html('Country: ' + d.country + "<br/>"  + 'Artifacts: ' + d.number);
+      //   console.log(d)
+      // })
       .transition()
-      .duration(750)
+      // .duration(750)
       .ease(d3.easeLinear)
       .attr("r", d => bubbleScale(d.number))
       .style("fill", "rgba(35, 29, 150, 0.70)")

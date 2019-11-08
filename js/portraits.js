@@ -185,6 +185,6 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      .on("click", d => this.map.drawMuseum(museum.museum, 2000))
+      .on("click", d => this.map.drawMuseum(museum.museum))
   }
 }
