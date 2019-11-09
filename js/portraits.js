@@ -195,7 +195,7 @@ class DataPortrait {
     //   .attr("class", "tooltip")
     //   .style("opacity", 0);
 
-    frame.on("click", d => this.map.drawMuseum(museum.museum, 2000))
+    frame.on("click", d => this.map.drawMuseum(museum.museum))
       .on("mouseover", function(d) {
         let div = d3.select("#portraits").append("div")
           .attr("class", "tooltip")

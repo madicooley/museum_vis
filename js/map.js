@@ -25,16 +25,14 @@ class Map {
 
     this.updateYear = updateYear;
 
-    this.activeYear = null;
+    this.activeYear = 2000;
+    this.activeMuseum = null;
+    this.activeCountries = [];
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
     this.centroids = [];
-
-    console.log("WorldMap:", data);
-
   }
 
   drawMap(world) {
-    console.log("world", world)
     let that = this;
 
     let svg = d3.select("svg#map-chart");
@@ -72,7 +70,6 @@ class Map {
     });
 
     // console.log(this.museumData);
-    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
@@ -105,7 +102,15 @@ class Map {
       .attr("id", "outline")
       .attr("d", path);
 
-    //Add Museum Data to Map! TODO: needs work
+    // add group that dots will append to 
+    d3.select('svg#map-chart')
+      .append('g')
+      .attr('id', 'bubble-group')
+
+    // add div for tooltip
+    d3.select('svg#map-chart')
+      .append('rect')
+      .classed('tooltip', true)
 
 
 
@@ -135,93 +140,72 @@ class Map {
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-      console.log("here", this.value);
       // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
       that.updateYear(this.value);
       that.activeYear = this.value;
       // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
       sliderText.text(this.value).attr('x', yearScale(this.value));
+      if(that.activeMuseum){
+        that.drawMuseum(that.activeMuseum)
+      }
     });
-
-    //Hardcoded values for museum and year
-    console.log("The Year Is:",
-      this.activeYear)
-    this.drawMuseum("canada-science-and-technology-museums", 2000)
 
   };
 
-  drawMuseum(museum, year) {
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == year)
-    console.log("Filtered Museum Data", selectedMuseumData)
-
+  drawMuseum(museum) {
+    this.activeMuseum = museum;
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
     //create object of number of artifacts per country
-    let countries = []
+    // let countries = []
+    this.countries = []
 
     for (let country of selectedMuseumData) {
-      countries.push(country.country_code)
+      this.countries.push(country.country_code)
     }
     //remove duplicates
-    let countrySet = new Set(countries)
-    countries = [...countrySet]
+    let countrySet = new Set(this.countries)
+    this.countries = [...countrySet]
 
     let artifacts = []
     //create an object of the countries with the total number of artifacts
-    for (let n of countries) {
+    for (let n of this.countries) {
       let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,
         country: n
       })
     }
-    console.log("ARTIFACTS", artifacts)
+
     //create scales
-    let domainVal = d3.extent(artifacts, d => +d.number)
+    let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d/Math.PI)) // create scale to consider data as area, not radius
 
-    let bubbleScale = d3.scaleSqrt()
+    let bubbleScale = d3.scaleLinear()
       .domain(domainVal)
-      .range([1, 20])
+      .range([5, 20])
 
 
-    let svg = d3.select("svg#map-chart");
+    let bubbleGroup = d3.select("g#bubble-group");
 
     let that = this
 
-    // d3.selectAll("circle.bubbles")
-    //   .remove("circle")
-    //   .duration(750)
-    //   .ease(d3.easeLinear)
-
-    let bubbles = svg.append("g")
-      .selectAll("circle")
+    let bubbles = bubbleGroup
+      .selectAll('circle')
       .data(artifacts)
-
-    let enter = bubbles.enter()
-      .append("circle")
-      .classed("bubbles", true)
-
-
-
-    bubbles.exit().remove("circle")
-    // .transition()
-    // .duration(750)
-    // .ease(d3.easeLinear)
-
-    bubbles = bubbles.merge(enter)
-
-    bubbles.attr("transform", function(d) {
+      .join('circle')
+      .classed('bubbles', true)
+      .attr('transform', (d) => {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
-        // console.log("SELECTED COUNTRY", d.country)
         return "translate(" + selectedCountry[0].centroid + ")"
       })
+      .on("mouseover", function(d) {
+        d3.select(this).append('svg:title')
+          .text(d.number + ' artifacts acquired from ' + d.country)
+      })
       .transition()
-      .duration(750)
+      // .duration(750)
       .ease(d3.easeLinear)
-      .attr("r", d => bubbleScale(d.number))
+      .attr("r", d => bubbleScale(Math.sqrt(d.number/Math.PI))) // scale using area, not radius
       .style("fill", "rgba(35, 29, 150, 0.70)")
-
-
-
-    // this.drawLegend(domainVal[0], domainVal[1]);
   }
 
   drawLegend(min, max) {
