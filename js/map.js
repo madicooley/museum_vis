@@ -174,7 +174,7 @@ class Map {
         number: filtData.map(y => y.artifact_name).length,
         country: n
       })
-      console.log(artifacts)
+      // console.log(artifacts)
     }
 
     //create scales

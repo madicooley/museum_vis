@@ -101,7 +101,7 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
 
     let countries = museum.countries.length
-    countries = countries / 5;
+    countries = countries / 6;
     countries = Math.round(countries)
     let countryArray = []
 
@@ -190,31 +190,13 @@ class DataPortrait {
       .attr("class", "porButton")
 
 
-    //create tooltip
-    // let div = d3.select("#portraits").append("div")
-    //   .attr("class", "tooltip")
-    //   .style("opacity", 0);
-
     frame.on("click", d => this.map.drawMuseum(museum.museum))
       .on("mouseover", function(d) {
-        let div = d3.select("#portraits").append("div")
-          .attr("class", "tooltip")
-          .style("opacity", 0);
         let title = museum.museum
         title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html(title)
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-        d3.selectAll(".tooltip")
-          .remove()
-          .transition()
-          .duration(500)
-        // .style("opacity", 0);
+
+        d3.select(this).append('svg:title')
+          .text(title)
       });
 
 
