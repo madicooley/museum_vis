@@ -102,7 +102,7 @@ class Map {
       .attr("id", "outline")
       .attr("d", path);
 
-    // add group that dots will append to 
+    // add group that dots will append to
     d3.select('svg#map-chart')
       .append('g')
       .attr('id', 'bubble-group')
@@ -145,7 +145,7 @@ class Map {
       that.activeYear = this.value;
       // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
       sliderText.text(this.value).attr('x', yearScale(this.value));
-      if(that.activeMuseum){
+      if (that.activeMuseum) {
         that.drawMuseum(that.activeMuseum)
       }
     });
@@ -174,10 +174,11 @@ class Map {
         number: filtData.map(y => y.artifact_name).length,
         country: n
       })
+      console.log(artifacts)
     }
 
     //create scales
-    let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d/Math.PI)) // create scale to consider data as area, not radius
+    let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d / Math.PI)) // create scale to consider data as area, not radius
 
     let bubbleScale = d3.scaleLinear()
       .domain(domainVal)
@@ -204,7 +205,7 @@ class Map {
       .transition()
       // .duration(750)
       .ease(d3.easeLinear)
-      .attr("r", d => bubbleScale(Math.sqrt(d.number/Math.PI))) // scale using area, not radius
+      .attr("r", d => bubbleScale(Math.sqrt(d.number / Math.PI))) // scale using area, not radius
       .style("fill", "rgba(35, 29, 150, 0.70)")
   }
 
