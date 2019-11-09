@@ -49,17 +49,10 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-<<<<<<< HEAD
+
     let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
     // console.log("Drawing:", museum)
     svg = svg.append("g")
-=======
-    let that = this;
-    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600).attr("transform", "translate(-200, 0)")
-
-    svg = svg.append("g") //.attr("id", museum.museum).attr("class", "porButton")
->>>>>>> ecdf4df7e64a3b244e08c9cf492c8ea2c2898827
-
 
     let length = museum.years.length
 
@@ -198,7 +191,6 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-<<<<<<< HEAD
       .attr("data-tabindex", 0)
 
 
@@ -211,12 +203,3 @@ class DataPortrait {
       });
   } //end drawPortraits
 } //end Portraits class
-=======
-      // .on("click", d => this.museumTabs.switchTab(museum.museum) && this.map.drawMuseum(museum.museum) )  //TODO wasnt surehwo to call both funcs here
-      .on("click", function(d,i) {
-        that.museumTabs.switchTab(museum.museum);
-        that.map.drawMuseum(museum.museum);
-      })
-  }
-}
->>>>>>> ecdf4df7e64a3b244e08c9cf492c8ea2c2898827
