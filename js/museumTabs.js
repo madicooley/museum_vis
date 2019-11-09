@@ -25,9 +25,9 @@ class MuseumTabs {
     let view = d3.selectAll('.column');
     // view.append("svg").attr('id', 'museumTabContainer');
     let tab = view.select("#museumTabContainer")
-        .attr("transform", "translate(-300, -33)") //-400
-        .attr("width", 500)
-        .attr("height", 500);
+      .attr("transform", "translate(0, -33)") //-400
+      .attr("width", 500)
+      .attr("height", 500);
 
     tab.append("rect")
       .attr("width", 500)
@@ -41,84 +41,86 @@ class MuseumTabs {
     let container = tab.selectAll("svg").data(this.data).enter()
       .append("svg") //.attr("id", "museumTextBoxContainer")
       .attr("id", function(d, i) {
-        return "museumBox"+i;
+        return "museumBox" + i;
       })
       .classed("activeTab", function(d, i) {
-        if (i==0) {return true; }
-        else return false;
+        if (i == 0) {
+          return true;
+        } else return false;
       })
       .classed("unactiveTab", function(d, i) {
-        if (i!=0) {return true; }
-        else return false;
+        if (i != 0) {
+          return true;
+        } else return false;
       })
       .classed("container", true)
       .attr("transform", function(d, i) {
-          if (i==0) {
-            return "translate(0, 0)";
-          } else {
-            return "translate(-600, 0)";
-          }
+        if (i == 0) {
+          return "translate(0, 0)";
+        } else {
+          return "translate(-600, 0)";
+        }
       });
 
     container.append("g")
       .classed("museumTextBox", true)
       .attr("transform", function(d, i) {
-          if (i==0) {
-            return "translate(0, 0)";
-          } else {
-            return "translate(-600, 0)";
-          }
+        if (i == 0) {
+          return "translate(0, 0)";
+        } else {
+          return "translate(-600, 0)";
+        }
       });
 
     tab.selectAll(".museumTextBox").append("text")
-        .text(function(d) {
-          return d.museumName.toUpperCase();
-        })
-        .attr("font-size", "1.5rem")
-        .attr("font-weight", "Bold")
-        .attr("font-family", 'Oswald')
-        .attr("transform", "translate(35, 60)");
+      .text(function(d) {
+        return d.museumName.toUpperCase();
+      })
+      .attr("font-size", "1.5rem")
+      .attr("font-weight", "Bold")
+      .attr("font-family", 'Oswald')
+      .attr("transform", "translate(35, 60)");
 
     tab.selectAll(".museumTextBox").append("text")
-        .text(function(d) {
-          return d.location;
-        })
-        .attr("font-size", "1.0rem")
-        .attr("font-weight", "normal")
-        // .attr("font-family", "sans-serif")
-        .attr("font-family", 'Montserrat')
-        .attr("transform", "translate(35, 90)");
+      .text(function(d) {
+        return d.location;
+      })
+      .attr("font-size", "1.0rem")
+      .attr("font-weight", "normal")
+      // .attr("font-family", "sans-serif")
+      .attr("font-family", 'Montserrat')
+      .attr("transform", "translate(35, 90)");
 
     tab.selectAll(".museumTextBox").append("text")
-        .text(function(d) {
-          return d.website;
-        })
-        .attr("font-size", "0.8rem")
-        .attr("font-weight", "normal")
-        .attr("fill", "grey")
-        .attr("font-family", "sans-serif")
-        .attr("transform", "translate(35, 115)");
+      .text(function(d) {
+        return d.website;
+      })
+      .attr("font-size", "0.8rem")
+      .attr("font-weight", "normal")
+      .attr("fill", "grey")
+      .attr("font-family", "sans-serif")
+      .attr("transform", "translate(35, 115)");
 
     let svg = tab.selectAll("svg");
     let fo = svg.append('foreignObject')
       .attr('width', 400)
       .attr('height', 200)
       .attr("transform", function(d, i) {
-          if (i==0) {
-            return "translate(35, 150)";
-          } else {
-            return "translate(-600, 150)";
-          }
+        if (i == 0) {
+          return "translate(35, 150)";
+        } else {
+          return "translate(-600, 150)";
+        }
       });
 
-    fo.append('xhtml:div').html(function(d,i) {
-        return "<p id='museumDescription'>"+d.about+"</p>";
+    fo.append('xhtml:div').html(function(d, i) {
+      return "<p id='museumDescription'>" + d.about + "</p>";
     });
 
     //Add the circle nav. little things
     tab.selectAll("circle").data(this.data)
-        .enter().append("circle")
-        .classed("museumCircles", true);
+      .enter().append("circle")
+      .classed("museumCircles", true);
 
     tab.selectAll(".museumCircles")
       .attr("r", 7)
@@ -163,12 +165,12 @@ class MuseumTabs {
     console.log(which);
 
     let tabnum = 0;
-    for(let i=0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
 
       // console.log(museumName);
-      if(which == museumName ) {
+      if (which == museumName) {
         tabnum = i;
       }
     }
@@ -178,32 +180,32 @@ class MuseumTabs {
     let tab = d3.selectAll('.column').select("#museumTabContainer");
     let active = tab.select(".activeTab.container");
 
-    let activeId = active.attr("id")[active.attr("id").length -1];;
-    console.log("activeId "+ activeId);
+    let activeId = active.attr("id")[active.attr("id").length - 1];;
+    console.log("activeId " + activeId);
 
     // if (which == "left") {
-    if(tabnum < activeId) {
+    if (tabnum < activeId) {
       console.log("left")
-      if (this.tabNum.tab > 0 ) {
+      if (this.tabNum.tab > 0) {
         this.tabNum.tab--;
       }
 
       active.select(".museumTextBox")
         .transition().duration(that.animationDuration)
         .attr("transform", function(d, i) {
-            return "translate(-600, 0)";
+          return "translate(-600, 0)";
         });
       active.select("foreignObject")
         .transition().duration(that.animationDuration)
         .attr("transform", function(d, i) {
-            return "translate(-600, 150)";
+          return "translate(-600, 150)";
         });
 
 
-    // } else if (which == "right") {
+      // } else if (which == "right") {
     } else if (tabnum > activeId) {
       console.log("right")
-      if ( this.tabNum.tab < this.numMuseums-1 ) {
+      if (this.tabNum.tab < this.numMuseums - 1) {
         this.tabNum.tab++;
       }
 
@@ -212,40 +214,40 @@ class MuseumTabs {
       active.select(".museumTextBox")
         .transition().duration(that.animationDuration)
         .attr("transform", function(d, i) {
-            return "translate(600, 0)";
+          return "translate(600, 0)";
         });
       active.select("foreignObject")
         .transition().duration(that.animationDuration)
         .attr("transform", function(d, i) {
-            return "translate(600, 150)";
+          return "translate(600, 150)";
         });
 
     }
 
     tab.select(".activeTab.container")
-        .classed("activeTab", false).classed("unactiveTab", true);
+      .classed("activeTab", false).classed("unactiveTab", true);
 
     // let selected = tab.select("#museumBox"+this.tabNum.tab);
-    let selected = tab.select("#museumBox"+tabnum);
+    let selected = tab.select("#museumBox" + tabnum);
 
     selected.select(".museumTextBox")
-        .transition().duration(that.animationDuration)
-        .attr("transform", function(d, i) {
-            return "translate(0, 0)";
-        });
+      .transition().duration(that.animationDuration)
+      .attr("transform", function(d, i) {
+        return "translate(0, 0)";
+      });
 
     selected.select("foreignObject")
       .transition().duration(that.animationDuration)
       .attr("transform", function(d, i) {
-          return "translate(35, 150)";
+        return "translate(35, 150)";
       });
 
     selected.classed("unactiveTab", false)
-        .classed("activeTab", true);
+      .classed("activeTab", true);
 
     //selected circles
     tab.select(".selectedTab").classed("selectedTab", false);
-    tab.select("#museum"+tabnum).classed("selectedTab", true);
+    tab.select("#museum" + tabnum).classed("selectedTab", true);
 
   }
 }

@@ -1,8 +1,8 @@
 class DataPortrait {
   constructor(data, map, museumTabs) {
     this.map = map;
-    this.museumTabs = museumTabs;
     this.data = data
+    this.museumTabs = museumTabs;
     let museumNames = []
 
     for (let museums of this.data) {
@@ -49,10 +49,10 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-
     let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
     // console.log("Drawing:", museum)
     svg = svg.append("g")
+
 
     let length = museum.years.length
 
@@ -193,8 +193,11 @@ class DataPortrait {
       .attr("class", "porButton")
       .attr("data-tabindex", 0)
 
-
-    frame.on("click", d => this.map.drawMuseum(museum.museum))
+    let that = this;
+    frame.on("click", function(d, i) {
+        that.museumTabs.switchTab(museum.museum);
+        that.map.drawMuseum(museum.museum);
+      })
       .on("mouseover", function(d) {
         let title = museum.museum
         title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
