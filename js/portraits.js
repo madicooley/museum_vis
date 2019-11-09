@@ -1,6 +1,7 @@
 class DataPortrait {
-  constructor(data, map) {
+  constructor(data, map, museumTabs) {
     this.map = map;
+    this.museumTabs = museumTabs;
     this.data = data
     let museumNames = []
 
@@ -48,7 +49,8 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
+    let that = this;
+    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600).attr("transform", "translate(-200, 0)")
 
     svg = svg.append("g") //.attr("id", museum.museum).attr("class", "porButton")
 
@@ -185,6 +187,10 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      .on("click", d => this.map.drawMuseum(museum.museum))
+      // .on("click", d => this.museumTabs.switchTab(museum.museum) && this.map.drawMuseum(museum.museum) )  //TODO wasnt surehwo to call both funcs here
+      .on("click", function(d,i) {
+        that.museumTabs.switchTab(museum.museum);
+        that.map.drawMuseum(museum.museum);
+      })
   }
 }

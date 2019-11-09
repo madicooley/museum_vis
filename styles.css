@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+/* ELEMENTS */
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 3rem;
+  text-transform: uppercase;
+  margin: 0px;
+}
+
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: capitalize;
+  font-size: 1.5rem;
+}
+
+
+p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+}
+
+
+/* CLASSES */
+.boundary {
+  /* FOR COUNTRY OUTLINE */
+  fill: none;
+  stroke: #fff;
+  stroke-width: .8px;
+}
+
+.countries {
+  /* FOR COUNTRY FILL */
+  fill: #d9d9d9;
+}
+
+.graticule {
+  /* FOR GRATICULES */
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .2;
+  pointer-events: none;
+}
+
+.vl {
+  /* VERTICLE LINE */
+  border-left: 3px solid black;
+  height: 250px;
+}
+
+/* IDS */
+#outline {
+  /* FOR MAP OUTLINE */
+  stroke: black;
+  stroke-width: 1px;
+}
+
+/* slider styling */
+.slider {
+  -webkit-appearance: none;
+  width: 725px;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  /* margin-left: 10px */
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #D4E157;
+  cursor: pointer;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider-label svg {
+  width: 750px;
+  height: 35px;
+}
+
+.slider-label svg text {
+  text-anchor: middle;
+}
+
+.slider-wrap {
+  display: inline-block;
+  float: left;
+  width: 750px;
+  /* margin-left: 50px; */
+}
+
+#museumTabContainer {
+  display: flex;
+}
+
+.selectedTab {
+  fill: grey;
+}

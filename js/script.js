@@ -9,14 +9,13 @@ loadData().then(data => {
   const worldMap = new Map(data, updateYear);
   const museumTabs = new MuseumTabs(data.museumBios);
   museumTabs.drawMuseumTabs();
-  const dataPortrait = new DataPortrait(data.geoData, worldMap)
+  const dataPortrait = new DataPortrait(data.geoData, worldMap, museumTabs)
   dataPortrait.dataSummary(data.geoData);
 
 
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
     worldMap.drawMap(mapData);
-
   });
 
 });

@@ -21,7 +21,7 @@ class Map {
    */
   constructor(data, updateYear) {
     this.museumData = data.geoData;
-    this.countryData = data.countryCodes;
+    // this.countryData = data.countryCodes;
 
     this.updateYear = updateYear;
 
@@ -51,17 +51,19 @@ class Map {
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
       let index = "temp"; //todo
-      let region = 'countries';
+      let region = 'none';
 
-      for (let i = 0; i < this.countryData.length; i++) {
-        if (this.countryData[i].code == country.id) {
-          region = this.countryData[i].country
-        }
-      }
+      // console.log(country);
+
+      // for(let i=0; i < this.countryData.length; i++) {
+      //   if (this.countryData[i].code == country.id) {
+      //     region = this.countryData[i].country;
+      //   }
+      // }
 
       //TODO not if statement needs cleaned up
       if (index > -1) {
-        region = this.countryData[index].region;
+        // region = this.countryData[index].region;
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
       } else {
         return new CountryData(country.type, country.id, country.properties, country.geometry, region);
@@ -70,6 +72,7 @@ class Map {
     });
 
     // console.log(this.museumData);
+    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
@@ -89,7 +92,6 @@ class Map {
       })
       .classed("boundary", true);
 
-    // console.log("Centroid", centroids)
 
     let graticule = d3.geoGraticule();
     svg.append('path').datum(graticule).attr('class', "graticule").attr('d', path);
@@ -112,7 +114,7 @@ class Map {
       .append('rect')
       .classed('tooltip', true)
 
-
+    d3.select('svg#map-chart').attr("transform", "translate(20,0)");
 
     //Create the slider
     this.activeYear = 2000; //TODO
@@ -122,13 +124,13 @@ class Map {
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
     let yearSlider = d3.select('#activeYear-bar')
-      .append('div').classed('slider-wrap', true)
+      .append('div').classed('slider-wrap', true).attr("transform", "translate(20,0)")
       .append('input').classed('slider', true)
       .attr('type', 'range')
       .attr('min', 1800)
       .attr('max', 2020)
       .attr('value', this.activeYear)
-      .attr("transform", "translate(10,0)");
+
 
     let sliderLabel = d3.select('.slider-wrap')
       .append('div').classed('slider-label', true)
@@ -153,6 +155,8 @@ class Map {
   };
 
   drawMuseum(museum) {
+    console.log(museum);
+
     this.activeMuseum = museum;
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
     //create object of number of artifacts per country
@@ -174,7 +178,7 @@ class Map {
         number: filtData.map(y => y.artifact_name).length,
         country: n
       })
-      console.log(artifacts)
+      // console.log(artifacts)
     }
 
     //create scales
