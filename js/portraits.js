@@ -176,7 +176,10 @@ class DataPortrait {
 
 
     let frame = svg
-      .append("rect")
+      .append("a")
+      .attr("xlink:href", "#0")
+
+    frame.append("rect")
       .attr("width", frameWidth)
       .attr("border", 20)
       .attr("height", frameHeight)
@@ -187,13 +190,13 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
+      .attr("data-tabindex", 0)
 
 
     frame.on("click", d => this.map.drawMuseum(museum.museum))
       .on("mouseover", function(d) {
         let title = museum.museum
         title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
-
         d3.select(this).append('svg:title')
           .text(title)
       });

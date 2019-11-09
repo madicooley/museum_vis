@@ -57,6 +57,21 @@
   /* Add a pointer on hover */
 }
 
+svg#portraits:hover>g {
+  opacity: 0.5;
+}
+
+svg#portraits:hover>g:hover {
+  opacity: 1.0;
+}
+
+a:focus {
+  opacity: .2;
+}
+
+/* svg#portraits:focus>g:focus {
+  opacity: 1.0;
+} */
 div.tooltip {
   /* FOR PORTRAIT TOOLTIP */
   position: absolute;
