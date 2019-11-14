@@ -1,8 +1,8 @@
 class DataPortrait {
   constructor(data, map, museumTabs) {
     this.map = map;
-    this.museumTabs = museumTabs;
     this.data = data
+    this.museumTabs = museumTabs;
     let museumNames = []
 
     for (let museums of this.data) {
@@ -49,10 +49,9 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-    let that = this;
-    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600).attr("transform", "translate(-200, 0)")
-
-    svg = svg.append("g") //.attr("id", museum.museum).attr("class", "porButton")
+    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
+    // console.log("Drawing:", museum)
+    svg = svg.append("g")
 
 
     let length = museum.years.length
@@ -102,7 +101,7 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
 
     let countries = museum.countries.length
-    countries = countries / 5;
+    countries = countries / 6;
     countries = Math.round(countries)
     let countryArray = []
 
@@ -175,8 +174,13 @@ class DataPortrait {
       })
       .attr("margin", 20)
 
+
+
     let frame = svg
-      .append("rect")
+      .append("a")
+      .attr("xlink:href", "#0")
+
+    frame.append("rect")
       .attr("width", frameWidth)
       .attr("border", 20)
       .attr("height", frameHeight)
@@ -187,10 +191,18 @@ class DataPortrait {
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      // .on("click", d => this.museumTabs.switchTab(museum.museum) && this.map.drawMuseum(museum.museum) )  //TODO wasnt surehwo to call both funcs here
-      .on("click", function(d,i) {
+      .attr("data-tabindex", 0)
+
+    let that = this;
+    frame.on("click", function(d, i) {
         that.museumTabs.switchTab(museum.museum);
         that.map.drawMuseum(museum.museum);
       })
-  }
-}
+      .on("mouseover", function(d) {
+        let title = museum.museum
+        title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
+        d3.select(this).append('svg:title')
+          .text(title)
+      });
+  } //end drawPortraits
+} //end Portraits class
