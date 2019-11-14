@@ -21,10 +21,7 @@ class Map {
    */
   constructor(data, updateYear) {
     this.museumData = data.geoData;
-    // this.countryData = data.countryCodes;
-
     this.updateYear = updateYear;
-
     this.activeYear = 2000;
     this.activeMuseum = null;
     this.activeCountries = [];
@@ -45,21 +42,11 @@ class Map {
 
     //------CONVERT DATA TO GEOJSON--------
     let geojson = topojson.feature(world, world.objects.countries);
-    // console.log("GeoJSON", geojson);
-
 
     //---CLEAN UP DATA----
     let countryData = geojson.features.map(country => {
       let index = "temp"; //todo
       let region = 'none';
-
-      // console.log(country);
-
-      // for(let i=0; i < this.countryData.length; i++) {
-      //   if (this.countryData[i].code == country.id) {
-      //     region = this.countryData[i].country;
-      //   }
-      // }
 
       //TODO not if statement needs cleaned up
       if (index > -1) {
@@ -70,9 +57,6 @@ class Map {
       }
 
     });
-
-    // console.log(this.museumData);
-    console.log("CountryData", countryData);
 
     // Draw the background (country outlines; hint: use #map-chart)
     //-----------ADD DATA TO SVG-------------
@@ -116,11 +100,10 @@ class Map {
 
     d3.select('svg#map-chart').attr("transform", "translate(20,0)");
 
-    //Create the slider
-    this.activeYear = 2000; //TODO
-    // let view = d3.select('.column is-two-thirds');
-    // view.append('div').attr('id', 'activeYear-bar');
+  };
 
+  drawYearSlider() {
+    let that = this;
     let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
 
     let yearSlider = d3.select('#activeYear-bar')
@@ -130,7 +113,6 @@ class Map {
       .attr('min', 1800)
       .attr('max', 2020)
       .attr('value', this.activeYear)
-
 
     let sliderLabel = d3.select('.slider-wrap')
       .append('div').classed('slider-label', true)
@@ -152,15 +134,15 @@ class Map {
       }
     });
 
-  };
+  }
 
   drawMuseum(museum) {
     console.log(museum);
+    let that = this;
 
     this.activeMuseum = museum;
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
     //create object of number of artifacts per country
-    // let countries = []
     this.countries = []
 
     for (let country of selectedMuseumData) {
@@ -188,10 +170,7 @@ class Map {
       .domain(domainVal)
       .range([5, 20])
 
-
     let bubbleGroup = d3.select("g#bubble-group");
-
-    let that = this
 
     let bubbles = bubbleGroup
       .selectAll('circle')
