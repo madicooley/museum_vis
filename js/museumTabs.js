@@ -1,11 +1,9 @@
 class MuseumTabs {
   /**
-   * Test comment
+   *
    */
   constructor(data) {
     this.data = data;
-    console.log(data);
-
     this.tabNum = {
       tab: 0
     };
@@ -21,9 +19,7 @@ class MuseumTabs {
   drawMuseumTabs() {
     let that = this;
 
-    //Create the tab thing?
     let view = d3.selectAll('.column');
-    // view.append("svg").attr('id', 'museumTabContainer');
     let tab = view.select("#museumTabContainer")
       .attr("transform", "translate(0, -33)") //-400
       .attr("width", 500)
@@ -39,7 +35,7 @@ class MuseumTabs {
       .style("stroke-width", 6)
 
     let container = tab.selectAll("svg").data(this.data).enter()
-      .append("svg") //.attr("id", "museumTextBoxContainer")
+      .append("svg")
       .attr("id", function(d, i) {
         return "museumBox" + i;
       })
@@ -137,9 +133,8 @@ class MuseumTabs {
 
     tab.select("#museum0").classed("selectedTab", true);
 
-    //Add the nav. triagle buttons
+    //KEEP - Add the nav. triagle buttons
     var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
-
     // tab.append('polyline').attr("id", "museumTriangle")
     //     .attr('points', trianglePoints)
     //     .style('fill', 'grey')
@@ -161,35 +156,26 @@ class MuseumTabs {
   }
 
   switchTab(which) {
-    console.log(this.data);
-    console.log(which);
-
+    let that = this;
     let tabnum = 0;
-    for (let i = 0; i < this.data.length; i++) {
+
+    for(let i=0; i < this.data.length; i++) {
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
-
-      // console.log(museumName);
-      if (which == museumName) {
+      if(which == museumName ) {
         tabnum = i;
       }
     }
 
-    console.log("tabNum " + tabnum);
-    let that = this;
     let tab = d3.selectAll('.column').select("#museumTabContainer");
     let active = tab.select(".activeTab.container");
 
-    let activeId = active.attr("id")[active.attr("id").length - 1];;
-    console.log("activeId " + activeId);
+    let activeId = active.attr("id")[active.attr("id").length -1];;
 
-    // if (which == "left") {
-    if (tabnum < activeId) {
-      console.log("left")
+    if(tabnum < activeId) {
       if (this.tabNum.tab > 0) {
         this.tabNum.tab--;
       }
-
       active.select(".museumTextBox")
         .transition().duration(that.animationDuration)
         .attr("transform", function(d, i) {
@@ -200,16 +186,10 @@ class MuseumTabs {
         .attr("transform", function(d, i) {
           return "translate(-600, 150)";
         });
-
-
-      // } else if (which == "right") {
     } else if (tabnum > activeId) {
-      console.log("right")
       if (this.tabNum.tab < this.numMuseums - 1) {
         this.tabNum.tab++;
       }
-
-      // let active = tab.select(".activeTab.container")
 
       active.select(".museumTextBox")
         .transition().duration(that.animationDuration)
@@ -227,8 +207,7 @@ class MuseumTabs {
     tab.select(".activeTab.container")
       .classed("activeTab", false).classed("unactiveTab", true);
 
-    // let selected = tab.select("#museumBox"+this.tabNum.tab);
-    let selected = tab.select("#museumBox" + tabnum);
+    let selected = tab.select("#museumBox"+tabnum);
 
     selected.select(".museumTextBox")
       .transition().duration(that.animationDuration)
