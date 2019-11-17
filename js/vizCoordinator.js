@@ -4,27 +4,46 @@
 
 class VizCoordinator {
 
-    constructor(dataDict){
-        this.dataDict = dataDict
+    constructor(data){
+        this.data = data;
         // default year of 2000, eventually this will be replaced with year range
-        this.year = 2000;
-        this.yearRange = [1995, 2000] // default year range, currently unused
-        this.musuem  = null;
+        this.activeYear = 2000;
+        this.activeYearRange = [1995, 2000]; // default year range, currently unused
+        this.activeMuseum  = null;
+        this.activeCountries = [];
+
+        // initialize views to null
+        this.worldMap = null;
+        this.museumTabs = null;
+        this.dataPortrait = null;
     }
 
     initializeView(){
+        this.worldMap = new Map(this.data, this);
+        this.worldMap.drawYearSlider();
 
+        this.museumTabs = new MuseumTabs(this.data.museumBios);
+        this.museumTabs.drawMuseumTabs();
+
+        this.dataPortrait = new DataPortrait(this.data.geoData, this.worldMap, this.museumTabs);
+        this.dataPortrait.dataSummary(this.data.geoData);
+        // const worldMap = new Map(data, updateYear);
+        // worldMap.drawYearSlider();
+        // const museumTabs = new MuseumTabs(data.museumBios);
+        // museumTabs.drawMuseumTabs();
+        // const dataPortrait = new DataPortrait(data.geoData, worldMap, museumTabs)
+        // dataPortrait.dataSummary(data.geoData);
     }
 
-    updateYear(){
-
+    updateYear(newYear){
+        this.activeYear = newYear;
     }
 
     updateYearRange(){
 
     }
 
-    updateMuseum(){
-
+    updateMuseum(newMuseum){
+        this.activeMuseum = newMuseum;
     }
 }

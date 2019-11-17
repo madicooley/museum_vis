@@ -1,24 +1,12 @@
 loadData().then(data => {
   let that = this;
 
-  function updateYear(year) {
-    that.activeYear = year;
-  }
-
-  // Creates the view objects
-  // const worldMap = new Map(data, updateYear);
-  // worldMap.drawYearSlider();
-  // const museumTabs = new MuseumTabs(data.museumBios);
-  // museumTabs.drawMuseumTabs();
-  // const dataPortrait = new DataPortrait(data.geoData, worldMap, museumTabs)
-  // dataPortrait.dataSummary(data.geoData);
-
   const vizCoord = new VizCoordinator(data);
   vizCoord.initializeView();
 
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
-    worldMap.drawMap(mapData);
+    vizCoord.worldMap.drawMap(mapData);
   });
 
 });
