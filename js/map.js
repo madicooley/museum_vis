@@ -24,9 +24,6 @@ class Map {
     // this.updateYear = updateYear;
     this.vizCoord = vizCoord;
 
-
-    // this.activeCountries = [];
-    this.activeCountries = this.vizCoord.activeCountries;
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
     this.centroids = [];
   }
@@ -145,18 +142,19 @@ class Map {
     this.vizCoord.updateMuseum(museum);
     let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.vizCoord.activeYear)
     //create object of number of artifacts per country
-    this.countries = []
+    this.vizCoord.updateCountries([]);
 
+    let tmp = [];
     for (let country of selectedMuseumData) {
-      this.countries.push(country.country_code)
+      tmp.push(country.country_code);
     }
     //remove duplicates
-    let countrySet = new Set(this.countries)
-    this.countries = [...countrySet]
+    let countrySet = new Set(tmp)
+    this.vizCoord.updateCountries([...countrySet]);
 
     let artifacts = []
     //create an object of the countries with the total number of artifacts
-    for (let n of this.countries) {
+    for (let n of this.vizCoord.activeCountries) {
       let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,

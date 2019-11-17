@@ -46,4 +46,8 @@ class VizCoordinator {
     updateMuseum(newMuseum){
         this.activeMuseum = newMuseum;
     }
+
+    updateCountries(newCountries){
+        this.activeCountries = newCountries;
+    }
 }
