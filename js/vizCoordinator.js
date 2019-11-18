@@ -16,6 +16,7 @@ class VizCoordinator {
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
+        this.treeMap = null;
     }
 
     initializeView(){
@@ -27,6 +28,9 @@ class VizCoordinator {
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
+
+        this.treeMap = new TreeMap(this.data, this);
+        this.treeMap.drawTreeMap();
     }
 
     getWorldMap(){
@@ -39,6 +43,10 @@ class VizCoordinator {
 
     getDataPortrait(){
         return this.dataPortrait;
+    }
+
+    getTreeMap() {
+      return this.treeMap;
     }
 
     updateYear(newYear){
