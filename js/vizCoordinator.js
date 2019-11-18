@@ -1,5 +1,5 @@
 /**
- *  Class that coordinates between the views when the date or selected musuem is changed
+ *  Class that coordinates between the views when the date or selected museum is changed
  */
 
 class VizCoordinator {
@@ -25,22 +25,28 @@ class VizCoordinator {
         this.museumTabs = new MuseumTabs(this.data.museumBios);
         this.museumTabs.drawMuseumTabs();
 
-        this.dataPortrait = new DataPortrait(this.data.geoData, this.worldMap, this.museumTabs);
+        this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
-        // const worldMap = new Map(data, updateYear);
-        // worldMap.drawYearSlider();
-        // const museumTabs = new MuseumTabs(data.museumBios);
-        // museumTabs.drawMuseumTabs();
-        // const dataPortrait = new DataPortrait(data.geoData, worldMap, museumTabs)
-        // dataPortrait.dataSummary(data.geoData);
+    }
+
+    getWorldMap(){
+        return this.worldMap;
+    }
+
+    getMuseumTabs(){
+        return this.museumTabs;
+    }
+
+    getDataPortrait(){
+        return this.dataPortrait;
     }
 
     updateYear(newYear){
         this.activeYear = newYear;
     }
 
-    updateYearRange(){
-
+    updateYearRange(newRange){ // currently unused
+        this.activeYearRange = newRange;
     }
 
     updateMuseum(newMuseum){

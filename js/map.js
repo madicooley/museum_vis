@@ -21,7 +21,7 @@ class Map {
    */
   constructor(data, vizCoord) {
     this.museumData = data.geoData;
-    // this.updateYear = updateYear;
+
     this.vizCoord = vizCoord;
 
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
