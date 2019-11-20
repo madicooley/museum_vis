@@ -11,6 +11,10 @@ class VizCoordinator {
         this.activeMuseum  = null;
         this.activeCountries = [];
 
+        const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
+        this.yearOpts = yearOpts;
+        this.activeYearOpt = this.yearOpts[0];
+
         // initialize views to null
         this.worldMap = null;
         this.museumTabs = null;
