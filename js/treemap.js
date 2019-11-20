@@ -9,9 +9,6 @@ class TreeMap {
   }
 
   drawTreeMap() {
-    console.log("drawing treemap");
-
-
     let width = 800;
     let height = 500;
 
@@ -19,7 +16,6 @@ class TreeMap {
     svg.attr("height", height).attr("width", width);
 
     let color = d3.scaleOrdinal(d3.schemeGnBu[9]);
-
     let format = d3.format(",d");
 
     let treemap = d3.treemap()
@@ -28,50 +24,57 @@ class TreeMap {
         .padding(1);
 
 
-    // console.log(this.museumData);
     let data = this.filterData();
-    // let data = this.createJson();
-
-    // d3.csv("data/cleaned-data.csv").then(data => {
-    //   // console.log(i, data);
-    //
-    //  //  data.forEach(function (d, i) {
-    //  //    // d.value = +d.value1;
-    //  //    // d.value2 = +d.value2;
-    //  //    console.log(i);
-    //  // });
-    //   data = this.filterData(data);
-    //   // console.log(data);
-    //
-    //
-    //
-    // });
 
     var root = d3.stratify()
-        .id(function(d) { return d.country; })   // Name of the entity (column name is name in csv)
-        .parentId(function(d) { return d.parent; })             // Name of the parent (column name is parent in csv)
-        (data);
-      // root.sum(count(d));                 // Compute the numeric value for each entity
+        .id(function(d) { return d.country; })
+        .parentId(function(d) { return d.parent; })
+        (data)
+      .sum(function(d) { return d.number; })
+      .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
 
     treemap(root);
 
-    // let cell = svg.selectAll("a")
-    //     .data(root.leaves())
-    //     .enter().append("a")
-    //     .attr("target", "_blank")
-    //     .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")");
+    let cell = svg.selectAll("a")
+        .data(root.leaves())
+        .enter().append("a")
+        .attr("target", "_blank")
+        // .attr("xlink:href", d => {
+        //     return 1;
+        //     // let p = d.data.path.split("/");
+        //     // return "https://github.com/" + p.slice(0, 2).join("/") + "/blob/v"
+        //             // + version[p[3]] + "/src/" + p.slice(2).join("/");
+        // })
+        .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")");
 
-    //Notice that the fill is dependent on the hierarchy (2 levels up)
-    let cell = svg.selectAll("rect").data(root.leaves()).enter()
-        .append("rect")
-        .attr("id", d => d.country)
-        .attr("width", d => d.x1 - d.x0)
-        .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d =>  {
-            let a = d.ancestors();
-            return color(a[a.length - 2].id);
-        });
+    // let cell = svg.selectAll("rect").data(root.leaves()).enter()
+    cell.append("rect")
+      .attr("id", function(d) { return d.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("fill", function(d) { var a = d.ancestors(); return color(a[a.length - 2].id); });
 
+    cell.append("clipPath")
+        .attr("id", d => "clip-" + d.id)
+        .append("use")
+        .attr("xlink:href", d => "#" + d.id);
+
+    let label = cell.append("text")
+        .attr("clip-path", d => "url(#clip-" + d.id + ")");
+
+    label.append("tspan")
+        .attr("x", 4)
+        .attr("y", 13)
+        // .text(d => d.data.path.substring(d.data.path.lastIndexOf("/") + 1, d.data.path.lastIndexOf(".")));
+        .text(function(d) {return d.id; })
+
+    label.append("tspan")
+        .attr("x", 4)
+        .attr("y", 25)
+        .text(d => format(d.value));
+
+    cell.append("title")
+        .text(d =>  d.id + "\n" + format(d.value));
   }
 
   filterData() {
