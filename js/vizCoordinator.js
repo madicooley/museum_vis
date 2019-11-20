@@ -28,7 +28,8 @@ class VizCoordinator {
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
 
-        this.kdePlot = new KdePlot(this.data, this)
+        this.kdePlot = new KdePlot(this.data, this);
+        this.kdePlot.drawKdePlot();
     }
 
     getWorldMap(){
@@ -41,6 +42,10 @@ class VizCoordinator {
 
     getDataPortrait(){
         return this.dataPortrait;
+    }
+
+    getKdePlot(){
+        return this.kdePlot;
     }
 
     updateYear(newYear){
