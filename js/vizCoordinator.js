@@ -1,7 +1,6 @@
 /**
  *  Class that coordinates between the views when the date or selected museum is changed
  */
-
 class VizCoordinator {
 
     constructor(data){
@@ -16,6 +15,7 @@ class VizCoordinator {
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
+        this.kdePlot = null;
     }
 
     initializeView(){
@@ -27,6 +27,8 @@ class VizCoordinator {
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
+
+        this.kdePlot = new KdePlot(this.data, this)
     }
 
     getWorldMap(){
