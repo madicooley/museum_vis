@@ -19,12 +19,11 @@ class Map {
   /**
    * Test comment
    */
-  constructor(data, updateYear) {
+  constructor(data, vizCoord) {
     this.museumData = data.geoData;
-    this.updateYear = updateYear;
-    this.activeYear = 2000;
-    this.activeMuseum = null;
-    this.activeCountries = [];
+
+    this.vizCoord = vizCoord;
+
     this.projection = d3.geoWinkel3().scale(140).translate([365, 225]);
     this.centroids = [];
   }
@@ -112,25 +111,25 @@ class Map {
       .attr('type', 'range')
       .attr('min', 1800)
       .attr('max', 2020)
-      .attr('value', this.activeYear)
+      .attr('value', this.vizCoord.activeYear)
 
     let sliderLabel = d3.select('.slider-wrap')
       .append('div').classed('slider-label', true)
       .append('svg');
 
-    let sliderText = sliderLabel.append('text').text(this.activeYear);
+    let sliderText = sliderLabel.append('text').text(this.vizCoord.activeYear);
 
-    sliderText.attr('x', yearScale(this.activeYear));
+    sliderText.attr('x', yearScale(this.vizCoord.activeYear));
     sliderText.attr('y', 25);
 
     yearSlider.on('input', function() {
-      // that.updatePlot(this.value, that.xIndicator, that.yIndicator, that.circleSizeIndicator);
-      that.updateYear(this.value);
-      that.activeYear = this.value;
-      // that.drawMuseum("canada-science-and-technology-museums", centroids, this.value)
+
+      that.vizCoord.updateYear(this.value);
+      // that.activeYear = that.vizCoord.activeYear;
+
       sliderText.text(this.value).attr('x', yearScale(this.value));
-      if (that.activeMuseum) {
-        that.drawMuseum(that.activeMuseum)
+      if (that.vizCoord.activeMuseum) {
+        that.drawMuseum(that.vizCoord.activeMuseum)
       }
     });
 
@@ -140,21 +139,22 @@ class Map {
     console.log(museum);
     let that = this;
 
-    this.activeMuseum = museum;
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.activeYear)
+    this.vizCoord.updateMuseum(museum);
+    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.vizCoord.activeYear)
     //create object of number of artifacts per country
-    this.countries = []
+    this.vizCoord.updateCountries([]);
 
+    let tmp = [];
     for (let country of selectedMuseumData) {
-      this.countries.push(country.country_code)
+      tmp.push(country.country_code);
     }
     //remove duplicates
-    let countrySet = new Set(this.countries)
-    this.countries = [...countrySet]
+    let countrySet = new Set(tmp)
+    this.vizCoord.updateCountries([...countrySet]);
 
     let artifacts = []
     //create an object of the countries with the total number of artifacts
-    for (let n of this.countries) {
+    for (let n of this.vizCoord.activeCountries) {
       let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,

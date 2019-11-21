@@ -1,8 +1,9 @@
 class DataPortrait {
-  constructor(data, map, museumTabs) {
-    this.map = map;
+  constructor(data, vizCoord) {
     this.data = data
-    this.museumTabs = museumTabs;
+
+    this.vizCoord = vizCoord
+
     let museumNames = []
 
     for (let museums of this.data) {
@@ -195,8 +196,8 @@ class DataPortrait {
 
     let that = this;
     frame.on("click", function(d, i) {
-        that.museumTabs.switchTab(museum.museum);
-        that.map.drawMuseum(museum.museum);
+        that.vizCoord.getMuseumTabs().switchTab(museum.museum)
+        that.vizCoord.getWorldMap().drawMuseum(museum.museum)
       })
       .on("mouseover", function(d) {
         let title = museum.museum
