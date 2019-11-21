@@ -53,7 +53,8 @@
 
         // create axis for plot
         let xScale = d3.scaleLinear()
-            .domain(extrema).nice()
+            .domain(extrema)
+            .domain([extrema[0], extrema[1] + 10]) // hacky fix to force fill on KDE to work as intended
             .range([0,width])
         plotGroup.append('g')
             .attr('id', 'x-axis')
@@ -78,38 +79,60 @@
         // Compute kernel density estimation
         let density = this.kde(this.epanechnikov(7), thresholds, this.plotData.map((d) => d.acquisition_date)) // initial bandwidth = 7
 
+        // Compute densities for each museum
+        let densities = [];
+        let museumNames = [];
+        for (let museums of this.plotData) {
+            museumNames.push(museums.museum);
+        }
+        //remove duplicates
+        let museumsSet = new Set(museumNames);
+        museumNames = [...museumsSet];
+        for (let musName of museumNames){
+            let musDensity =  this.kde(this.epanechnikov(7), thresholds, this.plotData.filter((d) => d.museum == musName).map((d) => d.acquisition_date));
+            densities.push({
+                'key': musName,
+                'val': musDensity
+            });
+        }
+        // console.log('Densities', densities)
+
         // Plot bar charts for context
-        plotGroup.append("g")
-            .attr("fill", "#bbb")
-            .selectAll("rect")
-            .data(bins)
-            .join("rect")
-            .attr("x", d => xScale(d.x0) + 1)
-            .attr("y", d => yScale(d.length / this.plotData.length))
-            .attr("width", d => xScale(d.x1) - xScale(d.x0))
-            .attr("height", d => yScale(0) - yScale(d.length / this.plotData.length))
-            .attr('transform', `translate(${margins.left},${margins.top})`);
+        // plotGroup.append("g")
+        //     .attr("fill", "#e3e2de")
+        //     .attr('stroke', '#c9c8c7')
+        //     .attr('stroke-width', 2)
+        //     .selectAll("rect")
+        //     .data(bins)
+        //     .join("rect")
+        //     .attr("x", d => xScale(d.x0) + 1)
+        //     .attr("y", d => yScale(d.length / this.plotData.length))
+        //     .attr("width", d => xScale(d.x1) - xScale(d.x0))
+        //     .attr("height", d => yScale(0) - yScale(d.length / this.plotData.length))
+        //     .attr('transform', `translate(${margins.left},${margins.top})`);
 
         // Plot the area
         let line = d3.line()
             .curve(d3.curveBasis)
             .x(d => xScale(d[0]))
             .y(d => yScale(d[1]))
-        plotGroup.append("path")
-            .datum(density)
-            .attr('fill', 'none')
-            .attr('stroke', '#000')
-            .attr('stroke-width', 1.5)
+        
+        let kdes = plotGroup.append('g')
+            .attr('id', 'kdes');
+        kdes.selectAll('path')
+            .data(densities)
+            .join('path')
+            .attr('fill', '#69b3a2')
+            .attr('fill-opacity', 0.05)
+            .attr('fill-rule', 'evenodd')
+            // .attr('fill', 'none')
+            .attr('stroke', '#69b3a2')
+            .attr('stroke-width', 2)
             .attr('stroke-linejoin', 'round')
-            .attr('d', line)
-            .attr('transform', `translate(${margins.left},${margins.top})`);
-
-
-
-
-
-
-
+            // .attr('d', line)
+            .attr('d', d => line(d.val))
+            .attr('transform', `translate(${margins.left},${margins.top})`)
+            .attr('id', d => d.key)
 
         // this.processData(this.data, this.vizCoord.activeYearOpt)
     }
