@@ -63,9 +63,16 @@ class VizCoordinator {
 
     updateMuseum(newMuseum){
         this.activeMuseum = newMuseum;
+
+        this.reDrawViz();
     }
 
     updateCountries(newCountries){
         this.activeCountries = newCountries;
+    }
+
+    reDrawViz(){
+        console.log('redrawn');
+        this.kdePlot.drawKdePlot();
     }
 }

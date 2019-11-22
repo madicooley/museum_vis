@@ -7,6 +7,7 @@
     */
     constructor(data, vizCoord){
         this.data = data.geoData;
+        this.bios = data.museumBios;
         this.plotData = null; // this is the data that will actually be plotted, based on the selection of if we are looking at year created or acuqired
         this.vizCoord = vizCoord;
 
@@ -21,7 +22,7 @@
     }
 
     /**
-    *  function to initialize the KDE Plot
+    *  function to initialize the KDE plot elements
     */
     initKdePlot(){
         // initialize svg and group that we will append plot elements to
@@ -44,6 +45,11 @@
             .attr('id', 'kdes')
             .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
 
+        // initialize group that we will append text legened for KDE plots to
+        plotGroup.append('g')
+            .attr('id', 'kde-legend')
+            .attr('transform', `translate(${3/5*this.width + this.margins.left},${this.margins.top})`)
+
         // extract museum names set from data and store them in museumNames
         for (let museums of this.data) {
             this.museumNames.push(museums.museum);
@@ -59,6 +65,9 @@
         this.drawKdePlot();
     }
 
+    /**
+    *  function to draw KDE plots
+    */
     drawKdePlot(){
         let that = this;
 
@@ -132,17 +141,70 @@
             .attr('fill-opacity', 0.05)
             .attr('fill-rule', 'evenodd')
             .attr('stroke', (d) => this.colorScale(d.name))
-            .attr('stroke-width', 2)
+            .attr('stroke-width', 3)
             .attr('stroke-linejoin', 'round')
+            .attr('opacity', (d) => this.isLight(d.name))
             .attr('d', d => lineGenerator(d.density))
             .attr('id', d => d.name);
+
+        // create legend for KDE plot
+        d3.select('#kde-legend')
+            .selectAll('circle')
+            .data(this.museumNames)
+            .join('circle')
+            .attr('cx', 10)
+            .attr('cy', (d) => this.museumNames.indexOf(d)*25)
+            .attr('r', 8)
+            .attr('stroke', (d) => this.colorScale(d))
+            .attr('stroke-width', 3)
+            .attr('fill', (d) => this.colorScale(d))
+            .attr('fill-opacity', 0.05)
+            .attr('opacity', (d) => this.isLight(d));
+
+        d3.select('#kde-legend')
+            .selectAll('text')
+            .data(this.bios)
+            .join('text')
+            .attr('x', 25)
+            .attr('y', (d) => 5 + this.museumNames.indexOf(d.museumTag)*25)
+            .text((d) => d.museumName)
+            .attr('opacity', (d) => this.isLightText(d.museumTag));
     }
 
-    // Functions to compute density
+    /**
+    *  functions to calculate densities for KDE
+    */
     kde(kernel, thresholds, data) {
         return thresholds.map(t => [t, d3.mean(data, d => kernel(t - d))]);
     }
     epanechnikov(bandwidth) {
         return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
     }
+
+    /**
+    *  helper function to assign visibility of KDE lines
+    */
+    isLight(museum){
+        if(this.vizCoord.activeMuseum == null){
+            return 1;
+        }else if(museum == this.vizCoord.activeMuseum){
+            return 1;
+        }else{
+            return 0.2;
+        }
+    }
+
+    /**
+    *  helper function to assign visibility of KDE lines
+    */
+    isLightText(museum){
+        if(this.vizCoord.activeMuseum == null){
+            return 1;
+        }else if(museum == this.vizCoord.activeMuseum){
+            return 1;
+        }else{
+            return 0.4;
+        }
+    }
+
  }
