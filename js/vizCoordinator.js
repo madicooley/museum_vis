@@ -4,56 +4,56 @@
 
 class VizCoordinator {
 
-    constructor(data){
-        this.data = data;
-        // default year of 2000, eventually this will be replaced with year range
-        this.activeYear = 2000;
-        this.activeYearRange = [1995, 2000]; // default year range, currently unused
-        this.activeMuseum  = null;
-        this.activeCountries = [];
+  constructor(data) {
+    this.data = data;
+    // default year of 2000, eventually this will be replaced with year range
+    this.activeYear = 2000;
+    this.activeYearRange = [1995, 2000]; // default year range, currently unused
+    this.activeMuseum = null;
+    this.activeCountries = [];
 
-        // initialize views to null
-        this.worldMap = null;
-        this.museumTabs = null;
-        this.dataPortrait = null;
-    }
+    // initialize views to null
+    this.worldMap = null;
+    this.museumTabs = null;
+    this.dataPortrait = null;
+  }
 
-    initializeView(){
-        this.worldMap = new Map(this.data, this);
-        this.worldMap.drawYearSlider();
+  initializeView() {
+    this.worldMap = new Map(this.data, this);
+    this.worldMap.drawYearSlider();
 
-        this.museumTabs = new MuseumTabs(this.data.museumBios);
-        this.museumTabs.drawMuseumTabs();
+    this.museumTabs = new MuseumTabs(this.data.museumBios);
+    this.museumTabs.drawMuseumTabs();
 
-        this.dataPortrait = new DataPortrait(this.data.geoData, this);
-        this.dataPortrait.dataSummary(this.data.geoData);
-    }
+    this.dataPortrait = new DataPortrait(this.data.geoData, this);
+    this.dataPortrait.dataSummary(this.data.geoData);
+  }
 
-    getWorldMap(){
-        return this.worldMap;
-    }
+  getWorldMap() {
+    return this.worldMap;
+  }
 
-    getMuseumTabs(){
-        return this.museumTabs;
-    }
+  getMuseumTabs() {
+    return this.museumTabs;
+  }
 
-    getDataPortrait(){
-        return this.dataPortrait;
-    }
+  getDataPortrait() {
+    return this.dataPortrait;
+  }
 
-    updateYear(newYear){
-        this.activeYear = newYear;
-    }
+  updateYear(newYear) {
+    this.activeYear = newYear;
+  }
 
-    updateYearRange(newRange){ // currently unused
-        this.activeYearRange = newRange;
-    }
+  updateYearRange(newRange) { // currently unused
+    this.activeYearRange = newRange;
+  }
 
-    updateMuseum(newMuseum){
-        this.activeMuseum = newMuseum;
-    }
+  updateMuseum(newMuseum) {
+    this.activeMuseum = newMuseum;
+  }
 
-    updateCountries(newCountries){
-        this.activeCountries = newCountries;
-    }
+  updateCountries(newCountries) {
+    this.activeCountries = newCountries;
+  }
 }

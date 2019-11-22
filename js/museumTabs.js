@@ -71,36 +71,25 @@ class MuseumTabs {
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.museumName.toUpperCase();
-      })
-      .attr("font-size", "1.5rem")
-      .attr("font-weight", "Bold")
-      .attr("font-family", 'Oswald')
+      }).classed("museumName", true)
       .attr("transform", "translate(35, 60)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.location;
-      })
-      .attr("font-size", "1.0rem")
-      .attr("font-weight", "normal")
-      // .attr("font-family", "sans-serif")
-      .attr("font-family", 'Montserrat')
+      }).classed("museumLocation", true)
       .attr("transform", "translate(35, 90)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.website;
-      })
-      .attr("font-size", "0.8rem")
-      .attr("font-weight", "normal")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
+      }).classed("museumWebsite", true)
       .attr("transform", "translate(35, 115)");
 
     let svg = tab.selectAll("svg");
     let fo = svg.append('foreignObject')
       .attr('width', 400)
-      .attr('height', 200)
+      .attr('height', 300)
       .attr("transform", function(d, i) {
         if (i == 0) {
           return "translate(35, 150)";
@@ -114,24 +103,34 @@ class MuseumTabs {
     });
 
     //Add the circle nav. little things
-    tab.selectAll("circle").data(this.data)
-      .enter().append("circle")
-      .classed("museumCircles", true);
+    // tab.selectAll("circle").data(this.data)
+    //   .enter().append("circle")
+    //   .classed("museumCircles", true);
+    //
+    // tab.selectAll(".museumCircles")
+    //   .attr("r", 7)
+    //   .attr("stroke", "grey")
+    //   .attr("fill", "white")
+    //   .attr("cx", 10)
+    //   .attr("cy", 10)
+    //   .attr("id", function(d, i) {
+    //     return "museum" + i;
+    //   })
+    //   .attr("transform", function(d, i) {
+    //     return "translate(" + that.xScale(i) + ", 450)";
+    //   });
+    //
+    // tab.select("#museum0").classed("selectedTab", true);
 
-    tab.selectAll(".museumCircles")
-      .attr("r", 7)
-      .attr("stroke", "grey")
-      .attr("fill", "white")
-      .attr("cx", 10)
-      .attr("cy", 10)
-      .attr("id", function(d, i) {
-        return "museum" + i;
-      })
-      .attr("transform", function(d, i) {
-        return "translate(" + that.xScale(i) + ", 450)";
-      });
 
-    tab.select("#museum0").classed("selectedTab", true);
+    //on button clicks change the content
+    let momaStory = d3.select("button#moma")
+    let pennStory = d3.select("button#penn")
+    let explore = d3.select("button#explore")
+
+    momaStory.on("click", that.momaTabs)
+    // pennStory.on("click", that.storyTabs("penn"))
+    // explore.on("click", that.storyTabs("explore"))
 
     //KEEP - Add the nav. triagle buttons
     var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
@@ -159,10 +158,10 @@ class MuseumTabs {
     let that = this;
     let tabnum = 0;
 
-    for(let i=0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
-      if(which == museumName ) {
+      if (which == museumName) {
         tabnum = i;
       }
     }
@@ -170,9 +169,9 @@ class MuseumTabs {
     let tab = d3.selectAll('.column').select("#museumTabContainer");
     let active = tab.select(".activeTab.container");
 
-    let activeId = active.attr("id")[active.attr("id").length -1];;
+    let activeId = active.attr("id")[active.attr("id").length - 1];;
 
-    if(tabnum < activeId) {
+    if (tabnum < activeId) {
       if (this.tabNum.tab > 0) {
         this.tabNum.tab--;
       }
@@ -207,7 +206,7 @@ class MuseumTabs {
     tab.select(".activeTab.container")
       .classed("activeTab", false).classed("unactiveTab", true);
 
-    let selected = tab.select("#museumBox"+tabnum);
+    let selected = tab.select("#museumBox" + tabnum);
 
     selected.select(".museumTextBox")
       .transition().duration(that.animationDuration)
@@ -229,4 +228,37 @@ class MuseumTabs {
     tab.select("#museum" + tabnum).classed("selectedTab", true);
 
   }
+
+  momaTabs() {
+    let data = ["On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s."]
+
+
+    d3.select("text.museumName").text("🔥 at MoMA")
+    d3.select("text.museumLocation").text("New York, NY | USA")
+    d3.select("text.museumWebsite").text("https://www.moma.org")
+    d3.select("#museumDescription").text(data[0])
+
+
+    // 
+    // d3.select("foreignObject").selectAll("circle").data(data)
+    //   .enter().append("circle")
+    //   .classed("museumCircles", true);
+    //
+    // let that = this
+    // d3.selectAll(".museumCircles")
+    //   .attr("r", 7)
+    //   .attr("stroke", "grey")
+    //   .attr("fill", "white")
+    //   .attr("cx", 10)
+    //   .attr("cy", 10)
+    //   .attr("id", function(d, i) {
+    //     return "museum" + i;
+    //   })
+    //   .attr("transform", function(d, i) {
+    //     return "translate(" + that.xScale(i) + ", 450)";
+    //   });
+    //
+    // tab.select("#museum0").classed("selectedTab", true);
+  }
+
 }
