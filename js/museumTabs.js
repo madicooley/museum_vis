@@ -232,33 +232,18 @@ class MuseumTabs {
   momaTabs() {
     let data = ["On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s."]
 
-
     d3.select("text.museumName").text("🔥 at MoMA")
     d3.select("text.museumLocation").text("New York, NY | USA")
     d3.select("text.museumWebsite").text("https://www.moma.org")
     d3.select("#museumDescription").text(data[0])
 
+    d3.select("#museumBox0").select("#museumDescription")
+      .append("div")
+      .append("button")
+      .classed("story-button", true)
+      .text("Next")
+      .margin("20")
 
-    // 
-    // d3.select("foreignObject").selectAll("circle").data(data)
-    //   .enter().append("circle")
-    //   .classed("museumCircles", true);
-    //
-    // let that = this
-    // d3.selectAll(".museumCircles")
-    //   .attr("r", 7)
-    //   .attr("stroke", "grey")
-    //   .attr("fill", "white")
-    //   .attr("cx", 10)
-    //   .attr("cy", 10)
-    //   .attr("id", function(d, i) {
-    //     return "museum" + i;
-    //   })
-    //   .attr("transform", function(d, i) {
-    //     return "translate(" + that.xScale(i) + ", 450)";
-    //   });
-    //
-    // tab.select("#museum0").classed("selectedTab", true);
   }
 
 }
