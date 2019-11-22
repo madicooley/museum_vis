@@ -9,146 +9,140 @@
         this.data = data.geoData;
         this.plotData = null; // this is the data that will actually be plotted, based on the selection of if we are looking at year created or acuqired
         this.vizCoord = vizCoord;
+
+        this.height = 600;
+        this.width = 1000;
+        this.margins = {'left': 35, 'right': 35, 'top': 25, 'bottom': 35};
+
+        this.xScale = null;
+        this.yScale = null;
+        this.colorScale = null;
+        this.museumNames = [];
     }
 
     /**
     *  function to initialize the KDE Plot
     */
-    drawKdePlot(){
-        let that = this;
-
+    initKdePlot(){
         // initialize svg and group that we will append plot elements to
         let svg = d3.select('#kde-plot');
-        let margins = {'left': 35, 'right': 35, 'top': 25, 'bottom': 35}
-        let height = 600;
-        let width = 1000;
-
-        svg.attr('height', height + margins.top + margins.bottom)
-            .attr('width', width + margins.left + margins.right);
+        svg.attr('height', this.height + this.margins.top + this.margins.bottom)
+            .attr('width', this.width + this.margins.left + this.margins.right);
         let plotGroup = svg.append('g')
             .attr('id', 'plot-group');
 
-        // pull out extrema for scaling, based on what the active yearOption is, as well as set the data to be plotted
-        this.plotData = this.data;
-        let extrema = null;
+        // initialize groups that we will append axes to
+        plotGroup.append('g')
+            .attr('id', 'x-axis')
+            .attr('transform', `translate(${this.margins.left},${this.height-this.margins.bottom})`);
+        plotGroup.append('g')
+            .attr('id', 'y-axis')
+            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+
+        // initialize group that we will append actual KDE plots to
+        plotGroup.append('g')
+            .attr('id', 'kdes')
+            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+
+        // extract museum names set from data and store them in museumNames
+        for (let museums of this.data) {
+            this.museumNames.push(museums.museum);
+        }
+        let museumsSet = new Set(this.museumNames);
+        this.museumNames = [...museumsSet];
+
+        // initialize colorScale using museumNames
+        this.colorScale = d3.scaleOrdinal()
+            .domain(this.museumNames)
+            .range(d3.schemeSet2);
+
+        this.drawKdePlot();
+    }
+
+    drawKdePlot(){
+        let that = this;
+
+        // determine which attribute we will access for data based on the activeYearOpt
+        let attrib = null;
         if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
-            extrema = d3.extent(this.plotData, (d) => { 
-                return +(d.acquisition_date); 
-            });
+            attrib = 'acquisition_date';
+        }else{
+            attrib = 'created_date';
+        }
+
+        // set plotData based on activeYearOpt
+        if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
+            this.plotData = this.data;
         }else if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[1]){ // if we are looking at year created (before common era)
             this.plotData = this.data.filter((d) => {
                 return +(d.created_date) <= 0;
-            });
-            extrema = d3.extent(this.plotData, (d) => { 
-                return +(d.created_date); 
             });
         }else{ // if we are looking at year created (after common era)
             this.plotData = this.data.filter((d) => {
                 return +(d.created_date) > 0;
             });
-            extrema = d3.extent(this.plotData, (d) => { 
-                return +(d.created_date); 
-            });
         }
 
-        // create axis for plot
-        let xScale = d3.scaleLinear()
+        // get extrema for scaling
+        let extrema = d3.extent(this.plotData, (d) => { 
+            return +(d[attrib]); 
+        });
+        
+        // create scales and axis elements
+        // x-scale
+        this.xScale = d3.scaleLinear()
             .domain(extrema)
             .domain([extrema[0], extrema[1] + 10]) // hacky fix to force fill on KDE to work as intended
-            .range([0,width])
-        plotGroup.append('g')
-            .attr('id', 'x-axis')
-            .attr('transform', `translate(${margins.left},${height-margins.bottom})`)
-            .call(d3.axisBottom(xScale));
-
+            .range([0, this.width])
+        d3.select('#x-axis')
+            .call(d3.axisBottom(this.xScale));
+        // y-scale
         // create bins like what would be in a histogram to use for KDE
-        let thresholds = xScale.ticks(40) // create 40 bin limits
+        let thresholds = this.xScale.ticks(40) // create 40 bin limits
         let bins = d3.histogram()
-            .domain(xScale.domain())
+            .domain(this.xScale.domain())
             .thresholds(thresholds)(this.plotData.map((d) => d.acquisition_date)) // change this from acquisition date
-
-        let yScale = d3.scaleLinear() // need to fix this scale
+        this.yScale = d3.scaleLinear()
             .domain([0, d3.max(bins, d => d.length) / this.plotData.length])
-            .range([height - margins.top - margins.bottom, 0]);
-        plotGroup.append('g')
-            .attr('id', 'y-axis')
-            .attr('transform', `translate(${margins.left},${margins.top})`)
-            .call(d3.axisLeft(yScale).ticks(null, "%"))
+            .range([this.height - this.margins.top - this.margins.bottom, 0]);
+        d3.select('#y-axis')
+            .call(d3.axisLeft(this.yScale).ticks(null, "%"))
             .call(g => g.select(".domain").remove())
 
-        // Compute kernel density estimation
-        let density = this.kde(this.epanechnikov(7), thresholds, this.plotData.map((d) => d.acquisition_date)) // initial bandwidth = 7
-
-        // Compute densities for each museum
+        // compute densities for KDE plot
         let densities = [];
-        let museumNames = [];
-        for (let museums of this.plotData) {
-            museumNames.push(museums.museum);
-        }
-        //remove duplicates
-        let museumsSet = new Set(museumNames);
-        museumNames = [...museumsSet];
-        for (let musName of museumNames){
-            let musDensity =  this.kde(this.epanechnikov(7), thresholds, this.plotData.filter((d) => d.museum == musName).map((d) => d.acquisition_date));
+        for (let musName of this.museumNames){
+            let musDensity =  this.kde(this.epanechnikov(7), thresholds, this.plotData.filter((d) => d.museum == musName).map((d) => d[attrib]));
             densities.push({
-                'key': musName,
-                'val': musDensity
+                'name': musName,
+                'density': musDensity
             });
         }
-        // console.log('Densities', densities)
 
-        // Plot bar charts for context
-        // plotGroup.append("g")
-        //     .attr("fill", "#e3e2de")
-        //     .attr('stroke', '#c9c8c7')
-        //     .attr('stroke-width', 2)
-        //     .selectAll("rect")
-        //     .data(bins)
-        //     .join("rect")
-        //     .attr("x", d => xScale(d.x0) + 1)
-        //     .attr("y", d => yScale(d.length / this.plotData.length))
-        //     .attr("width", d => xScale(d.x1) - xScale(d.x0))
-        //     .attr("height", d => yScale(0) - yScale(d.length / this.plotData.length))
-        //     .attr('transform', `translate(${margins.left},${margins.top})`);
-
-        // Plot the area
-        let line = d3.line()
+        // plot KDEs
+        let lineGenerator = d3.line()
             .curve(d3.curveBasis)
-            .x(d => xScale(d[0]))
-            .y(d => yScale(d[1]))
-        
-        let kdes = plotGroup.append('g')
-            .attr('id', 'kdes');
-        kdes.selectAll('path')
+            .x(d => this.xScale(d[0]))
+            .y(d => this.yScale(d[1]))
+        d3.select('#kdes')
+            .selectAll('path')
             .data(densities)
             .join('path')
-            .attr('fill', '#69b3a2')
+            .attr('fill', (d) => this.colorScale(d.name))
             .attr('fill-opacity', 0.05)
             .attr('fill-rule', 'evenodd')
-            // .attr('fill', 'none')
-            .attr('stroke', '#69b3a2')
+            .attr('stroke', (d) => this.colorScale(d.name))
             .attr('stroke-width', 2)
             .attr('stroke-linejoin', 'round')
-            // .attr('d', line)
-            .attr('d', d => line(d.val))
-            .attr('transform', `translate(${margins.left},${margins.top})`)
-            .attr('id', d => d.key)
-
-        // this.processData(this.data, this.vizCoord.activeYearOpt)
+            .attr('d', d => lineGenerator(d.density))
+            .attr('id', d => d.name);
     }
 
-    // Function to compute density
+    // Functions to compute density
     kde(kernel, thresholds, data) {
         return thresholds.map(t => [t, d3.mean(data, d => kernel(t - d))]);
     }
     epanechnikov(bandwidth) {
         return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
-    }
-
-    /**
-    *  function to process the data in a way that can be used to create the KDE plots
-    */
-    processData(){
-
     }
  }

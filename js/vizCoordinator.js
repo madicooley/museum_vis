@@ -33,7 +33,8 @@ class VizCoordinator {
         this.dataPortrait.dataSummary(this.data.geoData);
 
         this.kdePlot = new KdePlot(this.data, this);
-        this.kdePlot.drawKdePlot();
+        this.kdePlot.initKdePlot();
+        // this.kdePlot.drawKdePlot();
     }
 
     getWorldMap(){
