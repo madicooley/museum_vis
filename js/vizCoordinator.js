@@ -13,7 +13,7 @@ class VizCoordinator {
 
         const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
         this.yearOpts = yearOpts;
-        this.activeYearOpt = this.yearOpts[0];
+        this.activeYearOpt = this.yearOpts[1];
 
         // initialize views to null
         this.worldMap = null;
