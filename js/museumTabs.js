@@ -132,7 +132,9 @@ class MuseumTabs {
     d3.select("button#penn").on("click", function(d) {
       that.momaTabs("penn")
     })
-    let explore = d3.select("button#explore")
+    d3.select("button#explore").on("click", function(d) {
+      that.tutorial()
+    })
 
     // pennStory.on("click", that.storyTabs("penn"))
     // explore.on("click", that.storyTabs("explore"))
@@ -269,6 +271,99 @@ class MuseumTabs {
     d3.select("text.museumLocation").text(museumInfo[museum][1])
     d3.select("text.museumWebsite").text(museumInfo[museum][2])
     d3.select("#museumDescription").text(text)
+  }
+
+  tutorial() {
+    // import Shepherd from 'shepherd.js';
+
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        cancelIcon: {
+          enabled: true
+        },
+        classes: 'class-1 class-2',
+        scrollTo: {
+          behavior: 'smooth',
+          block: 'center'
+        }
+      },
+      useModalOverlay: true
+
+    });
+
+    tour.addStep({
+      title: 'Explore Museum+Vis!',
+      text: `Here is a quick tour to show you how to navigate the site.`,
+      attachTo: {
+        element: '#blurb-header',
+        on: 'bottom'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'The Museum+Gallery',
+      text: `Click on different portraits of the museums to explore their art collections`,
+      attachTo: {
+        element: '#museum-gallery',
+        on: 'left'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'World View',
+      text: `Use the slider to look at how artifact aquisition changes throughout time and geography.`,
+      attachTo: {
+        element: '.column.is-one-half',
+        on: 'left'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.start();
   }
 
 }
