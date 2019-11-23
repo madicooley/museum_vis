@@ -14,6 +14,8 @@ class MuseumTabs {
       .domain([0, 7])
       .range([150, 350])
       .nice();
+
+    this.museumButton = null;
   }
 
   drawMuseumTabs() {
@@ -124,11 +126,14 @@ class MuseumTabs {
 
 
     //on button clicks change the content
-    let momaStory = d3.select("button#moma")
-    let pennStory = d3.select("button#penn")
+    d3.select("button#moma").on("click", function(d) {
+      that.momaTabs("moma")
+    })
+    d3.select("button#penn").on("click", function(d) {
+      that.momaTabs("penn")
+    })
     let explore = d3.select("button#explore")
 
-    momaStory.on("click", that.momaTabs)
     // pennStory.on("click", that.storyTabs("penn"))
     // explore.on("click", that.storyTabs("explore"))
 
@@ -229,21 +234,41 @@ class MuseumTabs {
 
   }
 
-  momaTabs() {
-    let data = ["On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s."]
+  momaTabs(museum) {
+    this.museumButton = museum
+    let data = {
+      moma: [
+        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s."
+      ],
+      penn: ["In 1929 Penn Museum received a generous donation from Eldridge Johnson, founder of the victor Talking Machine Company (a record company and phonograph manufacturer).", "You can see the effect of 💰 starting in 1929. The museum begins to acquire a lot more artwork following the funding."]
+    }
 
-    d3.select("text.museumName").text("🔥 at MoMA")
-    d3.select("text.museumLocation").text("New York, NY | USA")
-    d3.select("text.museumWebsite").text("https://www.moma.org")
-    d3.select("#museumDescription").text(data[0])
+    this.updateText(data[museum][0])
 
-    d3.select("#museumBox0").select("#museumDescription")
+    let storyButton = d3.select("#museumBox0").select("#museumDescription")
       .append("div")
       .append("button")
-      .classed("story-button", true)
+      .classed("story-button bouncy", true)
       .text("Next")
-      .margin("20")
 
+
+    let that = this
+
+    storyButton.on("click", function() {
+      that.updateText(data[museum][1])
+    })
+  }
+
+  updateText(text) {
+    let museum = this.museumButton
+    let museumInfo = {
+      moma: ["🔥 at MoMA", "New York, NY | USA", "https://www.moma.org"],
+      penn: ["💰💰💰", "Philadelphia, PA | USA", "https://www.penn.museum"]
+    }
+    d3.select("text.museumName").text(museumInfo[museum][0])
+    d3.select("text.museumLocation").text(museumInfo[museum][1])
+    d3.select("text.museumWebsite").text(museumInfo[museum][2])
+    d3.select("#museumDescription").text(text)
   }
 
 }
