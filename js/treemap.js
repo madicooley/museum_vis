@@ -2,10 +2,14 @@
 class TreeMap {
 
   constructor(data, vizCoord) {
+    console.log(data);
+
     this.museumData = data.geoData;
     this.vizCoord = vizCoord;
 
-    this.museumNames = ["canada-science-and-technology-museums"] //TODO add the rest
+    this.museumNames = ["canada-science-and-technology-museums", "museum-of-modern-art", "penn-museum",
+                        "cleveland-museum-of-art", "cooper-hewitt-smithsonian-design-museum",
+                        "metropolitan-museum-of-art", "minneapolis-institute-of-art"]
   }
 
   drawTreeMap() {
@@ -15,7 +19,9 @@ class TreeMap {
     let svg = d3.select("svg#tree-map");
     svg.attr("height", height).attr("width", width);
 
-    let color = d3.scaleOrdinal(d3.schemeGnBu[9]);
+    // let color = d3.scaleOrdinal(d3.schemeGnBu[9]);
+    let color = d3.scaleOrdinal(["#b5a5e3", "#b1af00", "#ff5b1a", "#e2a333", "#5b7769", "grey", "#b5a5e3"]);
+
     let format = d3.format(",d");
 
     let treemap = d3.treemap()
@@ -47,48 +53,70 @@ class TreeMap {
         // })
         .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")");
 
-    // let cell = svg.selectAll("rect").data(root.leaves()).enter()
     cell.append("rect")
       .attr("id", function(d) { return d.id; })
       .attr("width", function(d) { return d.x1 - d.x0; })
       .attr("height", function(d) { return d.y1 - d.y0; })
-      .attr("fill", function(d) { var a = d.ancestors(); return color(a[a.length - 2].id); });
+      .attr("fill", function(d, i) {
+          var a = d.ancestors();
+          return color(a[a.length - 2].id);
+          // return color[i];
+        });
 
-    cell.append("clipPath")
-        .attr("id", d => "clip-" + d.id)
-        .append("use")
-        .attr("xlink:href", d => "#" + d.id);
+    // cell.append("clipPath")
+    //     .attr("id", d => "clip-" + d.id)
+    //     .append("use")
+    //     .attr("xlink:href", d => "#" + d.id);
 
     let label = cell.append("text")
         .attr("clip-path", d => "url(#clip-" + d.id + ")");
 
     label.append("tspan")
         .attr("x", 4)
-        .attr("y", 13)
-        // .text(d => d.data.path.substring(d.data.path.lastIndexOf("/") + 1, d.data.path.lastIndexOf(".")));
-        .text(function(d) {return d.id; })
+        .attr("y", 14)
+        .attr("font-family", 'Oswald')
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text(function(d) {
+          if (((d.x1 - d.x0) > 30) && ((d.y1 - d.y0) > 20)) {
+            return d.id;
+          }
+        })
 
     label.append("tspan")
         .attr("x", 4)
-        .attr("y", 25)
-        .text(d => format(d.value));
+        .attr("y", 24)
+        .style("font-size", "10px")
+        .attr("font-family", 'Oswald')
+        .text(function(d) {
+          if (((d.x1 - d.x0) > 30) && ((d.y1 - d.y0) > 20)) {
+            return format(d.value);
+          }
+        });
 
     cell.append("title")
-        .text(d =>  d.id + "\n" + format(d.value));
+        .text(function(d) {
+            return d.id + "\n" + format(d.value);
+        });
   }
 
   filterData() {
 
     let data = [];
 
+    //Add root
+    data.push({
+        number: null,
+        country: "ROOT",
+        parent: null,});
+
     for(let i=0; i < this.museumNames.length; i++) {
       let selectedMuseumData = null;
 
       let museumName = this.museumNames[i];
 
-      console.log(museumName);
+      // console.log(museumName);
       selectedMuseumData = this.museumData.filter(d => d.museum === museumName);
-      // console.log(selectedMuseumData);
 
       let countries = [];
 
@@ -96,19 +124,19 @@ class TreeMap {
       for (let country of selectedMuseumData) {
         tmp.push(country.country_code);
       }
+
       //remove duplicates
       let countrySet = new Set(tmp)
       countries = [...countrySet];
 
-      //Add the parent node
+      //Add the parent node a.k.a museum parent
       data.push({
           number: null,
           country: museumName,
-          parent: null,});
+          parent: "ROOT",});
 
       //create an object of the countries with the total number of artifacts
       for (let n of countries) {
-        // console.log(n);
         let filtData = selectedMuseumData.filter(d => d.country_code === n)
         data.push({
           number: filtData.map(y => y.artifact_name).length,
@@ -121,12 +149,5 @@ class TreeMap {
     console.log(data);
     return data;
   }
-
-  createJson() {
-    var jsonData = {};
-
-
-  }
-
 
 }

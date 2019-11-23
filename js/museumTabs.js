@@ -160,6 +160,7 @@ class MuseumTabs {
     let tabnum = 0;
 
     for(let i=0; i < this.data.length; i++) {
+      console.log(this.data[i].museumName, which);
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
       if(which == museumName ) {
