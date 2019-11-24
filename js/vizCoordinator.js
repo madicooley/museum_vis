@@ -7,19 +7,37 @@ class VizCoordinator {
         this.data = data;
         // default year of 2000, eventually this will be replaced with year range
         this.activeYear = 2000;
-        this.activeYearRange = [1995, 2000]; // default year range, currently unused
+        // this.activeYearRange = [1840,2020]; // default year range, currently unused
         this.activeMuseum  = null;
         this.activeCountries = [];
 
-        const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
-        this.yearOpts = yearOpts;
-        this.activeYearOpt = this.yearOpts[1];
+        // dictionary for year range options
+        this.yearOpts = [
+            {
+                'key': 'year-acquired',
+                'value': [1840, 2020]
+            },
+            {
+                'key': 'year-created-before-bc',
+                'value': [-400000, -1]
+            },
+            {
+                'key': 'year-created-after-bc',
+                'value': [1, 2020]
+            }
+        ]
+        this.activeYearOpt = this.yearOpts[0].key;
+        this.activeYearRange = this.yearOpts[0].value;
+        // const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
+        // this.yearOpts = yearOpts;
+        // this.activeYearOpt = this.yearOpts[2];
 
         // initialize views to null
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
         this.kdePlot = null;
+        this.yearBrush = null;
     }
 
     initializeView(){
@@ -34,7 +52,9 @@ class VizCoordinator {
 
         this.kdePlot = new KdePlot(this.data, this);
         this.kdePlot.initKdePlot();
-        // this.kdePlot.drawKdePlot();
+
+        this.yearBrush = new YearBrush(this);
+        this.yearBrush.initBrush();
     }
 
     getWorldMap(){
@@ -58,7 +78,10 @@ class VizCoordinator {
     }
 
     updateYearRange(newRange){ // currently unused
+        console.log(newRange)
         this.activeYearRange = newRange;
+
+        this.reDrawViz();
     }
 
     updateMuseum(newMuseum){

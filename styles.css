@@ -119,11 +119,12 @@ p {
 
 
 /* added for brush styling */
-rect.overlay {
-	stroke: black;
+.overlay {
+  stroke: black;
+  stroke-width: 1px;
 }
 
-rect.selection {
+.selection {
 	stroke: none;
   fill: steelblue;
   fill-opacity: 0.6;
