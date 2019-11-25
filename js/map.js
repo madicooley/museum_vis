@@ -129,7 +129,10 @@ class Map {
       sliderText.text(this.value).attr('x', yearScale(this.value));
       if (that.vizCoord.activeMuseum) {
         that.drawMuseum(that.vizCoord.activeMuseum);
-        that.vizCoord.treeMap.drawTreeMap();
+
+        if (that.vizCoord.treeMap.allYears == false) {
+          that.vizCoord.treeMap.drawTreeMap();
+        }
       }
     });
 
