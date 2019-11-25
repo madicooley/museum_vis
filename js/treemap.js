@@ -3,32 +3,100 @@ class TreeMap {
 
   constructor(data, vizCoord) {
     console.log(data);
+    this.width = 800;
+    this.height = 500;
 
     this.museumData = data.geoData;
     this.vizCoord = vizCoord;
 
     this.museumNames = ["canada-science-and-technology-museums", "museum-of-modern-art", "penn-museum",
                         "cleveland-museum-of-art", "cooper-hewitt-smithsonian-design-museum",
-                        "metropolitan-museum-of-art", "minneapolis-institute-of-art"]
-  }
+                        "metropolitan-museum-of-art", "minneapolis-institute-of-art"];
 
-  drawTreeMap() {
-    let width = 800;
-    let height = 500;
-
-    let svg = d3.select("svg#tree-map");
-    svg.attr("height", height).attr("width", width);
-
-    // let color = d3.scaleOrdinal(d3.schemeGnBu[9]);
-    let color = d3.scaleOrdinal(["#b5a5e3", "#b1af00", "#ff5b1a", "#e2a333", "#5b7769", "grey", "#b5a5e3"]);
-
-    let format = d3.format(",d");
-
-    let treemap = d3.treemap()
-        .size([width, height])
+    this.treemap = d3.treemap()
+        .size([this.width, this.height])
         .round(true)
         .padding(1);
 
+    this.color = d3.scaleOrdinal(["#b5a5e3", "#b1af00", "#ff5b1a", "#e2a333", "#5b7769", "grey", "#b5a5e3"]);
+    this.format = d3.format(",d");
+
+    this.clickNum = {
+      clicks: 0
+    };
+
+    this.allYears = true;
+
+    this.drawCheckBox();
+  }
+
+  drawCheckBox() {
+    let that = this;
+
+    var svg = d3.select("svg#check-box")
+        .attr("width", 80)
+        .attr("height", 50)
+        .attr("id", "checkBox")
+        .attr("transform", "translate(5, 20)")
+        .on("mouseover", function(d) {
+            d3.select(this).style("cursor", "pointer");
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).style("cursor", "default");
+        })
+        .on("click", function(d, i) {
+            if (that.clickNum.clicks % 2 != 0 ) {
+                svg.select("#check-mark").attr("fill", "grey");
+                that.allYears = true;
+                that.drawTreeMap();
+            } else {
+                svg.select("#check-mark").attr("fill", "white");
+                that.allYears = false;
+                that.drawTreeMap();
+            }
+            that.clickNum.clicks = that.clickNum.clicks + 1;
+        });
+
+    svg.append("rect")
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("stroke", "grey")
+        .attr("fill", "white")
+        .attr("transform", "translate(10, 20)");
+
+
+    svg.append("text")
+        .text("All Years")
+        .attr("fill", "grey")
+        .style("font-size", "14px")
+        .attr("font-family", 'Oswald')
+        .attr("transform", "translate(25, 32)");
+
+
+    let checkbox = svg.append("rect")
+      .attr("id", "check-mark")
+      .attr("width", 8)
+      .attr("height", 8)
+      .attr("fill", "grey")
+      .attr("transform", "translate(12, 22)")
+      // .on("click", function(d, i) {
+      //     console.log(that.clickNum.clicks);
+      //     if (that.clickNum.clicks % 2 != 0 ) {
+      //         d3.select(this).attr("fill", "grey");
+      //     } else {
+      //       d3.select(this).attr("fill", "white");
+      //     }
+      //     that.clickNum.clicks = that.clickNum.clicks + 1;
+      // });
+
+  }
+
+  drawTreeMap() {
+    let that = this;
+
+    let svg = d3.select("svg#tree-map");
+    svg.attr("height", this.height).attr("width", this.width);
+    svg.selectAll("a").remove();
 
     let data = this.filterData();
 
@@ -39,36 +107,26 @@ class TreeMap {
       .sum(function(d) { return d.number; })
       .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
 
-    treemap(root);
+    this.treemap(root);
 
-    let cell = svg.selectAll("a")
-        .data(root.leaves())
-        .enter().append("a")
+    let cell = svg.selectAll("a").data(root.leaves());
+
+    let container = cell.enter().append("a")
         .attr("target", "_blank")
-        // .attr("xlink:href", d => {
-        //     return 1;
-        //     // let p = d.data.path.split("/");
-        //     // return "https://github.com/" + p.slice(0, 2).join("/") + "/blob/v"
-        //             // + version[p[3]] + "/src/" + p.slice(2).join("/");
-        // })
-        .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")");
+        .attr("transform", function(d) {
+          return "translate(" + d.x0 + "," + d.y0 + ")";
+        });
 
-    cell.append("rect")
+    container.append("rect")
       .attr("id", function(d) { return d.id; })
       .attr("width", function(d) { return d.x1 - d.x0; })
       .attr("height", function(d) { return d.y1 - d.y0; })
       .attr("fill", function(d, i) {
           var a = d.ancestors();
-          return color(a[a.length - 2].id);
-          // return color[i];
+          return that.color(a[a.length - 2].id);
         });
 
-    // cell.append("clipPath")
-    //     .attr("id", d => "clip-" + d.id)
-    //     .append("use")
-    //     .attr("xlink:href", d => "#" + d.id);
-
-    let label = cell.append("text")
+    let label = container.append("text")
         .attr("clip-path", d => "url(#clip-" + d.id + ")");
 
     label.append("tspan")
@@ -81,7 +139,7 @@ class TreeMap {
           if (((d.x1 - d.x0) > 30) && ((d.y1 - d.y0) > 20)) {
             return d.id;
           }
-        })
+        });
 
     label.append("tspan")
         .attr("x", 4)
@@ -90,18 +148,34 @@ class TreeMap {
         .attr("font-family", 'Oswald')
         .text(function(d) {
           if (((d.x1 - d.x0) > 30) && ((d.y1 - d.y0) > 20)) {
-            return format(d.value);
+            return that.format(d.value);
           }
         });
 
-    cell.append("title")
+    container.append("title")
         .text(function(d) {
-            return d.id + "\n" + format(d.value);
+            let parentName = d.data.parent;
+            parentName = parentName.replace(/-/g,' ');
+            parentName = parentName.split(" ");
+
+            let mus = '';
+            for(let word of parentName) {
+              mus = mus + " " + word.charAt(0).toUpperCase() + word.slice(1);
+            }
+
+            //TODO needs to display the year interval not just single year
+            if (that.allYears != true)  {
+              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.id + " in " + that.vizCoord.activeYear + ".";
+            } else if (that.allYears == true) {
+              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.id + " from 1995 to 2000."; //TODO correct range??
+            }
+
         });
+
+
   }
 
   filterData() {
-
     let data = [];
 
     //Add root
@@ -115,8 +189,11 @@ class TreeMap {
 
       let museumName = this.museumNames[i];
 
-      // console.log(museumName);
-      selectedMuseumData = this.museumData.filter(d => d.museum === museumName);
+      if (this.allYears == true) {
+          selectedMuseumData = this.museumData.filter(d => d.museum === museumName);
+      } else {
+          selectedMuseumData = this.museumData.filter(d => d.museum === museumName && +d.acquisition_date == this.vizCoord.activeYear);
+      }
 
       let countries = [];
 
@@ -146,7 +223,7 @@ class TreeMap {
       }
     }
 
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
