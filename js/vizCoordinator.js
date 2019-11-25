@@ -28,9 +28,6 @@ class VizCoordinator {
         ]
         this.activeYearOpt = this.yearOpts[0].key;
         this.activeYearRange = this.yearOpts[0].value;
-        // const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
-        // this.yearOpts = yearOpts;
-        // this.activeYearOpt = this.yearOpts[2];
 
         // initialize views to null
         this.worldMap = null;
@@ -41,20 +38,21 @@ class VizCoordinator {
     }
 
     initializeView(){
+        this.kdePlot = new KdePlot(this.data, this);
+        this.kdePlot.initKdePlot();
+
+        this.yearBrush = new YearBrush(this);
+        this.yearBrush.initBrush();
+
         this.worldMap = new Map(this.data, this);
-        this.worldMap.drawYearSlider();
+        this.worldMap.drawMuseum(this.activeMuseum);
+        // this.worldMap.drawYearSlider();
 
         this.museumTabs = new MuseumTabs(this.data.museumBios);
         this.museumTabs.drawMuseumTabs();
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
-
-        this.kdePlot = new KdePlot(this.data, this);
-        this.kdePlot.initKdePlot();
-
-        this.yearBrush = new YearBrush(this);
-        this.yearBrush.initBrush();
     }
 
     getWorldMap(){
@@ -78,7 +76,6 @@ class VizCoordinator {
     }
 
     updateYearRange(newRange){ // currently unused
-        console.log(newRange)
         this.activeYearRange = newRange;
 
         this.reDrawViz();
@@ -87,7 +84,8 @@ class VizCoordinator {
     updateMuseum(newMuseum){
         this.activeMuseum = newMuseum;
 
-        this.reDrawViz();
+        // this.reDrawViz();
+        this.kdePlot.drawKdePlot();
     }
 
     updateCountries(newCountries){
@@ -95,7 +93,7 @@ class VizCoordinator {
     }
 
     reDrawViz(){
-        console.log('redrawn');
         this.kdePlot.drawKdePlot();
+        this.worldMap.drawMuseum(this.activeMuseum);
     }
 }
