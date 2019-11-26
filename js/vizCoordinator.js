@@ -22,7 +22,7 @@ class VizCoordinator {
     this.worldMap = new Map(this.data, this);
     this.worldMap.drawYearSlider();
 
-    this.museumTabs = new MuseumTabs(this.data.museumBios);
+    this.museumTabs = new MuseumTabs(this.data.museumBios, this);
     this.museumTabs.drawMuseumTabs();
 
     this.dataPortrait = new DataPortrait(this.data.geoData, this);

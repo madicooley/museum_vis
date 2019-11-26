@@ -2,7 +2,8 @@ class MuseumTabs {
   /**
    *
    */
-  constructor(data) {
+  constructor(data, vizCoord) {
+    this.vizCoord = vizCoord
     this.data = data;
     this.tabNum = {
       tab: 0
@@ -127,9 +128,13 @@ class MuseumTabs {
 
     //on button clicks change the content
     d3.select("button#moma").on("click", function(d) {
+      that.vizCoord.updateYear(1958)
+      that.vizCoord.getWorldMap().drawMuseum("museum-of-modern-art")
       that.momaTabs("moma")
     })
     d3.select("button#penn").on("click", function(d) {
+      that.vizCoord.updateYear(1928)
+      that.vizCoord.getWorldMap().drawMuseum("penn-museum")
       that.momaTabs("penn")
     })
     d3.select("button#explore").on("click", function(d) {
@@ -240,9 +245,9 @@ class MuseumTabs {
     this.museumButton = museum
     let data = {
       moma: [
-        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s."
+        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s.", 1959
       ],
-      penn: ["In 1929 Penn Museum received a generous donation from Eldridge Johnson, founder of the victor Talking Machine Company (a record company and phonograph manufacturer).", "You can see the effect of 💰 starting in 1929. The museum begins to acquire a lot more artwork following the funding."]
+      penn: ["In 1929 Penn Museum received a generous donation from Eldridge Johnson, founder of the victor Talking Machine Company (a record company and phonograph manufacturer).", "You can see the effect of 💰 starting in 1929. The museum begins to acquire a lot more artwork following the funding.", 1929]
     }
 
     this.updateText(data[museum][0])
@@ -258,6 +263,7 @@ class MuseumTabs {
 
     storyButton.on("click", function() {
       that.updateText(data[museum][1])
+      that.vizCoord.updateYear(data[museum][2])
     })
   }
 
@@ -265,7 +271,7 @@ class MuseumTabs {
     let museum = this.museumButton
     let museumInfo = {
       moma: ["🔥 at MoMA", "New York, NY | USA", "https://www.moma.org"],
-      penn: ["💰💰💰", "Philadelphia, PA | USA", "https://www.penn.museum"]
+      penn: ["💰 at Penn", "Philadelphia, PA | USA", "https://www.penn.museum"]
     }
     d3.select("text.museumName").text(museumInfo[museum][0])
     d3.select("text.museumLocation").text(museumInfo[museum][1])
@@ -274,8 +280,7 @@ class MuseumTabs {
   }
 
   tutorial() {
-    // import Shepherd from 'shepherd.js';
-
+    // using shepherd.js to create tutorial
     const tour = new Shepherd.Tour({
       defaultStepOptions: {
         cancelIcon: {
