@@ -2,6 +2,21 @@
 <html lang="en">
 
 <head>
+  <META HTTP-EQUIV='Content-Security-Policy' CONTENT="default-src 'none';
+  base-uri 'self';
+  block-all-mixed-content;
+  child-src render.githubusercontent.com;
+  connect-src 'self' uploads.github.com status.github.com api.github.com www.google-analytics.com wss://live.github.com;
+  font-src 'self' https://fonts.googleapis.com/;
+  form-action 'self' github.com gist.github.com;
+  frame-src render.githubusercontent.com;
+  img-src 'self' data: assets-cdn.github.com identicons.github.com www.google-analytics.com collector.githubapp.com *.gravatar.com *.wp.com *.githubusercontent.com;
+  media-src 'none';
+  object-src assets-cdn.github.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://d3js.org/d3.v5.js
+  https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js https://d3js.org/d3-geo-projection.v2.js;
+  style-src 'unsafe-inline' http://localhost:8080/bulma.css https://fonts.googleapis.com/">
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MuseumVis</title>
@@ -14,7 +29,6 @@
   <script src="js/museumTabs.js" async></script>
   <script src="js/script.js" async></script>
   <script src="js/portraits.js" async></script>
-  <script src="js/kdePlot.js" async></script>
   <script src="js/vizCoordinator.js" async></script>
 </head>
 
@@ -56,14 +70,6 @@
       </svg>
     </div>
   </div>
-
-  <!-- CONTAINER FOR KDE PLOT -->
-  <div class="column is-vcentered">
-    <div class="column is-one-half">
-      <svg id="kde-plot"></svg>
-    </div>
-  </div>
-
   <script>
     function on() {
       document.getElementById("overlay").style.display = "block";
