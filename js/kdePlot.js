@@ -73,7 +73,6 @@
 
         // determine which attribute we will access for data based on the activeYearOpt
         let attrib = null;
-        console.log(this.vizCoord.activeYearOpt, this.vizCoord.yearOpts);
         if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
             attrib = 'acquisition_date';
         }else{
