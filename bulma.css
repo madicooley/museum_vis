@@ -128,21 +128,31 @@ button:hover {
   }
 }
 
-svg#portraits:hover>g {
+/* svg#portraits:hover>g {
   opacity: 0.5;
 }
 
 svg#portraits:hover>g:hover {
   opacity: 1.0;
-}
-
-a:focus {
+} */
+/* a:focus {
   opacity: .2;
-}
-
+} */
 /* svg#portraits:focus>g:focus {
   opacity: 1.0;
 } */
+.porButton {
+  fill: rgba(255, 225, 225, 0);
+}
+
+.porButton.not-selected {
+  fill: rgba(255, 225, 225, .5);
+}
+
+.porButton.selected {
+  fill: rgba(255, 225, 225, 0);
+}
+
 div.tooltip {
   /* FOR PORTRAIT TOOLTIP */
   position: absolute;

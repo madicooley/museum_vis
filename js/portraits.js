@@ -192,27 +192,27 @@ class DataPortrait {
 
 
 
-    let frame = svg
-      .append("a")
-      .attr("xlink:href", "#0")
+    // let frame = svg
+    // .append("a")
+    // .attr("xlink:href", "#0")
 
-    frame.append("rect")
+    let frame = svg.append("rect")
       .attr("width", frameWidth)
       .attr("border", 20)
       .attr("height", frameHeight)
       .style("stroke", "black")
       .style("stroke-width", 5)
       // .style("fill", "none")
-      .style("fill", "rgba(35, 29, 150, 0)")
+      // .style("fill", "rgba(35, 29, 150, 0)")
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      .attr("data-tabindex", 0)
+    // .attr("data-tabindex", 0)
 
     let globalPor = d3.select("#global") //.selectAll("rect")
 
 
-    globalPor
+    globalPor //TODO add globe to global button!!!
       .style("fill", "white")
       .append("svg:image")
       .attr('xlink:href', "https://upload.wikimedia.org/wikipedia/commons/c/c4/Globe_icon.svg")
@@ -227,14 +227,26 @@ class DataPortrait {
 
     let that = this;
     frame.on("click", function(d, i) {
+        d3.selectAll(".porButton").classed("selected", false)
+        d3.selectAll(".porButton").classed("not-selected", true)
         that.vizCoord.getMuseumTabs().switchTab(museum.museum)
         that.vizCoord.getWorldMap().drawMuseum(museum.museum)
+        that.vizCoord.updateMuseum(museum.museum)
+        d3.select(this).classed("selected", true)
+        d3.select(this).classed("not-selected", false)
       })
       .on("mouseover", function(d) {
         let title = museum.museum
+        // d3.selectAll(".porButton").attr("opacity", title === that.vizCoord.activeMuseum ? 1 : .2)
         title === "metropolitan-museum-of-art" ? title = "The Met" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title === "global" ? title = "All Museums" : title = "Canada Science and Technology Museum"
         d3.select(this).append('svg:title')
           .text(title)
+        d3.selectAll(".porButton").classed("selected", false)
+        d3.selectAll(".porButton").classed("not-selected", true)
+        d3.select(this).classed("selected", true)
+        d3.select(this).classed("not-selected", false)
       });
+
+    // d3.selectAll("")
   } //end drawPortraits
 } //end Portraits class

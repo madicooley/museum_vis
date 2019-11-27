@@ -17,6 +17,8 @@ class MuseumTabs {
       .nice();
 
     this.museumButton = null;
+
+    this.activeMuseum = vizCoord.activeMuseum
   }
 
   drawMuseumTabs() {
@@ -129,16 +131,21 @@ class MuseumTabs {
     //on button clicks change the content
     d3.select("button#moma").on("click", function(d) {
       that.vizCoord.updateYear(1958)
+      that.vizCoord.updateMuseum("museum-of-modern-art")
       that.vizCoord.getWorldMap().drawMuseum("museum-of-modern-art")
       that.momaTabs("moma")
+      that.portraitHighlight("#museum-of-modern-art")
     })
     d3.select("button#penn").on("click", function(d) {
       that.vizCoord.updateYear(1928)
+      that.vizCoord.updateMuseum("penn-museum")
       that.vizCoord.getWorldMap().drawMuseum("penn-museum")
       that.momaTabs("penn")
+      that.portraitHighlight("#penn-museum")
     })
     d3.select("button#explore").on("click", function(d) {
       that.tutorial()
+      that.portraitHighlight("reset")
     })
 
     // pennStory.on("click", that.storyTabs("penn"))
@@ -166,6 +173,18 @@ class MuseumTabs {
 
   }
 
+  portraitHighlight(id) {
+    if (id === "reset") {
+      d3.selectAll(".porButton").classed("not-selected", false)
+      d3.selectAll(".porButton").classed("selected", true)
+    } else {
+      d3.selectAll(".porButton").classed("not-selected", true)
+      d3.selectAll(".porButton").classed("selected", false)
+      d3.select(id).classed("selected", true)
+    }
+
+  }
+
   switchTab(which) {
     let that = this;
     let tabnum = 0;
@@ -173,9 +192,11 @@ class MuseumTabs {
     for (let i = 0; i < this.data.length; i++) {
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
-      if (which == museumName) {
-        tabnum = i;
-      }
+
+      which == "global" ? tabnum = 7 : which == museumName ? tabnum = i : null
+      // if (which == museumName) {
+      //   tabnum = i;
+      // }
     }
 
     let tab = d3.selectAll('.column').select("#museumTabContainer");
