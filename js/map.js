@@ -125,18 +125,21 @@ class Map {
     yearSlider.on('input', function() {
 
       that.vizCoord.updateYear(this.value);
-      // that.activeYear = that.vizCoord.activeYear;
 
       sliderText.text(this.value).attr('x', yearScale(this.value));
       if (that.vizCoord.activeMuseum) {
-        that.drawMuseum(that.vizCoord.activeMuseum)
+        that.drawMuseum(that.vizCoord.activeMuseum);
+
+        if (that.vizCoord.treeMap.allYears == false) {
+          that.vizCoord.treeMap.drawTreeMap();
+        }
       }
     });
 
   }
 
   drawMuseum(museum) {
-    console.log(museum);
+    // console.log(museum);
     let that = this;
 
     this.vizCoord.updateMuseum(museum);

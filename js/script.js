@@ -7,6 +7,7 @@ loadData().then(data => {
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
     vizCoord.worldMap.drawMap(mapData);
+    vizCoord.treeMap.drawTreeMap();
   });
 
 });

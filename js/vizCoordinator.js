@@ -19,6 +19,7 @@ class VizCoordinator {
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
+        this.treeMap = null;
         this.kdePlot = null;
     }
 
@@ -31,6 +32,9 @@ class VizCoordinator {
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
+
+        this.treeMap = new TreeMap(this.data, this);
+        this.treeMap.drawTreeMap();
 
         this.kdePlot = new KdePlot(this.data, this);
         this.kdePlot.initKdePlot();
@@ -48,6 +52,9 @@ class VizCoordinator {
     getDataPortrait(){
         return this.dataPortrait;
     }
+
+    getTreeMap() {
+      return this.treeMap;
 
     getKdePlot(){
         return this.kdePlot;
@@ -76,3 +83,4 @@ class VizCoordinator {
         this.kdePlot.drawKdePlot();
     }
 }
+
