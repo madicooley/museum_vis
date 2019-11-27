@@ -73,6 +73,7 @@
 
         // determine which attribute we will access for data based on the activeYearOpt
         let attrib = null;
+        console.log(this.vizCoord.activeYearOpt, this.vizCoord.yearOpts);
         if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
             attrib = 'acquisition_date';
         }else{
@@ -93,10 +94,10 @@
         }
 
         // get extrema for scaling
-        let extrema = d3.extent(this.plotData, (d) => { 
-            return +(d[attrib]); 
+        let extrema = d3.extent(this.plotData, (d) => {
+            return +(d[attrib]);
         });
-        
+
         // create scales and axis elements
         // x-scale
         this.xScale = d3.scaleLinear()
