@@ -4,6 +4,7 @@
 class VizCoordinator {
 
     constructor(data){
+        console.log("here!")
         this.data = data;
         // default year of 2000, eventually this will be replaced with year range
         this.activeYear = 2000;
