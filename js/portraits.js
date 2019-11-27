@@ -2,6 +2,18 @@ class DataPortrait {
   constructor(data, vizCoord) {
     this.data = data
 
+    //adding dummy data for global portrait
+    this.data.push({
+      acquisition_date: "0",
+      artifact_name: "0",
+      continent: "0",
+      country_code: "0",
+      country_of_origin: "0",
+      created_date: "0",
+      description: "0",
+      museum: "global"
+    })
+
     this.vizCoord = vizCoord
 
     let museumNames = []
@@ -9,9 +21,12 @@ class DataPortrait {
     for (let museums of this.data) {
       museumNames.push(museums.museum)
     }
+
+
     //remove duplicates
     let museumsSet = new Set(museumNames)
     this.museums = [...museumsSet]
+    // this.museums[7] = "global"
 
     this.museumData = []
     for (let n of this.museums) {
@@ -194,6 +209,22 @@ class DataPortrait {
       .attr("class", "porButton")
       .attr("data-tabindex", 0)
 
+    let globalPor = d3.select("#global") //.selectAll("rect")
+
+
+    globalPor
+      .style("fill", "white")
+      .append("svg:image")
+      .attr('xlink:href', "https://upload.wikimedia.org/wikipedia/commons/c/c4/Globe_icon.svg")
+      .attr("x", function(d) {
+        return -25;
+      })
+      .attr("y", function(d) {
+        return -25;
+      })
+      .attr("height", 50)
+      .attr("width", 50);
+
     let that = this;
     frame.on("click", function(d, i) {
         that.vizCoord.getMuseumTabs().switchTab(museum.museum)
@@ -201,7 +232,7 @@ class DataPortrait {
       })
       .on("mouseover", function(d) {
         let title = museum.museum
-        title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
+        title === "metropolitan-museum-of-art" ? title = "The Met" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title === "global" ? title = "All Museums" : title = "Canada Science and Technology Museum"
         d3.select(this).append('svg:title')
           .text(title)
       });
