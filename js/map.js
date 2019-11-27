@@ -155,7 +155,6 @@ class Map {
         attrib = 'created_date';
     }
     selectedMuseumData = selectedMuseumData.filter(d => +d[attrib] >= this.vizCoord.activeYearRange[0] && +d[attrib] <= this.vizCoord.activeYearRange[1])
-    console.log('muse Data: ', selectedMuseumData)
     //create object of number of artifacts per country
     this.vizCoord.updateCountries([]);
 
@@ -176,6 +175,7 @@ class Map {
         country: n
       })
     }
+    console.log(artifacts)
 
     //create scales
     let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d / Math.PI)) // create scale to consider data as area, not radius
@@ -185,8 +185,7 @@ class Map {
       .range([5, 20])
 
     let bubbleGroup = d3.select('#bubble-group');
-    // bubbleGroup.append('g')
-    //     .attr('id', 'TEST-of-bubbleGroup')
+
     let bubbles = bubbleGroup
       .selectAll('circle')
       .data(artifacts)
@@ -194,7 +193,11 @@ class Map {
       .classed('bubbles', true)
       .attr('transform', (d) => {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
-        return "translate(" + selectedCountry[0].centroid + ")"
+        if(selectedCountry.length == 0){ // if country not found
+          return 'translate(0,0)';
+        }else{
+          return "translate(" + selectedCountry[0].centroid + ")";
+        } 
       })
       .on("mouseover", function(d) {
         d3.select(this).append('svg:title')
