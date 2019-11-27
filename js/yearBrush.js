@@ -17,25 +17,46 @@ class YearBrush {
           .domain(this.vizCoord.activeYearRange) 
           .range([0, this.width]);
 
+        // make dropdown call update year opts
+        let e = d3.select('#selectOpts').node().value;
+        d3.select("#selectOpts").on("change", () => {
+          console.log('opts', d3.select('#selectOpts').node().value);
+          let ind = +d3.select('#selectOpts').node().value;
+          this.vizCoord.updateYearOpts(ind);
+        })
+
         // create svg and translated g
         let svg = d3.select('#activeYear-brush')
             .selectAll('svg')
             .data([1])
             .join('svg')
             .attr('width', this.width + this.margins.left + this.margins.right)
-            .attr('height', this.height + 30)
-        let g = svg.append('g').attr('transform', `translate(${this.margins.left}, 20)`)
+            .attr('height', this.height + 40)
+        let g = svg.selectAll('g')
+          .data([1])
+          .join('g')
+          .attr('id', 'brush-group')
+          .attr('transform', `translate(${this.margins.left}, 20)`);
+        let labelG = g.selectAll('g')
+          .data(['left', 'right', 'brush'])
+          .join('g')
+          .attr('id', d => d);
 
-        // labels
-        let labelL = g.append('text')
+        let labelL = d3.select('#left')
+          .selectAll('text')
+          .data([1])
+          .join('text')
           .attr('id', 'labelleft')
-          .attr('x', 0)
-          .attr('y', 0)
+          .attr('x', -5)
+          .attr('y', -5)
           .text(this.vizCoord.activeYearRange[0]);
-        let labelR = g.append('text')
+        let labelR = d3.select('#right')
+          .selectAll('text')
+          .data([1])
+          .join('text')
           .attr('id', 'labelright')
           .attr('x', 0)
-          .attr('y', this.height + 10)
+          .attr('y', this.height + 15)
           .text(this.vizCoord.activeYearRange[1]);
 
         // define brush
@@ -67,7 +88,10 @@ class YearBrush {
           });
 
         // append brush to g
-        let gBrush = g.append("g")
+        let gBrush = d3.select('#brush')
+            .selectAll('g')
+            .data([1])
+            .join('g')
             .attr("class", "brush")
             .attr('stroke', 'black')
             .attr('stroke-width', '1px')

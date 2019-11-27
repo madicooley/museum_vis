@@ -92,6 +92,13 @@ class VizCoordinator {
         this.activeCountries = newCountries;
     }
 
+    updateYearOpts(index){
+        this.activeYearOpt = this.yearOpts[index].key;
+        this.activeYearRange = this.yearOpts[index].value;
+
+        this.yearBrush.initBrush();
+    }
+
     reDrawViz(){
         this.kdePlot.drawKdePlot();
         this.worldMap.drawMuseum(this.activeMuseum);
