@@ -37,7 +37,8 @@ class TreeMap {
         .attr("width", 80)
         .attr("height", 50)
         .attr("id", "checkBox")
-        .attr("transform", "translate(5, 20)")
+        // .attr("transform", "translate(5, 20)")
+        .attr("transform", "translate(1100, -1150)")
         .on("mouseover", function(d) {
             d3.select(this).style("cursor", "pointer");
         })
@@ -79,15 +80,6 @@ class TreeMap {
       .attr("height", 8)
       .attr("fill", "grey")
       .attr("transform", "translate(12, 22)")
-      // .on("click", function(d, i) {
-      //     console.log(that.clickNum.clicks);
-      //     if (that.clickNum.clicks % 2 != 0 ) {
-      //         d3.select(this).attr("fill", "grey");
-      //     } else {
-      //       d3.select(this).attr("fill", "white");
-      //     }
-      //     that.clickNum.clicks = that.clickNum.clicks + 1;
-      // });
 
   }
 
@@ -95,8 +87,9 @@ class TreeMap {
     let that = this;
 
     let svg = d3.select("svg#tree-map");
-    svg.attr("height", this.height).attr("width", this.width);
+    svg.attr("height", this.height).attr("width", this.width).attr("transform", "translate(1000, -650)");
     svg.selectAll("a").remove();
+
 
     let data = this.filterData();
 

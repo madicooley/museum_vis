@@ -55,8 +55,9 @@ class VizCoordinator {
 
     getTreeMap() {
       return this.treeMap;
+    }
 
-    getKdePlot(){
+    getKdePlot() {
         return this.kdePlot;
     }
 
@@ -83,4 +84,3 @@ class VizCoordinator {
         this.kdePlot.drawKdePlot();
     }
 }
-
