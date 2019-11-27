@@ -34,7 +34,7 @@ class VizCoordinator {
         this.dataPortrait.dataSummary(this.data.geoData);
 
         this.treeMap = new TreeMap(this.data, this);
-        this.treeMap.drawTreeMap();
+        // this.treeMap.drawTreeMap();
 
         this.kdePlot = new KdePlot(this.data, this);
         this.kdePlot.initKdePlot();

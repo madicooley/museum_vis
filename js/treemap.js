@@ -2,7 +2,7 @@
 class TreeMap {
 
   constructor(data, vizCoord) {
-    console.log(data);
+    // console.log(data);
     this.width = 800;
     this.height = 500;
 
@@ -158,9 +158,9 @@ class TreeMap {
 
             //TODO needs to display the year interval not just single year
             if (that.allYears != true)  {
-              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.id + " in " + that.vizCoord.activeYear + ".";
+              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.data.fullCountryName + " between " + that.vizCoord.activeYear + ".";
             } else if (that.allYears == true) {
-              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.id + " from 1995 to 2000."; //TODO correct range??
+              return  mus + "\n" + "acquired " + that.format(d.value) + " artifacts\n" + "from " + d.data.fullCountryName + " between 1995 to 2000."; //TODO correct range??
             }
 
         });
@@ -203,6 +203,7 @@ class TreeMap {
       data.push({
           number: null,
           country: museumName,
+          fullCountryName: null,
           parent: "ROOT",});
 
       //create an object of the countries with the total number of artifacts
@@ -211,6 +212,7 @@ class TreeMap {
         data.push({
           number: filtData.map(y => y.artifact_name).length,
           country: n,
+          fullCountryName: filtData.map(y => y.country_of_origin)[0],
           parent: museumName
         })
       }
