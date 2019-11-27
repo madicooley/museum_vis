@@ -1,7 +1,6 @@
 /**
  *  Class that coordinates between the views when the date or selected museum is changed
  */
-
 class VizCoordinator {
 
     constructor(data){
@@ -12,11 +11,16 @@ class VizCoordinator {
         this.activeMuseum  = null;
         this.activeCountries = [];
 
+        const yearOpts = ['year-acquired','year-created-before-bc','year-created-after-bc'];
+        this.yearOpts = yearOpts;
+        this.activeYearOpt = this.yearOpts[0];
+
         // initialize views to null
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
         this.treeMap = null;
+        this.kdePlot = null;
     }
 
     initializeView(){
@@ -31,6 +35,10 @@ class VizCoordinator {
 
         this.treeMap = new TreeMap(this.data, this);
         this.treeMap.drawTreeMap();
+
+        this.kdePlot = new KdePlot(this.data, this);
+        this.kdePlot.initKdePlot();
+        // this.kdePlot.drawKdePlot();
     }
 
     getWorldMap(){
@@ -47,6 +55,9 @@ class VizCoordinator {
 
     getTreeMap() {
       return this.treeMap;
+
+    getKdePlot(){
+        return this.kdePlot;
     }
 
     updateYear(newYear){
@@ -59,9 +70,17 @@ class VizCoordinator {
 
     updateMuseum(newMuseum){
         this.activeMuseum = newMuseum;
+
+        this.reDrawViz();
     }
 
     updateCountries(newCountries){
         this.activeCountries = newCountries;
     }
+
+    reDrawViz(){
+        console.log('redrawn');
+        this.kdePlot.drawKdePlot();
+    }
 }
+
