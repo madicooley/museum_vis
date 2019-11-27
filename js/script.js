@@ -4,8 +4,11 @@ loadData().then(data => {
   const vizCoord = new VizCoordinator(data);
   vizCoord.initializeView();
 
+  console.log("here!")
+
   // here we load the map data
   d3.json('data/world.json').then(mapData => {
+    console.log("drawing map")
     vizCoord.worldMap.drawMap(mapData);
   });
 
