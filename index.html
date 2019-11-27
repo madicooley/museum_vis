@@ -27,6 +27,7 @@
   <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
   <script src="js/map.js" async></script>
   <script src="js/museumTabs.js" async></script>
+  <script src="js/treemap.js" async></script>
   <script src="js/script.js" async></script>
   <script src="js/portraits.js" async></script>
   <script src="js/vizCoordinator.js" async></script>
@@ -70,6 +71,18 @@
       </svg>
     </div>
   </div>
+
+  <!-- CONTAINER FOR KDE PLOT AND TREEMAP -->
+  <div class="column is-vcentered">
+    <div class="column is-one-half">
+      <svg id="kde-plot"></svg>
+    </div>
+    <div class="column">
+      <svg id="check-box"></svg>
+      <svg id="tree-map"></svg>
+    </div>
+  </div>
+
   <script>
     function on() {
       document.getElementById("overlay").style.display = "block";

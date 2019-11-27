@@ -10,6 +10,7 @@ loadData().then(data => {
   d3.json('data/world.json').then(mapData => {
     console.log("drawing map")
     vizCoord.worldMap.drawMap(mapData);
+    vizCoord.treeMap.drawTreeMap();
   });
 
 });

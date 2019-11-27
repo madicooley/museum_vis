@@ -16,6 +16,11 @@ class VizCoordinator {
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
+<<<<<<< HEAD
+=======
+        this.treeMap = null;
+        this.kdePlot = null;
+>>>>>>> master
     }
 
     initializeView(){
@@ -27,6 +32,16 @@ class VizCoordinator {
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
+<<<<<<< HEAD
+=======
+
+        this.treeMap = new TreeMap(this.data, this);
+        // this.treeMap.drawTreeMap();
+
+        this.kdePlot = new KdePlot(this.data, this);
+        this.kdePlot.initKdePlot();
+        // this.kdePlot.drawKdePlot();
+>>>>>>> master
     }
 
     getWorldMap(){
@@ -41,6 +56,17 @@ class VizCoordinator {
         return this.dataPortrait;
     }
 
+<<<<<<< HEAD
+=======
+    getTreeMap() {
+      return this.treeMap;
+    }
+
+    getKdePlot() {
+        return this.kdePlot;
+    }
+
+>>>>>>> master
     updateYear(newYear){
         this.activeYear = newYear;
     }
@@ -56,4 +82,12 @@ class VizCoordinator {
     updateCountries(newCountries){
         this.activeCountries = newCountries;
     }
+<<<<<<< HEAD
+=======
+
+    reDrawViz(){
+        console.log('redrawn');
+        this.kdePlot.drawKdePlot();
+    }
+>>>>>>> master
 }
