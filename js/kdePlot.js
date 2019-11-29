@@ -38,12 +38,12 @@
             .attr('transform', `translate(${this.margins.left},${this.height-this.margins.bottom})`);
         plotGroup.append('g')
             .attr('id', 'y-axis')
-            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+            .attr('transform', `translate(${this.margins.left},${this.margins.top + 100})`);
 
         // initialize group that we will append actual KDE plots to
         plotGroup.append('g')
             .attr('id', 'kdes')
-            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+            .attr('transform', `translate(${this.margins.left},${this.margins.top + 100})`);
 
         // initialize group that we will append text legened for KDE plots to
         plotGroup.append('g')
@@ -120,7 +120,7 @@
         this.yScale = d3.scaleLinear()
             .domain([0, d3.max(bins, d => d.length) / this.plotData.length])
             // .range([this.height - this.margins.top - this.margins.bottom, this.margins.top]);
-            .range([this.height - this.margins.top - this.margins.bottom, this.margins.top])
+            .range([(this.height - this.margins.top - this.margins.bottom - 100), this.margins.top])
         d3.select('#y-axis')
             .call(d3.axisLeft(this.yScale).ticks(null, "%"))
             .call(g => g.select(".domain").remove())

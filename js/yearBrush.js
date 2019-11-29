@@ -20,7 +20,6 @@ class YearBrush {
         // make dropdown call update year opts
         let e = d3.select('#selectOpts').node().value;
         d3.select("#selectOpts").on("change", () => {
-          console.log('opts', d3.select('#selectOpts').node().value);
           let ind = +d3.select('#selectOpts').node().value;
           this.vizCoord.updateYearOpts(ind);
         })

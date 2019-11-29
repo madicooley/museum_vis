@@ -101,40 +101,6 @@ class Map {
 
   }
 
-  // drawYearSlider() {
-  //   let that = this;
-  //   let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
-
-  //   let yearSlider = d3.select('#activeYear-bar')
-  //     .append('div').classed('slider-wrap', true).attr("transform", "translate(20,0)")
-  //     .append('input').classed('slider', true)
-  //     .attr('type', 'range')
-  //     .attr('min', 1800)
-  //     .attr('max', 2020)
-  //     .attr('value', this.vizCoord.activeYear)
-
-  //   let sliderLabel = d3.select('.slider-wrap')
-  //     .append('div').classed('slider-label', true)
-  //     .append('svg');
-
-  //   let sliderText = sliderLabel.append('text').text(this.vizCoord.activeYear);
-
-  //   sliderText.attr('x', yearScale(this.vizCoord.activeYear));
-  //   sliderText.attr('y', 25);
-
-  //   yearSlider.on('input', function() {
-
-  //     that.vizCoord.updateYear(this.value);
-  //     // that.activeYear = that.vizCoord.activeYear;
-
-  //     sliderText.text(this.value).attr('x', yearScale(this.value));
-  //     if (that.vizCoord.activeMuseum) {
-  //       that.drawMuseum(that.vizCoord.activeMuseum)
-  //     }
-  //   });
-
-  // }
-
   drawMuseum(museum) {
     let that = this;
 
@@ -175,7 +141,6 @@ class Map {
         country: n
       })
     }
-    console.log(artifacts)
 
     //create scales
     let domainVal = d3.extent(artifacts, d => +d.number).map(d => Math.sqrt(d / Math.PI)) // create scale to consider data as area, not radius
