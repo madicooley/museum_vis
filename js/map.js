@@ -98,7 +98,6 @@ class Map {
       .classed('tooltip', true)
 
     d3.select('svg#map-chart').attr("transform", "translate(20,0)");
-
   }
 
   drawMuseum(museum) {
@@ -138,6 +137,7 @@ class Map {
       let filtData = selectedMuseumData.filter(d => d.country_code === n)
       artifacts.push({
         number: filtData.map(y => y.artifact_name).length,
+        fullCountryName: filtData.map(y => y.country_of_origin)[0],
         country: n
       })
     }
@@ -165,8 +165,9 @@ class Map {
         } 
       })
       .on("mouseover", function(d) {
+        // console.log(d);
         d3.select(this).append('svg:title')
-          .text(d.number + ' artifacts acquired from ' + d.country)
+          .text(d.number + ' artifacts acquired from ' + d.fullCountryName + " between " + that.vizCoord.activeYear + ".") //TODO add year range
       })
       .transition()
       .ease(d3.easeLinear)

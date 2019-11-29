@@ -4,6 +4,7 @@
 class VizCoordinator {
 
     constructor(data){
+        console.log("here!")
         this.data = data;
         // default year of 2000, eventually this will be replaced with year range
         this.activeYear = 2000;
@@ -33,6 +34,7 @@ class VizCoordinator {
         this.worldMap = null;
         this.museumTabs = null;
         this.dataPortrait = null;
+        this.treeMap = null;
         this.kdePlot = null;
         this.yearBrush = null;
     }
@@ -53,6 +55,16 @@ class VizCoordinator {
 
         this.dataPortrait = new DataPortrait(this.data.geoData, this);
         this.dataPortrait.dataSummary(this.data.geoData);
+<<<<<<< HEAD
+=======
+
+        this.treeMap = new TreeMap(this.data, this);
+        // this.treeMap.drawTreeMap();
+
+        this.kdePlot = new KdePlot(this.data, this);
+        this.kdePlot.initKdePlot();
+        // this.kdePlot.drawKdePlot();
+>>>>>>> 8113c6c3da4dc251246b5cee69553307fab296e6
     }
 
     getWorldMap(){
@@ -67,7 +79,11 @@ class VizCoordinator {
         return this.dataPortrait;
     }
 
-    getKdePlot(){
+    getTreeMap() {
+      return this.treeMap;
+    }
+
+    getKdePlot() {
         return this.kdePlot;
     }
 
