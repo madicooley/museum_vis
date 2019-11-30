@@ -18,7 +18,7 @@ class MuseumTabs {
 
     this.museumButton = null;
 
-    this.activeMuseum = vizCoord.activeMuseum
+    // this.activeMuseum = vizCoord.activeMuseum
   }
 
   drawMuseumTabs() {
@@ -107,37 +107,16 @@ class MuseumTabs {
       return "<p id='museumDescription'>" + d.about + "</p>";
     });
 
-    //Add the circle nav. little things
-    // tab.selectAll("circle").data(this.data)
-    //   .enter().append("circle")
-    //   .classed("museumCircles", true);
-    //
-    // tab.selectAll(".museumCircles")
-    //   .attr("r", 7)
-    //   .attr("stroke", "grey")
-    //   .attr("fill", "white")
-    //   .attr("cx", 10)
-    //   .attr("cy", 10)
-    //   .attr("id", function(d, i) {
-    //     return "museum" + i;
-    //   })
-    //   .attr("transform", function(d, i) {
-    //     return "translate(" + that.xScale(i) + ", 450)";
-    //   });
-    //
-    // tab.select("#museum0").classed("selectedTab", true);
-
-
     //on button clicks change the content
     d3.select("button#moma").on("click", function(d) {
-      that.vizCoord.updateYear(1958)
+      that.vizCoord.updateYearRange([1958, 1958]) //changed this
       that.vizCoord.updateMuseum("museum-of-modern-art")
       that.vizCoord.getWorldMap().drawMuseum("museum-of-modern-art")
       that.momaTabs("moma")
       that.portraitHighlight("#museum-of-modern-art")
     })
     d3.select("button#penn").on("click", function(d) {
-      that.vizCoord.updateYear(1928)
+      that.vizCoord.updateYearRange([1928, 1928]) //changed this
       that.vizCoord.updateMuseum("penn-museum")
       that.vizCoord.getWorldMap().drawMuseum("penn-museum")
       that.momaTabs("penn")
@@ -147,29 +126,6 @@ class MuseumTabs {
       that.tutorial()
       that.portraitHighlight("reset")
     })
-
-    // pennStory.on("click", that.storyTabs("penn"))
-    // explore.on("click", that.storyTabs("explore"))
-
-    //KEEP - Add the nav. triagle buttons
-    var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
-    // tab.append('polyline').attr("id", "museumTriangle")
-    //     .attr('points', trianglePoints)
-    //     .style('fill', 'grey')
-    //     .attr("transform", "translate(15, 173) rotate(75) scale(1.2)")
-    //     .attr("rx", 2)
-    //     .attr("ry", 2)
-    //     .on("click", function(d, i) {
-    //         that.switchTab("left");
-    //     });
-    //
-    // tab.append('polyline').attr("id", "museumTriangle")
-    //     .attr('points', trianglePoints)
-    //     .style('fill', 'grey')
-    //       .attr("transform", "translate(220, 173) rotate(10) scale(1.2)")
-    //     .on("click", function(d, i) {
-    //         that.switchTab("right");
-    //     });
 
   }
 
@@ -285,7 +241,7 @@ class MuseumTabs {
 
     storyButton.on("click", function() {
       that.updateText(data[museum][1])
-      that.vizCoord.updateYear(data[museum][2])
+      that.vizCoord.activeYearRange([data[museum][2], data[museum][2]]) //changed this
     })
   }
 
@@ -366,9 +322,10 @@ class MuseumTabs {
       id: 'creating'
     });
 
+
     tour.addStep({
       title: 'World View',
-      text: `Use the slider to look at how artifact aquisition changes throughout time and geography.`,
+      text: `Use the slider to look at how artifact data changes throughout time and geography.`,
       attachTo: {
         element: '.column.is-one-half',
         on: 'left'
@@ -385,6 +342,54 @@ class MuseumTabs {
             return this.next();
           },
           text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'Changes of Time',
+      text: `Use the KDE plot to quickly find abnormalities if the collection data of time.`,
+      attachTo: {
+        element: '#kde-plot',
+        on: 'right'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'Compare Museums',
+      text: `With the tree map you can compare across museums both in size of their collections and locations of artifacts.`,
+      attachTo: {
+        element: '#tree-map',
+        on: 'left'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Explore!'
         }
       ],
       id: 'creating'
