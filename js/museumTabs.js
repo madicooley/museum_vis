@@ -2,7 +2,8 @@ class MuseumTabs {
   /**
    *
    */
-  constructor(data) {
+  constructor(data, vizCoord) {
+    this.vizCoord = vizCoord
     this.data = data;
     this.tabNum = {
       tab: 0
@@ -14,6 +15,10 @@ class MuseumTabs {
       .domain([0, 7])
       .range([150, 350])
       .nice();
+
+    this.museumButton = null;
+
+    this.activeMuseum = vizCoord.activeMuseum
   }
 
   drawMuseumTabs() {
@@ -71,36 +76,25 @@ class MuseumTabs {
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.museumName.toUpperCase();
-      })
-      .attr("font-size", "1.5rem")
-      .attr("font-weight", "Bold")
-      .attr("font-family", 'Oswald')
+      }).classed("museumName", true)
       .attr("transform", "translate(35, 60)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.location;
-      })
-      .attr("font-size", "1.0rem")
-      .attr("font-weight", "normal")
-      // .attr("font-family", "sans-serif")
-      .attr("font-family", 'Montserrat')
+      }).classed("museumLocation", true)
       .attr("transform", "translate(35, 90)");
 
     tab.selectAll(".museumTextBox").append("text")
       .text(function(d) {
         return d.website;
-      })
-      .attr("font-size", "0.8rem")
-      .attr("font-weight", "normal")
-      .attr("fill", "grey")
-      .attr("font-family", "sans-serif")
+      }).classed("museumWebsite", true)
       .attr("transform", "translate(35, 115)");
 
     let svg = tab.selectAll("svg");
     let fo = svg.append('foreignObject')
       .attr('width', 400)
-      .attr('height', 200)
+      .attr('height', 300)
       .attr("transform", function(d, i) {
         if (i == 0) {
           return "translate(35, 150)";
@@ -114,24 +108,48 @@ class MuseumTabs {
     });
 
     //Add the circle nav. little things
-    tab.selectAll("circle").data(this.data)
-      .enter().append("circle")
-      .classed("museumCircles", true);
+    // tab.selectAll("circle").data(this.data)
+    //   .enter().append("circle")
+    //   .classed("museumCircles", true);
+    //
+    // tab.selectAll(".museumCircles")
+    //   .attr("r", 7)
+    //   .attr("stroke", "grey")
+    //   .attr("fill", "white")
+    //   .attr("cx", 10)
+    //   .attr("cy", 10)
+    //   .attr("id", function(d, i) {
+    //     return "museum" + i;
+    //   })
+    //   .attr("transform", function(d, i) {
+    //     return "translate(" + that.xScale(i) + ", 450)";
+    //   });
+    //
+    // tab.select("#museum0").classed("selectedTab", true);
 
-    tab.selectAll(".museumCircles")
-      .attr("r", 7)
-      .attr("stroke", "grey")
-      .attr("fill", "white")
-      .attr("cx", 10)
-      .attr("cy", 10)
-      .attr("id", function(d, i) {
-        return "museum" + i;
-      })
-      .attr("transform", function(d, i) {
-        return "translate(" + that.xScale(i) + ", 450)";
-      });
 
-    tab.select("#museum0").classed("selectedTab", true);
+    //on button clicks change the content
+    d3.select("button#moma").on("click", function(d) {
+      that.vizCoord.updateYear(1958)
+      that.vizCoord.updateMuseum("museum-of-modern-art")
+      that.vizCoord.getWorldMap().drawMuseum("museum-of-modern-art")
+      that.momaTabs("moma")
+      that.portraitHighlight("#museum-of-modern-art")
+    })
+    d3.select("button#penn").on("click", function(d) {
+      that.vizCoord.updateYear(1928)
+      that.vizCoord.updateMuseum("penn-museum")
+      that.vizCoord.getWorldMap().drawMuseum("penn-museum")
+      that.momaTabs("penn")
+      that.portraitHighlight("#penn-museum")
+    })
+    d3.select("button#explore").on("click", function(d) {
+      that.tutorial()
+      that.portraitHighlight("reset")
+    })
+
+    // pennStory.on("click", that.storyTabs("penn"))
+    // explore.on("click", that.storyTabs("explore"))
 
     //KEEP - Add the nav. triagle buttons
     var trianglePoints = 3 + ' ' + 12 + ', ' + 1 + ' ' + 0 + ', ' + 12 + ' ' + 3 + ' ' + 12 + ', ' + 3 + ' ' + 3 + ' ' + 12;
@@ -155,25 +173,39 @@ class MuseumTabs {
 
   }
 
+  portraitHighlight(id) {
+    if (id === "reset") {
+      d3.selectAll(".porButton").classed("not-selected", false)
+      d3.selectAll(".porButton").classed("selected", true)
+    } else {
+      d3.selectAll(".porButton").classed("not-selected", true)
+      d3.selectAll(".porButton").classed("selected", false)
+      d3.select(id).classed("selected", true)
+    }
+
+  }
+
   switchTab(which) {
     let that = this;
     let tabnum = 0;
 
-    for(let i=0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       // console.log(this.data[i].museumName, which);
       let museumName = this.data[i].museumName.toLowerCase().replace(/ /g, '-');
       museumName = museumName.slice(0, -1);
-      if(which == museumName ) {
-        tabnum = i;
-      }
+
+      which == "global" ? tabnum = 7 : which == museumName ? tabnum = i : null
+      // if (which == museumName) {
+      //   tabnum = i;
+      // }
     }
 
     let tab = d3.selectAll('.column').select("#museumTabContainer");
     let active = tab.select(".activeTab.container");
 
-    let activeId = active.attr("id")[active.attr("id").length -1];;
+    let activeId = active.attr("id")[active.attr("id").length - 1];;
 
-    if(tabnum < activeId) {
+    if (tabnum < activeId) {
       if (this.tabNum.tab > 0) {
         this.tabNum.tab--;
       }
@@ -208,7 +240,7 @@ class MuseumTabs {
     tab.select(".activeTab.container")
       .classed("activeTab", false).classed("unactiveTab", true);
 
-    let selected = tab.select("#museumBox"+tabnum);
+    let selected = tab.select("#museumBox" + tabnum);
 
     selected.select(".museumTextBox")
       .transition().duration(that.animationDuration)
@@ -230,4 +262,135 @@ class MuseumTabs {
     tab.select("#museum" + tabnum).classed("selectedTab", true);
 
   }
+
+  momaTabs(museum) {
+    this.museumButton = museum
+    let data = {
+      moma: [
+        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s.", 1959
+      ],
+      penn: ["In 1929 Penn Museum received a generous donation from Eldridge Johnson, founder of the victor Talking Machine Company (a record company and phonograph manufacturer).", "You can see the effect of 💰 starting in 1929. The museum begins to acquire a lot more artwork following the funding.", 1929]
+    }
+
+    this.updateText(data[museum][0])
+
+    let storyButton = d3.select("#museumBox0").select("#museumDescription")
+      .append("div")
+      .append("button")
+      .classed("story-button bouncy", true)
+      .text("Next")
+
+
+    let that = this
+
+    storyButton.on("click", function() {
+      that.updateText(data[museum][1])
+      that.vizCoord.updateYear(data[museum][2])
+    })
+  }
+
+  updateText(text) {
+    let museum = this.museumButton
+    let museumInfo = {
+      moma: ["🔥 at MoMA", "New York, NY | USA", "https://www.moma.org"],
+      penn: ["💰 at Penn", "Philadelphia, PA | USA", "https://www.penn.museum"]
+    }
+    d3.select("text.museumName").text(museumInfo[museum][0])
+    d3.select("text.museumLocation").text(museumInfo[museum][1])
+    d3.select("text.museumWebsite").text(museumInfo[museum][2])
+    d3.select("#museumDescription").text(text)
+  }
+
+  tutorial() {
+    // using shepherd.js to create tutorial
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        cancelIcon: {
+          enabled: true
+        },
+        classes: 'class-1 class-2',
+        scrollTo: {
+          behavior: 'smooth',
+          block: 'center'
+        }
+      },
+      useModalOverlay: true
+
+    });
+
+    tour.addStep({
+      title: 'Explore Museum+Vis!',
+      text: `Here is a quick tour to show you how to navigate the site.`,
+      attachTo: {
+        element: '#blurb-header',
+        on: 'bottom'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'The Museum+Gallery',
+      text: `Click on different portraits of the museums to explore their art collections`,
+      attachTo: {
+        element: '#museum-gallery',
+        on: 'left'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.addStep({
+      title: 'World View',
+      text: `Use the slider to look at how artifact aquisition changes throughout time and geography.`,
+      attachTo: {
+        element: '.column.is-one-half',
+        on: 'left'
+      },
+      buttons: [{
+          action() {
+            return this.back();
+          },
+          classes: 'shepherd-button-secondary',
+          text: 'Back'
+        },
+        {
+          action() {
+            return this.next();
+          },
+          text: 'Next'
+        }
+      ],
+      id: 'creating'
+    });
+
+    tour.start();
+  }
+
 }
