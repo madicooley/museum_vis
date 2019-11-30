@@ -102,7 +102,7 @@
             return +(d[attrib]);
         });
 
-        
+
         // create scales and axis elements
         // x-scale
         this.xScale = d3.scaleLinear()
@@ -215,9 +215,4 @@
             return 0.4;
         }
     }
-<<<<<<< HEAD
-
  }
-=======
- }
->>>>>>> master
