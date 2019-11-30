@@ -48,7 +48,7 @@ class VizCoordinator {
     this.worldMap.drawMuseum(this.activeMuseum);
     // this.worldMap.drawYearSlider();
 
-    this.museumTabs = new MuseumTabs(this.data.museumBios);
+    this.museumTabs = new MuseumTabs(this.data.museumBios, this);
     this.museumTabs.drawMuseumTabs();
 
     this.dataPortrait = new DataPortrait(this.data.geoData, this);
