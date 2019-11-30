@@ -13,7 +13,7 @@
 
         this.height = 600;
         this.width = 1000;
-        this.margins = {'left': 35, 'right': 35, 'top': 25, 'bottom': 35};
+        this.margins = {'left': 35, 'right': 35, 'top': 25, 'bottom': 5};
 
         this.xScale = null;
         this.yScale = null;
@@ -38,12 +38,12 @@
             .attr('transform', `translate(${this.margins.left},${this.height-this.margins.bottom})`);
         plotGroup.append('g')
             .attr('id', 'y-axis')
-            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+            .attr('transform', `translate(${this.margins.left},${this.margins.top + 100})`);
 
         // initialize group that we will append actual KDE plots to
         plotGroup.append('g')
             .attr('id', 'kdes')
-            .attr('transform', `translate(${this.margins.left},${this.margins.top})`);
+            .attr('transform', `translate(${this.margins.left},${this.margins.top + 100})`);
 
         // initialize group that we will append text legened for KDE plots to
         plotGroup.append('g')
@@ -73,35 +73,41 @@
 
         // determine which attribute we will access for data based on the activeYearOpt
         let attrib = null;
-        if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
+        if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0].key){ // if we are looking at year acquired
             attrib = 'acquisition_date';
         }else{
             attrib = 'created_date';
         }
 
         // set plotData based on activeYearOpt
-        if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0]){ // if we are looking at year acquired
+        this.plotData = this.data; // resets plot data
+        if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0].key){ // if we are looking at year acquired
             this.plotData = this.data;
-        }else if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[1]){ // if we are looking at year created (before common era)
+        }else if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[1].key){ // if we are looking at year created (before common era)
             this.plotData = this.data.filter((d) => {
-                return +(d.created_date) <= 0;
+                return +(d[attrib]) <= 0;
             });
         }else{ // if we are looking at year created (after common era)
             this.plotData = this.data.filter((d) => {
-                return +(d.created_date) > 0;
+                return +(d[attrib]) > 0;
             });
         }
+        // filter plotData based on active year range
+        this.plotData = this.plotData.filter((d) => {
+            return +(d[attrib]) >= this.vizCoord.activeYearRange[0] && +(d[attrib]) <= this.vizCoord.activeYearRange[1]
+        });
 
-        // get extrema for scaling
+        // get extrema for scaling and create slider
         let extrema = d3.extent(this.plotData, (d) => {
             return +(d[attrib]);
         });
 
+        
         // create scales and axis elements
         // x-scale
         this.xScale = d3.scaleLinear()
             .domain(extrema)
-            .domain([extrema[0], extrema[1] + 10]) // hacky fix to force fill on KDE to work as intended
+            .domain([extrema[0], extrema[1]]) // hacky fix to force fill on KDE to work as intended
             .range([0, this.width])
         d3.select('#x-axis')
             .call(d3.axisBottom(this.xScale));
@@ -113,7 +119,8 @@
             .thresholds(thresholds)(this.plotData.map((d) => d.acquisition_date)) // change this from acquisition date
         this.yScale = d3.scaleLinear()
             .domain([0, d3.max(bins, d => d.length) / this.plotData.length])
-            .range([this.height - this.margins.top - this.margins.bottom, 0]);
+            // .range([this.height - this.margins.top - this.margins.bottom, this.margins.top]);
+            .range([(this.height - this.margins.top - this.margins.bottom - 100), this.margins.top])
         d3.select('#y-axis')
             .call(d3.axisLeft(this.yScale).ticks(null, "%"))
             .call(g => g.select(".domain").remove())
@@ -137,8 +144,9 @@
             .selectAll('path')
             .data(densities)
             .join('path')
-            .attr('fill', (d) => this.colorScale(d.name))
-            .attr('fill-opacity', 0.05)
+            .attr('fill', 'none')
+            // .attr('fill', (d) => this.colorScale(d.name))
+            // .attr('fill-opacity', 0.05)
             .attr('fill-rule', 'evenodd')
             .attr('stroke', (d) => this.colorScale(d.name))
             .attr('stroke-width', 3)
@@ -169,6 +177,7 @@
             .attr('y', (d) => 5 + this.museumNames.indexOf(d.museumTag)*25)
             .text((d) => d.museumName)
             .attr('opacity', (d) => this.isLightText(d.museumTag));
+
     }
 
     /**
@@ -206,5 +215,9 @@
             return 0.4;
         }
     }
+<<<<<<< HEAD
 
  }
+=======
+ }
+>>>>>>> master

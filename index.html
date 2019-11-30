@@ -30,6 +30,7 @@
   <script src="js/treemap.js" async></script>
   <script src="js/script.js" async></script>
   <script src="js/portraits.js" async></script>
+  <script src="js/yearBrush.js" async></script>
   <script src="js/kdePlot.js" async></script>
   <script src="js/vizCoordinator.js" async></script>
 </head>
@@ -52,7 +53,15 @@
   <div class="columns is-vcentered">
     <div class="column is-one-half">
       <svg id="map-chart"></svg>
-      <div id="activeYear-bar"></div>
+      <!-- <div id="activeYear-bar"></div> -->
+      <div class="select">
+        <select id = 'selectOpts'>
+          <option value="0">Acquisition Date</option>
+          <option value="1">Creation Date (Before Common Era)</option>
+          <option value="2">Creation Date (After Common Era)</option>
+        </select>
+      </div>
+      <div id="activeYear-brush"></div>
     </div>
     <div class="column">
       <svg id="museumTabContainer">

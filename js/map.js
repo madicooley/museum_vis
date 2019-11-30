@@ -98,52 +98,28 @@ class Map {
       .classed('tooltip', true)
 
     d3.select('svg#map-chart').attr("transform", "translate(20,0)");
-
-  };
-
-  drawYearSlider() {
-    let that = this;
-    let yearScale = d3.scaleLinear().domain([1800, 2020]).range([30, 730]);
-
-    let yearSlider = d3.select('#activeYear-bar')
-      .append('div').classed('slider-wrap', true).attr("transform", "translate(20,0)")
-      .append('input').classed('slider', true)
-      .attr('type', 'range')
-      .attr('min', 1800)
-      .attr('max', 2020)
-      .attr('value', this.vizCoord.activeYear)
-
-    let sliderLabel = d3.select('.slider-wrap')
-      .append('div').classed('slider-label', true)
-      .append('svg');
-
-    let sliderText = sliderLabel.append('text').text(this.vizCoord.activeYear);
-
-    sliderText.attr('x', yearScale(this.vizCoord.activeYear));
-    sliderText.attr('y', 25);
-
-    yearSlider.on('input', function() {
-
-      that.vizCoord.updateYear(this.value);
-
-      sliderText.text(this.value).attr('x', yearScale(this.value));
-      if (that.vizCoord.activeMuseum) {
-        that.drawMuseum(that.vizCoord.activeMuseum);
-
-        if (that.vizCoord.treeMap.allYears == false) {
-          that.vizCoord.treeMap.drawTreeMap();
-        }
-      }
-    });
-
   }
 
   drawMuseum(museum) {
-    // console.log(museum);
     let that = this;
 
     this.vizCoord.updateMuseum(museum);
-    let selectedMuseumData = this.museumData.filter(d => d.museum === museum && +d.acquisition_date == this.vizCoord.activeYear)
+
+    let selectedMuseumData = [];
+    if(this.vizCoord.activeMuseum == null){
+        selectedMuseumData = this.museumData;
+    }else{
+        selectedMuseumData = this.museumData.filter(d => d.museum == museum);
+    }
+    // console.log('after museum selection: ', selectedMuseumData)
+
+    let attrib = null;
+    if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0].key){ // if we are looking at year acquired
+        attrib = 'acquisition_date';
+    }else{
+        attrib = 'created_date';
+    }
+    selectedMuseumData = selectedMuseumData.filter(d => +d[attrib] >= this.vizCoord.activeYearRange[0] && +d[attrib] <= this.vizCoord.activeYearRange[1])
     //create object of number of artifacts per country
     this.vizCoord.updateCountries([]);
 
@@ -164,7 +140,6 @@ class Map {
         fullCountryName: filtData.map(y => y.country_of_origin)[0],
         country: n
       })
-      // console.log(artifacts)
     }
 
     //create scales
@@ -174,7 +149,7 @@ class Map {
       .domain(domainVal)
       .range([5, 20])
 
-    let bubbleGroup = d3.select("g#bubble-group");
+    let bubbleGroup = d3.select('#bubble-group');
 
     let bubbles = bubbleGroup
       .selectAll('circle')
@@ -183,7 +158,11 @@ class Map {
       .classed('bubbles', true)
       .attr('transform', (d) => {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
-        return "translate(" + selectedCountry[0].centroid + ")"
+        if(selectedCountry.length == 0){ // if country not found
+          return 'translate(0,0)';
+        }else{
+          return "translate(" + selectedCountry[0].centroid + ")";
+        } 
       })
       .on("mouseover", function(d) {
         // console.log(d);
@@ -191,11 +170,11 @@ class Map {
           .text(d.number + ' artifacts acquired from ' + d.fullCountryName + " between " + that.vizCoord.activeYear + ".") //TODO add year range
       })
       .transition()
-      // .duration(750)
       .ease(d3.easeLinear)
       .attr("r", d => bubbleScale(Math.sqrt(d.number / Math.PI))) // scale using area, not radius
       .style("fill", "rgba(35, 29, 150, 0.70)")
   }
+ 
 
   drawLegend(min, max) {
     let height = 460
