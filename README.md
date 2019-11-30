@@ -9,7 +9,7 @@ README - The README file must give an overview of what you are handing in: which
 
 Directory Structure:
 
-.
+```.
 ├── bulma.css
 ├── data
 │   ├── cleaned-data.csv
@@ -53,7 +53,7 @@ Directory Structure:
 ├── Process-Book.pdf
 ├── README.md
 └── styles.css
-
+```
 
 Website URL:
 
