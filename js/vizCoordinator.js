@@ -120,5 +120,7 @@ class VizCoordinator {
 
     redrawBrush(left, right){
         this.yearBrush.redrawBrush(left, right);
+
+        this.reDrawViz();
     }
 }
