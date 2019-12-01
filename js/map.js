@@ -167,7 +167,10 @@ class Map {
       .on("mouseover", function(d) {
         // console.log(d);
         d3.select(this).append('svg:title')
-          .text(d.number + ' artifacts acquired from ' + d.fullCountryName + " between " + that.vizCoord.activeYear + ".") //TODO add year range
+          // .text(d.number + ' artifacts acquired from ' + d.fullCountryName + " between " + that.vizCoord.activeYear + ".") //TODO add year range
+          .text(d.number + " artifacts acquired from " + d.fullCountryName +
+            " between\n" + that.vizCoord.activeYearRange[0] + " to " +
+            that.vizCoord.activeYearRange[1] + ".")
       })
       .transition()
       .ease(d3.easeLinear)

@@ -118,7 +118,7 @@ class KdePlot {
       .range([0, this.width])
     d3.select('#x-axis')
       .call(d3.axisBottom(this.xScale)
-        .tickFormat(d3.timeFormat("%Y")));
+        .tickFormat(d3.format("d"))); 
     // y-scale
     // create bins like what would be in a histogram to use for KDE
     let thresholds = this.xScale.ticks(40) // create 40 bin limits
