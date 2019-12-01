@@ -53,29 +53,28 @@ Directory Structure:
 └── viz.html
 ```
 
-bulma.css:
+bulma.css: This is our style sheet. It is a combination of styles from [Bulma CSS](https://bulma.io/) (a CSS framework built on Flexbox and was used solely for layout) and our customized CSS. 
 
-index.html:
+index.html: This is the landing page for our project. We wanted to seperate out the video and other requirements from the project to preserve the formatting and layout of Museum+Vis.
 
-kdePlot.js:
+kdePlot.js: This file contains the class responsible for creating and updating the KDE Plot and KDE legend.
 
-map.js: 
+map.js: This file contains the class responsible for creating and updating the geographic map and circle gylphs.
 
-museumTabs.js:
+museumTabs.js: This file contains the class responsible for creating and updating the text about the museums. It also initializes the story buttons and the tutorial for the site. The tutorial is created using [Shepherd.js Library](https://shepherdjs.dev/).
 
-portraits.js:
+portraits.js: This file contains the class responsible for creating the data portraits of the museums and initializing them as buttons.
 
-script.js:
+script.js: This files loads and processes the data. It also creates the VizCoordinator class.
 
-treemap.js
+treemap.js: This file contains the class responsible for creating and updating the tree map.
 
-vizCoordinator.js:
+vizCoordinator.js: This file contains the class responsible for updating all the classes and shared variables across the classes.
 
-yearBrush.js:
+yearBrush.js: This file contains the class responsible for creating and updating the year slider.
 
-vis.html
+vis.html: This is the html to Museum+Vis.
 
-
-Website URL: https://madicooley.github.io/museum_vis/
+Website URL: [https://madicooley.github.io/museum_vis/](https://madicooley.github.io/museum_vis/)
 
 Video URL: 
