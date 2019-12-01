@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MuseumVis</title>
-  <!-- <link rel="stylesheet" href="styles.css" /> -->
+  <title>MuseumVis</title>>
   <link rel="stylesheet" href="bulma.css" />
+  <script src="https://cdn.jsdelivr.net/npm/shepherd.js@latest/dist/js/shepherd.min.js"></script>
   <script src="https://d3js.org/d3.v5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
   <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
@@ -21,7 +21,7 @@
 </head>
 
 <body>
-  <div class="columns" style="padding-bottom: 30px">
+  <div id="blurb-header" class="columns" style="padding-bottom: 30px">
     <div class="column is-two-fifths" style="border-right:3px solid black; padding: 20px">
       <h1>Museum+Vis</h1>
       <h2>The secret life of museum artifacts</h2>
@@ -31,16 +31,19 @@
         North
         America and track the provenance of their collections based on country of origin, year of creation, and year of acquisition.<br><sub><sup>1</sup>Source: <a href="https://www.nytimes.com/2009/03/19/arts/artsspecial/19TROVE.html">New York
             Times</a></p>
+      <button id="moma" style="margin-left: 20px">🔥 at MoMA</button>
+      <button id="penn">💰at Penn</button>
+      <button id="explore">🎨Explore</button>
     </div>
   </div>
 
   <!-- CONTAINER FOR THE MAP -->
-  <div class="columns is-vcentered">
+  <div class="columns">
     <div class="column is-one-half">
       <svg id="map-chart"></svg>
       <!-- <div id="activeYear-bar"></div> -->
       <div class="select">
-        <select id = 'selectOpts'>
+        <select id='selectOpts'>
           <option value="0">Acquisition Date</option>
           <option value="1">Creation Date (Before Common Era)</option>
           <option value="2">Creation Date (After Common Era)</option>
@@ -48,11 +51,11 @@
       </div>
       <div id="activeYear-brush"></div>
     </div>
-    <div class="column">
+    <div class="column is-one-quarter">
       <svg id="museumTabContainer">
       </svg>
     </div>
-    <div class="column">
+    <div class="column is-one-quarter" id="museum-gallery">
       <div id="overlay" onclick="off()">
         <div id="text"><img src="legend.png" alt="Legend for Data Portraits"></div>
       </div>
@@ -68,13 +71,13 @@
   </div>
 
   <!-- CONTAINER FOR KDE PLOT AND TREEMAP -->
-  <div class="column is-vcentered">
-    <div class="column is-one-half">
+  <div class="columns">
+    <div class="column is-one-half" id="kde">
       <svg id="kde-plot"></svg>
     </div>
-    <div class="column">
-      <svg id="check-box"></svg>
-      <svg id="tree-map"></svg>
+    <div class="column is-one-half" id="treemap">
+      <!-- <svg id="check-box"></svg> -->
+      <svg id="tree-map" style="transform:translate(-20,0)"></svg>
     </div>
   </div>
 

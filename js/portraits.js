@@ -2,6 +2,18 @@ class DataPortrait {
   constructor(data, vizCoord) {
     this.data = data
 
+    //adding dummy data for global portrait
+    this.data.push({
+      acquisition_date: "0",
+      artifact_name: "0",
+      continent: "0",
+      country_code: "0",
+      country_of_origin: "0",
+      created_date: "0",
+      description: "0",
+      museum: "global"
+    })
+
     this.vizCoord = vizCoord
 
     let museumNames = []
@@ -9,9 +21,12 @@ class DataPortrait {
     for (let museums of this.data) {
       museumNames.push(museums.museum)
     }
+
+
     //remove duplicates
     let museumsSet = new Set(museumNames)
     this.museums = [...museumsSet]
+    // this.museums[7] = "global"
 
     this.museumData = []
     for (let n of this.museums) {
@@ -50,7 +65,7 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
+    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600).call(this.resizeSVG)
     // console.log("Drawing:", museum)
     svg = svg.append("g")
 
@@ -177,33 +192,84 @@ class DataPortrait {
 
 
 
-    let frame = svg
-      .append("a")
-      .attr("xlink:href", "#0")
+    // let frame = svg
+    // .append("a")
+    // .attr("xlink:href", "#0")
 
-    frame.append("rect")
+    let frame = svg.append("rect")
       .attr("width", frameWidth)
       .attr("border", 20)
       .attr("height", frameHeight)
       .style("stroke", "black")
       .style("stroke-width", 5)
       // .style("fill", "none")
-      .style("fill", "rgba(35, 29, 150, 0)")
+      // .style("fill", "rgba(35, 29, 150, 0)")
       .attr("transform", "translate(5,5)")
       .attr("id", museum.museum)
       .attr("class", "porButton")
-      .attr("data-tabindex", 0)
+    // .attr("data-tabindex", 0)
+
+    let globalPor = d3.select("#global") //.selectAll("rect")
+
+
+    globalPor //TODO add globe to global button!!!
+      .style("fill", "white")
+      .append("svg:image")
+      .attr('xlink:href', "https://upload.wikimedia.org/wikipedia/commons/c/c4/Globe_icon.svg")
+      .attr("x", function(d) {
+        return -25;
+      })
+      .attr("y", function(d) {
+        return -25;
+      })
+      .attr("height", 50)
+      .attr("width", 50);
 
     let that = this;
     frame.on("click", function(d, i) {
+        d3.selectAll(".porButton").classed("selected", false)
+        d3.selectAll(".porButton").classed("not-selected", true)
         that.vizCoord.getMuseumTabs().switchTab(museum.museum)
         that.vizCoord.getWorldMap().drawMuseum(museum.museum)
+        that.vizCoord.updateMuseum(museum.museum)
+        d3.select(this).classed("selected", true)
+        d3.select(this).classed("not-selected", false)
       })
       .on("mouseover", function(d) {
         let title = museum.museum
-        title === "metropolitan-museum-of-art" ? title = "The MET" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title = "Canada Science and Technology Museum"
+        // d3.selectAll(".porButton").attr("opacity", title === that.vizCoord.activeMuseum ? 1 : .2)
+        title === "metropolitan-museum-of-art" ? title = "The Met" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title === "global" ? title = "All Museums" : title = "Canada Science and Technology Museum"
         d3.select(this).append('svg:title')
           .text(title)
+        d3.selectAll(".porButton").classed("selected", false)
+        d3.selectAll(".porButton").classed("not-selected", true)
+        d3.select(this).classed("selected", true)
+        d3.select(this).classed("not-selected", false)
       });
+
+    // d3.selectAll("")
   } //end drawPortraits
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
+  }
 } //end Portraits class
