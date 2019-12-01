@@ -47,18 +47,15 @@ Directory Structure:
 │   ├── treemap.js
 │   ├── vizCoordinator.js
 │   └── yearBrush.js
-├── landing.html
 ├── legend.png
 ├── Process-Book.pdf
 ├── README.md
-└── styles.css
+└── viz.html
 ```
 
 bulma.css:
 
 index.html:
-
-landing.html:
 
 kdePlot.js:
 
@@ -76,7 +73,7 @@ vizCoordinator.js:
 
 yearBrush.js:
 
-
+vis.html
 
 
 Website URL:
