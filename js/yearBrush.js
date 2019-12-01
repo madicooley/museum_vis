@@ -4,6 +4,7 @@
 class YearBrush {
     constructor(vizCoord){
         this.vizCoord = vizCoord;
+        this.brush = null;
 
         this.height = 40;
         this.width = 1000;
@@ -59,7 +60,7 @@ class YearBrush {
           .text(this.vizCoord.activeYearRange[1]);
 
         // define brush
-        let brush = d3.brushX()
+        this.brush = d3.brushX()
           .extent([[0,0], [this.width, this.height]])
           .on('brush', function() {
             let s = d3.event.selection;
@@ -94,12 +95,24 @@ class YearBrush {
             .attr("class", "brush")
             .attr('stroke', 'black')
             .attr('stroke-width', '1px')
-            .call(brush)
+            .call(this.brush)
         
         // select entire range
-        gBrush.call(brush.move, this.vizCoord.activeYearRange.map(x));
+        gBrush.call(this.brush.move, this.vizCoord.activeYearRange.map(x));
     
         return svg.node();
+    }
+
+    redrawBrush(left, right){
+      // create x scale
+      let x = d3.scaleLinear()
+      .domain(this.vizCoord.activeYearRange) 
+      .range([0, this.width]);
+
+      this.vizCoord.updateYearOpts(0);
+      this.vizCoord.updateYearRange([left,right]);
+
+      d3.select('.brush').call(this.brush.move, [x(left), x(right)])
     }
 
 }

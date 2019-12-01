@@ -115,6 +115,9 @@ class VizCoordinator {
     this.worldMap.drawMuseum(this.activeMuseum);
 
     this.treeMap.drawTreeMap();
+  }
 
+  reDrawBrush(x0, x1){
+      this.yearBrush.redrawBrush(x0,x1); 
   }
 }
