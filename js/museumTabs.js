@@ -226,7 +226,7 @@ class MuseumTabs {
     this.museumButton = museum
     let data = {
       moma: [
-        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts drop from XXX to XXX and continue well into the 80s.", 1959
+        "On April 15, 1958, MoMA caught on fire! The museum has been undergoing an update to its AC units, and while the workmen were taking a lunch break, a spark from a cigarette landed on some nearby sawdust which burst into flames, followed by highly flammable paint. Lost in the fire was one workman's life and an 18.5 foot Monet painting.", "Following the fire, the number of acquired artifacts dropped continued to well into the 80s.", 1959
       ],
       penn: ["In 1929 Penn Museum received a generous donation from Eldridge Johnson, founder of the victor Talking Machine Company (a record company and phonograph manufacturer).", "You can see the effect of 💰 starting in 1929. The museum begins to acquire a lot more artwork following the funding.", 1929]
     }

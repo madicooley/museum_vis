@@ -56,6 +56,19 @@ class KdePlot {
       .attr('id', 'kde-legend')
       .attr('transform', `translate(${3/5*this.width + this.margins.left},${this.margins.top})`)
 
+
+    //adding dummy data for global portrait
+    this.data.push({
+      acquisition_date: "0",
+      artifact_name: "0",
+      continent: "0",
+      country_code: "0",
+      country_of_origin: "0",
+      created_date: "0",
+      description: "0",
+      museum: "global"
+    })
+
     // extract museum names set from data and store them in museumNames
     for (let museums of this.data) {
       this.museumNames.push(museums.museum);
@@ -118,7 +131,7 @@ class KdePlot {
       .range([0, this.width])
     d3.select('#x-axis')
       .call(d3.axisBottom(this.xScale)
-        .tickFormat(d3.timeFormat("%Y")));
+        .tickFormat(d3.format("d")));
     // y-scale
     // create bins like what would be in a histogram to use for KDE
     let thresholds = this.xScale.ticks(40) // create 40 bin limits
@@ -170,7 +183,7 @@ class KdePlot {
       .data(this.museumNames)
       .join('circle')
       .attr('cx', 10)
-      .attr('cy', (d) => this.museumNames.indexOf(d) * 25)
+      .attr('cy', (d, i) => -1 + i * 26)
       .attr('r', 8)
       .attr('stroke', (d) => this.colorScale(d))
       .attr('stroke-width', 3)
@@ -180,14 +193,14 @@ class KdePlot {
 
     d3.select('#kde-legend')
       .selectAll('text')
-      .data(this.bios) //was this.bios
+      .data(this.museumNames) //was this.bios
       .join('text')
       .attr('x', 25)
       .attr('y', (d, i) => {
         // console.log("d is:", d)
-        return 4 + i * 27
+        return 4 + i * 26
       }) //this.museumNames.indexOf(d.museumTag) * 25)
-      .text((d) => d.museumName)
+      .text((d) => d === "metropolitan-museum-of-art" ? d = "The Met" : d === "minneapolis-institute-of-art" ? d = "Mia" : d === "cooper-hewitt-smithsonian-design-museum" ? d = "Cooper Hewitt" : d === "penn-museum" ? d = "Penn Museum" : d === "cleveland-museum-of-art" ? d = "Cleveland Museum of Art" : d === "museum-of-modern-art" ? d = "MoMa" : d === "global" ? d = "All Museums" : d = "Canada Science and Technology Museum")
       .attr('opacity', (d) => this.isLightText(d.museumName));
 
   }
