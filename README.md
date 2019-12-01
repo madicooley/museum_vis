@@ -7,7 +7,7 @@ README - The README file must give an overview of what you are handing in: which
 
 
 
-Directory Structure:
+## Directory Structure:
 
 ```.
 ├── bulma.css
@@ -53,10 +53,22 @@ Directory Structure:
 └── viz.html
 ```
 
-bulma.css: This is our style sheet. It is a combination of styles from [Bulma CSS](https://bulma.io/) (a CSS framework built on Flexbox and was used solely for layout) and our customized CSS. 
-
+## Organization
+### HTML
 index.html: This is the landing page for our project. We wanted to seperate out the video and other requirements from the project to preserve the formatting and layout of Museum+Vis.
 
+vis.html: This is the html to Museum+Vis.
+
+### CSS
+bulma.css: This is our style sheet. It is a combination of styles from [Bulma CSS](https://bulma.io/) (a CSS framework built on Flexbox and was used solely for layout) and our customized CSS. 
+
+### JS
+script.js: This files loads and processes the data. It also creates the VizCoordinator class.
+
+vizCoordinator.js: This file contains the class responsible for updating all the classes and shared variables across the classes.
+
+
+## Visualization
 kdePlot.js: This file contains the class responsible for creating and updating the KDE Plot and KDE legend.
 
 map.js: This file contains the class responsible for creating and updating the geographic map and circle gylphs.
@@ -65,16 +77,11 @@ museumTabs.js: This file contains the class responsible for creating and updatin
 
 portraits.js: This file contains the class responsible for creating the data portraits of the museums and initializing them as buttons.
 
-script.js: This files loads and processes the data. It also creates the VizCoordinator class.
-
 treemap.js: This file contains the class responsible for creating and updating the tree map.
-
-vizCoordinator.js: This file contains the class responsible for updating all the classes and shared variables across the classes.
 
 yearBrush.js: This file contains the class responsible for creating and updating the year slider.
 
-vis.html: This is the html to Museum+Vis.
-
+## Links
 Website URL: [https://madicooley.github.io/museum_vis/](https://madicooley.github.io/museum_vis/)
 
 Video URL: 
