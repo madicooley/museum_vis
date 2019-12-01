@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <meta http-equiv="refresh" content="0; url=https://madicooley.github.io/museum_vis/landing.html" /> -->
+  <!-- <meta http-equiv="refresh" content="0; url=./landing.html" /> -->
+
+  <META HTTP-EQUIV='Content-Security-Policy' CONTENT="default-src 'none';
+  base-uri 'self';
+  block-all-mixed-content;
+  child-src render.githubusercontent.com;
+  connect-src 'self' uploads.github.com status.github.com api.github.com www.google-analytics.com wss://live.github.com;
+  font-src 'self' https://fonts.gstatic.com;
+  form-action 'self' github.com gist.github.com;
+  frame-src render.githubusercontent.com;
+  img-src 'self';
+  media-src 'none';
+  object-src assets-cdn.github.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://d3js.org/d3.v5.js
+  https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js https://d3js.org/d3-geo-projection.v2.js;
+  style-src 'self' 'unsafe-inline' http://localhost:8080/bulma.css https://madicooley.github.io/museum_vis/bulma.css https://fonts.googleapis.com/">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MuseumVis</title>
+  <!-- <link rel="stylesheet" href="styles.css" /> -->
+  <link rel="stylesheet" href="bulma.css" />
+  <script src="https://d3js.org/d3.v5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
+  <script src="js/map.js" async></script>
+  <script src="js/museumTabs.js" async></script>
+  <script src="js/treemap.js" async></script>
+  <script src="js/script.js" async></script>
+  <script src="js/portraits.js" async></script>
+  <script src="js/yearBrush.js" async></script>
+  <script src="js/kdePlot.js" async></script>
+  <script src="js/vizCoordinator.js" async></script>
+</head>
+
+<body>
+  <div class="columns" style="padding-bottom: 30px">
+    <div class="column is-two-fifths" style="border-right:3px solid black; padding: 20px">
+      <h1>Museum+Vis</h1>
+      <h2>The secret life of museum artifacts</h2>
+    </div>
+    <div class="column">
+      <p style="padding:20px; transform: translate (20,0)">A museum typically only shows <strong>2-4%</strong> of it's collection.<sup>1</sup> In an attempt to paint a more complete picture of museum art collections, we turn to seven museums found in
+        North
+        America and track the provenance of their collections based on country of origin, year of creation, and year of acquisition.<br><sub><sup>1</sup>Source: <a href="https://www.nytimes.com/2009/03/19/arts/artsspecial/19TROVE.html">New York
+            Times</a></p>
+    </div>
+  </div>
+
+  <!-- CONTAINER FOR THE MAP -->
+  <div class="columns is-vcentered">
+    <div class="column is-one-half">
+      <svg id="map-chart"></svg>
+      <!-- <div id="activeYear-bar"></div> -->
+      <div class="select">
+        <select id = 'selectOpts'>
+          <option value="0">Acquisition Date</option>
+          <option value="1">Creation Date (Before Common Era)</option>
+          <option value="2">Creation Date (After Common Era)</option>
+        </select>
+      </div>
+      <div id="activeYear-brush"></div>
+    </div>
+    <div class="column">
+      <svg id="museumTabContainer">
+      </svg>
+    </div>
+    <div class="column">
+      <div id="overlay" onclick="off()">
+        <div id="text"><img src="legend.png" alt="Legend for Data Portraits"></div>
+      </div>
+      <div id="learnMore">
+        <h2>Museum+Gallery</h2>
+        <button onclick="on()">Learn More</button>
+      </div>
+
+      <svg id="portraits">
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- CONTAINER FOR KDE PLOT AND TREEMAP -->
+  <div class="column is-vcentered">
+    <div class="column is-one-half">
+      <svg id="kde-plot"></svg>
+    </div>
+    <div class="column">
+      <svg id="check-box"></svg>
+      <svg id="tree-map"></svg>
+    </div>
+  </div>
+
+  <script>
+    function on() {
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    function off() {
+      document.getElementById("overlay").style.display = "none";
+    }
+  </script>
+</body>
+
+</html>
