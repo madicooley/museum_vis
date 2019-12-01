@@ -67,8 +67,14 @@ script.js: This files loads and processes the data. It also creates the VizCoord
 
 vizCoordinator.js: This file contains the class responsible for updating all the classes and shared variables across the classes.
 
+### Data
+world.json: the shapefile data used in map.js
 
-## Visualization
+cleaned-data.csv: the museum data cleaned and compiled from different sources
+
+museum-bio.csv: manually collected information about each museum
+
+## Visualization Classes
 kdePlot.js: This file contains the class responsible for creating and updating the KDE Plot and KDE legend.
 
 map.js: This file contains the class responsible for creating and updating the geographic map and circle gylphs.
