@@ -30,7 +30,7 @@ class KdePlot {
    *  function to initialize the KDE plot elements
    */
   initKdePlot() {
-    console.log('init KDE called')
+    // console.log('init KDE called')
     // initialize svg and group that we will append plot elements to
     let svg = d3.select('#kde-plot');
     svg.attr('height', this.height + this.margins.top + this.margins.bottom)
@@ -88,7 +88,7 @@ class KdePlot {
    *  function to draw KDE plots
    */
   drawKdePlot() {
-    console.log('draw KDEs called')
+    // console.log('draw KDEs called')
     let that = this;
 
     // determine which attribute we will access for data based on the activeYearOpt

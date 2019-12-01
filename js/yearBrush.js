@@ -5,6 +5,7 @@ class YearBrush {
   constructor(vizCoord) {
     this.vizCoord = vizCoord;
     this.brush = null;
+    this.xScale = null;
 
     this.height = 40;
     this.width = 1000;
@@ -22,6 +23,9 @@ class YearBrush {
     let x = d3.scaleLinear()
       .domain(this.vizCoord.activeYearRange)
       .range([0, this.width]);
+    this.xScale = d3.scaleLinear()
+      .domain(this.vizCoord.activeYearOptRange)
+      .range([0, this.width])
 
     // make dropdown call update year opts
     let e = d3.select('#selectOpts').node().value;
@@ -74,14 +78,14 @@ class YearBrush {
         let s = d3.event.selection;
         // update and move labels
         labelL.attr('x', s[0])
-          .text(Math.round(x.invert(s[0])))
+          .text(Math.round(that.xScale.invert(s[0])))
         labelR.attr('x', s[1])
-          .text(Math.round(x.invert(s[1])) - 1)
+          .text(Math.round(that.xScale.invert(s[1])) - 1)
         // move brush handles
         // update view
         // if the view should only be updated after brushing is over,
         // move these two lines into the on('end') part below
-        svg.node().value = s.map(d => Math.round(x.invert(d)));
+        svg.node().value = s.map(d => Math.round(that.xScale.invert(d)));
         svg.node().dispatchEvent(new CustomEvent("input"));
       })
       .on('end', function() {
@@ -89,10 +93,11 @@ class YearBrush {
         if (d3.event.selection == null) {
           d3.event.selection = [0, that.width]
         }
-        let d0 = d3.event.selection.map(x.invert);
+        // let d0 = d3.event.selection.map(x.invert);
+        let d0 = d3.event.selection.map(that.xScale.invert);
         let d1 = d0.map(Math.round)
         that.vizCoord.updateYearRange([d1[0], d1[1]]);
-        d3.select(this).transition().call(d3.event.target.move, d1.map(x))
+        d3.select(this).transition().call(d3.event.target.move, d1.map(that.xScale))
       });
 
     // append brush to g
@@ -106,22 +111,16 @@ class YearBrush {
       .call(this.brush)
 
     // select entire range
-    gBrush.call(this.brush.move, this.vizCoord.activeYearRange.map(x));
+    gBrush.call(this.brush.move, this.vizCoord.activeYearRange.map(that.xScale));
 
     return svg.node();
   }
 
   redrawBrush(left, right) {
-    // create x scale
-    console.log("Redrawing bar @", left, right)
-    let x = d3.scaleLinear()
-      .domain(this.vizCoord.activeYearRange)
-      .range([0, this.width]);
-
     this.vizCoord.updateYearOpts(0);
     this.vizCoord.updateYearRange([left, right]);
 
-    d3.select('.brush').call(this.brush.move, [x(left), x(right)])
+    d3.select('.brush').call(this.brush.move, [this.xScale(left), this.xScale(right)])
   }
 
 }
