@@ -110,14 +110,16 @@ class MuseumTabs {
 
     //on button clicks change the content
     d3.select("button#moma").on("click", function(d) {
-      that.vizCoord.updateYearRange([1958, 1958]) //changed this
+      // that.vizCoord.updateYearRange(1958, 1958)
+      that.vizCoord.reDrawBrush(1958, 1958)
       that.vizCoord.updateMuseum("museum-of-modern-art")
       that.vizCoord.getWorldMap().drawMuseum("museum-of-modern-art")
       that.momaTabs("moma")
       that.portraitHighlight("#museum-of-modern-art")
     })
     d3.select("button#penn").on("click", function(d) {
-      that.vizCoord.updateYearRange([1928, 1928]) //changed this
+      // that.vizCoord.updateYearRange([1928, 1928])
+      that.vizCoord.reDrawBrush(1928, 1928)
       that.vizCoord.updateMuseum("penn-museum")
       that.vizCoord.getWorldMap().drawMuseum("penn-museum")
       that.momaTabs("penn")
@@ -241,9 +243,10 @@ class MuseumTabs {
     let that = this
 
     storyButton.on("click", function() {
-      console.log("button-that", that)
+      // console.log("button-that", that)
       that.updateText(data[museum][1])
-      that.vizCoord.updateYearRange([data[museum][2], data[museum][2]]) //changed this
+      console.log([data[museum][2], data[museum][2]])
+      that.vizCoord.reDrawBrush(data[museum][2], data[museum][2])
     })
   }
 

@@ -11,6 +11,8 @@ class VizCoordinator {
     this.activeMuseum = null;
     this.activeCountries = [];
 
+    // let rows = this.data.geoData.filter(d => d.museum === "museum-of-modern-art" && +d.acquisition_date < 1985)
+
     // dictionary for year range options
     this.yearOpts = [{
         'key': 'year-acquired',
@@ -117,7 +119,7 @@ class VizCoordinator {
     this.treeMap.drawTreeMap();
   }
 
-  reDrawBrush(x0, x1){
-      this.yearBrush.redrawBrush(x0,x1); 
+  reDrawBrush(x0, x1) {
+    this.yearBrush.redrawBrush(x0, x1);
   }
 }
