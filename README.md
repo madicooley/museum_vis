@@ -37,7 +37,6 @@ Directory Structure:
 │   ├── temp_data.csv
 │   └── world.json
 ├── datavis_project_proposal.pdf
-├── directoryStruc.txt
 ├── index.html
 ├── js
 │   ├── kdePlot.js
@@ -54,6 +53,31 @@ Directory Structure:
 ├── README.md
 └── styles.css
 ```
+
+bulma.css:
+
+index.html:
+
+landing.html:
+
+kdePlot.js:
+
+map.js: 
+
+museumTabs.js:
+
+portraits.js:
+
+script.js:
+
+treemap.js
+
+vizCoordinator.js:
+
+yearBrush.js:
+
+
+
 
 Website URL:
 
