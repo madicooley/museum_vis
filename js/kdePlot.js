@@ -30,6 +30,7 @@ class KdePlot {
    *  function to initialize the KDE plot elements
    */
   initKdePlot() {
+    console.log('init KDE called')
     // initialize svg and group that we will append plot elements to
     let svg = d3.select('#kde-plot');
     svg.attr('height', this.height + this.margins.top + this.margins.bottom)
@@ -74,6 +75,7 @@ class KdePlot {
    *  function to draw KDE plots
    */
   drawKdePlot() {
+    console.log('draw KDEs called')
     let that = this;
 
     // determine which attribute we will access for data based on the activeYearOpt
@@ -204,12 +206,9 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLight(museum) {
-    console.log(this.vizCoord.activeMuseum)
     if (this.vizCoord.activeMuseum == null || this.vizCoord.activeMuseum == 'global') {
-      console.log('null or global')
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {
-      console.log(museum, ' is ', this.vizCoord.activeMuseum)
       return 1;
     } else {
       return 0.2;
@@ -220,8 +219,6 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLightText(museum) {
-    // console.log("Selected museum", museum)
-    // console.log("activeMuseum", this.vizCoord.activeMuseum)
     if (this.vizCoord.activeMuseum == null || this.vizCoord.activeMuseum == "global") {
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {

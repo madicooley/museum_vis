@@ -55,11 +55,6 @@ class VizCoordinator {
     this.dataPortrait.dataSummary(this.data.geoData);
 
     this.treeMap = new TreeMap(this.data, this);
-    // this.treeMap.drawTreeMap();
-
-    this.kdePlot = new KdePlot(this.data, this);
-    this.kdePlot.initKdePlot();
-    // this.kdePlot.drawKdePlot();
   }
 
   getWorldMap() {
@@ -93,6 +88,7 @@ class VizCoordinator {
   }
 
   updateMuseum(newMuseum) {
+      console.log('update museum called')
     this.activeMuseum = newMuseum;
 
     // this.reDrawViz();
@@ -111,6 +107,7 @@ class VizCoordinator {
   }
 
   reDrawViz() {
+      console.log('redrawViz called')
     this.kdePlot.drawKdePlot();
     this.worldMap.drawMuseum(this.activeMuseum);
 
