@@ -25,10 +25,11 @@ class MuseumTabs {
     let that = this;
 
     let view = d3.selectAll('.column');
+
     let tab = view.select("#museumTabContainer")
-      .attr("transform", "translate(0, -33)") //-400
+      .attr("transform", "translate(0, 80)") //-400
       .attr("width", 500)
-      .attr("height", 500);
+      .attr("height", 500).call(that.resizeSVG);
 
     tab.append("rect")
       .attr("width", 500)
@@ -396,6 +397,29 @@ class MuseumTabs {
     });
 
     tour.start();
+  }
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", .8 * targetWidth);
+      svg.attr("height", .8 * Math.round(targetWidth / aspect));
+    }
   }
 
 }

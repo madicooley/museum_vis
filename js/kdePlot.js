@@ -33,17 +33,17 @@ class KdePlot {
     // initialize svg and group that we will append plot elements to
     let svg = d3.select('#kde-plot');
     svg.attr('height', this.height + this.margins.top + this.margins.bottom)
-      .attr('width', this.width + this.margins.left + this.margins.right);
+      .attr('width', this.width + this.margins.left + this.margins.right)
     let plotGroup = svg.append('g')
-      .attr('id', 'plot-group');
+      .attr('id', 'plot-group').call(this.resizeSVG);
 
     // initialize groups that we will append axes to
     plotGroup.append('g')
       .attr('id', 'x-axis')
-      .attr('transform', `translate(${this.margins.left},${this.height-this.margins.bottom})`);
+      .attr('transform', `translate(${this.margins.left+20},${this.height-this.margins.bottom})`);
     plotGroup.append('g')
       .attr('id', 'y-axis')
-      .attr('transform', `translate(${this.margins.left},${this.margins.top + 100})`);
+      .attr('transform', `translate(${this.margins.left+20},${this.margins.top + 100})`);
 
     // initialize group that we will append actual KDE plots to
     plotGroup.append('g')
@@ -178,12 +178,15 @@ class KdePlot {
 
     d3.select('#kde-legend')
       .selectAll('text')
-      .data(this.bios)
+      .data(this.bios) //was this.bios
       .join('text')
       .attr('x', 25)
-      .attr('y', (d) => 5 + this.museumNames.indexOf(d.museumTag) * 25)
+      .attr('y', (d, i) => {
+        console.log("d is:", d)
+        return 4 + i * 27
+      }) //this.museumNames.indexOf(d.museumTag) * 25)
       .text((d) => d.museumName)
-      .attr('opacity', (d) => this.isLightText(d.museumTag));
+      .attr('opacity', (d) => this.isLightText(d.museumName));
 
   }
 
@@ -214,12 +217,37 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLightText(museum) {
+    console.log("Selected museum", museum)
+    console.log("activeMuseum", this.vizCoord.activeMuseum)
     if (this.vizCoord.activeMuseum == null || "global") {
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {
       return 1;
     } else {
       return 0.4;
+    }
+  }
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
     }
   }
 }

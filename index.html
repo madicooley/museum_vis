@@ -38,7 +38,7 @@
   </div>
 
   <!-- CONTAINER FOR THE MAP -->
-  <div class="columns is-vcentered">
+  <div class="columns">
     <div class="column is-one-half">
       <svg id="map-chart"></svg>
       <!-- <div id="activeYear-bar"></div> -->
@@ -51,11 +51,11 @@
       </div>
       <div id="activeYear-brush"></div>
     </div>
-    <div class="column">
+    <div class="column is-one-quarter">
       <svg id="museumTabContainer">
       </svg>
     </div>
-    <div class="column" id="museum-gallery">
+    <div class="column is-one-quarter" id="museum-gallery">
       <div id="overlay" onclick="off()">
         <div id="text"><img src="legend.png" alt="Legend for Data Portraits"></div>
       </div>
@@ -71,13 +71,13 @@
   </div>
 
   <!-- CONTAINER FOR KDE PLOT AND TREEMAP -->
-  <div class="column is-vcentered">
+  <div class="columns">
     <div class="column is-one-half" id="kde">
       <svg id="kde-plot"></svg>
     </div>
-    <div class="column" id="treemap">
-      <svg id="check-box"></svg>
-      <svg id="tree-map"></svg>
+    <div class="column is-one-half" id="treemap">
+      <!-- <svg id="check-box"></svg> -->
+      <svg id="tree-map" style="transform:translate(-20,0)"></svg>
     </div>
   </div>
 

@@ -32,7 +32,7 @@ class Map {
     let that = this;
 
     let svg = d3.select("svg#map-chart");
-    svg.attr("height", 500).attr("width", 800);
+    svg.attr("height", 500).attr("width", 800).call(that.resizeSVG);
 
     let height = parseInt(svg.attr("height"));
     let width = parseInt(svg.attr("width"));
@@ -106,18 +106,18 @@ class Map {
     this.vizCoord.updateMuseum(museum);
 
     let selectedMuseumData = [];
-    if(this.vizCoord.activeMuseum == null){
-        selectedMuseumData = this.museumData;
-    }else{
-        selectedMuseumData = this.museumData.filter(d => d.museum == museum);
+    if (this.vizCoord.activeMuseum == null) {
+      selectedMuseumData = this.museumData;
+    } else {
+      selectedMuseumData = this.museumData.filter(d => d.museum == museum);
     }
     // console.log('after museum selection: ', selectedMuseumData)
 
     let attrib = null;
-    if(this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0].key){ // if we are looking at year acquired
-        attrib = 'acquisition_date';
-    }else{
-        attrib = 'created_date';
+    if (this.vizCoord.activeYearOpt == this.vizCoord.yearOpts[0].key) { // if we are looking at year acquired
+      attrib = 'acquisition_date';
+    } else {
+      attrib = 'created_date';
     }
     selectedMuseumData = selectedMuseumData.filter(d => +d[attrib] >= this.vizCoord.activeYearRange[0] && +d[attrib] <= this.vizCoord.activeYearRange[1])
     //create object of number of artifacts per country
@@ -158,11 +158,11 @@ class Map {
       .classed('bubbles', true)
       .attr('transform', (d) => {
         let selectedCountry = that.centroids.filter(x => x.country == d.country)
-        if(selectedCountry.length == 0){ // if country not found
+        if (selectedCountry.length == 0) { // if country not found
           return 'translate(0,0)';
-        }else{
+        } else {
           return "translate(" + selectedCountry[0].centroid + ")";
-        } 
+        }
       })
       .on("mouseover", function(d) {
         // console.log(d);
@@ -174,7 +174,7 @@ class Map {
       .attr("r", d => bubbleScale(Math.sqrt(d.number / Math.PI))) // scale using area, not radius
       .style("fill", "rgba(35, 29, 150, 0.70)")
   }
- 
+
 
   drawLegend(min, max) {
     let height = 460
@@ -237,6 +237,29 @@ class Map {
       })
       .style("font-size", 10)
       .attr('alignment-baseline', 'middle')
+  }
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
   }
 
 } //this is for the class

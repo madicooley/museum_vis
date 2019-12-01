@@ -65,7 +65,7 @@ class DataPortrait {
   }
 
   drawPortrait(museum, i) {
-    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600)
+    let svg = d3.select("#portraits").attr("width", 500).attr("height", 600).call(this.resizeSVG)
     // console.log("Drawing:", museum)
     svg = svg.append("g")
 
@@ -249,4 +249,27 @@ class DataPortrait {
 
     // d3.selectAll("")
   } //end drawPortraits
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
+  }
 } //end Portraits class

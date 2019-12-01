@@ -100,7 +100,7 @@ class TreeMap {
     let that = this;
 
     let svg = d3.select("svg#tree-map");
-    svg.attr("height", this.height).attr("width", this.width).attr("transform", "translate(750, -650)");
+    svg.attr("height", this.height).attr("width", this.width).attr("transform", "translate(0, 0)").call(that.resizeSVG);
     svg.selectAll("a").remove();
 
 
@@ -246,5 +246,29 @@ class TreeMap {
     // console.log(data);
     return data;
   }
+
+  // make responsive
+  resizeSVG(svg) {
+    let that = this
+    // get container + svg aspect ratio
+    let container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      let targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
+  }
+
 
 }
