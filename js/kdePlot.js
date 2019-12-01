@@ -204,9 +204,12 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLight(museum) {
-    if (this.vizCoord.activeMuseum == null || "global") {
+    console.log(this.vizCoord.activeMuseum)
+    if (this.vizCoord.activeMuseum == null || this.vizCoord.activeMuseum == 'global') {
+      console.log('null or global')
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {
+      console.log(museum, ' is ', this.vizCoord.activeMuseum)
       return 1;
     } else {
       return 0.2;
@@ -217,9 +220,9 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLightText(museum) {
-    console.log("Selected museum", museum)
-    console.log("activeMuseum", this.vizCoord.activeMuseum)
-    if (this.vizCoord.activeMuseum == null || "global") {
+    // console.log("Selected museum", museum)
+    // console.log("activeMuseum", this.vizCoord.activeMuseum)
+    if (this.vizCoord.activeMuseum == null || this.vizCoord.activeMuseum == "global") {
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {
       return 1;
