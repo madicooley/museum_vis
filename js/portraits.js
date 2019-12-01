@@ -196,6 +196,7 @@ class DataPortrait {
 
     let that = this;
     frame.on("click", function(d, i) {
+        that.vizCoord.redrawBrush(1990,2000)
         that.vizCoord.getMuseumTabs().switchTab(museum.museum)
         that.vizCoord.getWorldMap().drawMuseum(museum.museum)
       })
