@@ -76,6 +76,6 @@ yearBrush.js:
 vis.html
 
 
-Website URL:
+Website URL: https://madicooley.github.io/museum_vis/
 
 Video URL: 
