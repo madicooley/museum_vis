@@ -182,7 +182,7 @@ class KdePlot {
       .join('text')
       .attr('x', 25)
       .attr('y', (d, i) => {
-        console.log("d is:", d)
+        // console.log("d is:", d)
         return 4 + i * 27
       }) //this.museumNames.indexOf(d.museumTag) * 25)
       .text((d) => d.museumName)
