@@ -170,6 +170,14 @@ svg#portraits:hover>g:hover {
   fill: rgba(255, 225, 225, 0);
 }
 
+.porButton:hover {
+  fill: rgba(255, 225, 225, 0)
+}
+
+.porButton:not(hover) {
+  fill: rgba(255, 225, 225, .5);
+}
+
 div.tooltip {
   /* FOR PORTRAIT TOOLTIP */
   position: absolute;
