@@ -106,7 +106,7 @@ class Map {
     this.vizCoord.updateMuseum(museum);
 
     let selectedMuseumData = [];
-    if (this.vizCoord.activeMuseum == null) {
+    if (this.vizCoord.activeMuseum == null || this.vizCoord.activeMuseum == 'global') {
       selectedMuseumData = this.museumData;
     } else {
       selectedMuseumData = this.museumData.filter(d => d.museum == museum);
