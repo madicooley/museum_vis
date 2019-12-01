@@ -182,7 +182,7 @@ class KdePlot {
       .join('text')
       .attr('x', 25)
       .attr('y', (d, i) => {
-        console.log("d is:", d)
+        // console.log("d is:", d)
         return 4 + i * 27
       }) //this.museumNames.indexOf(d.museumTag) * 25)
       .text((d) => d.museumName)
@@ -217,8 +217,8 @@ class KdePlot {
    *  helper function to assign visibility of KDE lines
    */
   isLightText(museum) {
-    console.log("Selected museum", museum)
-    console.log("activeMuseum", this.vizCoord.activeMuseum)
+    // console.log("Selected museum", museum)
+    // console.log("activeMuseum", this.vizCoord.activeMuseum)
     if (this.vizCoord.activeMuseum == null || "global") {
       return 1;
     } else if (museum == this.vizCoord.activeMuseum) {

@@ -241,6 +241,7 @@ class MuseumTabs {
     let that = this
 
     storyButton.on("click", function() {
+      console.log("button-that", that)
       that.updateText(data[museum][1])
       that.vizCoord.updateYearRange([data[museum][2], data[museum][2]]) //changed this
     })

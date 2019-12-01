@@ -241,10 +241,6 @@ class DataPortrait {
         title === "metropolitan-museum-of-art" ? title = "The Met" : title === "minneapolis-institute-of-art" ? title = "Mia" : title === "cooper-hewitt-smithsonian-design-museum" ? title = "Cooper Hewitt" : title === "penn-museum" ? title = "Penn Museum" : title === "cleveland-museum-of-art" ? title = "Cleveland Museum of Art" : title === "museum-of-modern-art" ? title = "MoMa" : title === "global" ? title = "All Museums" : title = "Canada Science and Technology Museum"
         d3.select(this).append('svg:title')
           .text(title)
-        // d3.selectAll(".porButton").classed("selected", false)
-        // d3.selectAll(".porButton").classed("not-selected", true)
-        // d3.select(this).classed("selected", true)
-        // d3.select(this).classed("not-selected", false)
       });
 
     // d3.selectAll("")
