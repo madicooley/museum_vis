@@ -89,10 +89,10 @@ class TreeMap {
         return d.id;
       })
       .attr("width", function(d) {
-        return d.x1 - d.x0;
+        return d.x1 - d.x0 -1;
       })
       .attr("height", function(d) {
-        return d.y1 - d.y0;
+        return d.y1 - d.y0 -1;
       })
       .attr("fill", function(d, i) {
         var a = d.ancestors();
