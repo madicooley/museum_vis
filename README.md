@@ -90,4 +90,4 @@ yearBrush.js: This file contains the class responsible for creating and updating
 ## Links
 Website URL: [https://madicooley.github.io/museum_vis/](https://madicooley.github.io/museum_vis/)
 
-Video URL: 
+Video URL: [https://youtu.be/Ee1-rtN8jiI] (https://youtu.be/Ee1-rtN8jiI)
