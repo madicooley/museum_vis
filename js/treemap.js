@@ -1,16 +1,18 @@
 class TreeMap {
 
   constructor(data, vizCoord) {
-    // console.log(data);
     this.height = 600;
     this.width = 1000;
 
+    this.margins = {
+      'left': 35,
+      'right': 35,
+      'top': 25,
+      'bottom': 5
+    };
+
     this.museumData = data.geoData;
     this.vizCoord = vizCoord;
-
-    // this.museumNames = ["canada-science-and-technology-museums", "museum-of-modern-art", "penn-museum",
-    //                     "cleveland-museum-of-art", "cooper-hewitt-smithsonian-design-museum",
-    //                     "metropolitan-museum-of-art", "minneapolis-institute-of-art"];
 
     this.treemap = d3.treemap()
       .size([this.width, this.height])
@@ -31,78 +33,28 @@ class TreeMap {
       .domain(this.museumNames)
       .range(d3.schemeSet2);
 
-    // this.colorScale = d3.scaleOrdinal(["#b5a5e3", "#b1af00", "#ff5b1a", "#e2a333", "#5b7769", "grey", "#b5a5e3"]); //Note matches the portraits
-
     this.format = d3.format(",d");
 
     this.clickNum = {
       clicks: 0
     };
 
-    // this.allYears = true;
-
-    // this.drawCheckBox();
   }
-
-  // drawCheckBox() {
-  //   let that = this;
-  //
-  //   var svg = d3.select("svg#check-box")
-  //       .attr("width", 80)
-  //       .attr("height", 50)
-  //       .attr("id", "checkBox")
-  //       .attr("transform", "translate(1100, -1150)")
-  //       .on("mouseover", function(d) {
-  //           d3.select(this).style("cursor", "pointer");
-  //       })
-  //       .on("mouseout", function(d) {
-  //           d3.select(this).style("cursor", "default");
-  //       })
-  //       .on("click", function(d, i) {
-  //           if (that.clickNum.clicks % 2 != 0 ) {
-  //               svg.select("#check-mark").attr("fill", "grey");
-  //               that.allYears = true;
-  //               that.drawTreeMap();
-  //           } else {
-  //               svg.select("#check-mark").attr("fill", "white");
-  //               that.allYears = false;
-  //               that.drawTreeMap();
-  //           }
-  //           that.clickNum.clicks = that.clickNum.clicks + 1;
-  //       });
-  //
-  //   svg.append("rect")
-  //       .attr("width", 12)
-  //       .attr("height", 12)
-  //       .attr("stroke", "grey")
-  //       .attr("fill", "white")
-  //       .attr("transform", "translate(10, 20)");
-  //
-  //
-  //   svg.append("text")
-  //       .text("All Years")
-  //       .attr("fill", "grey")
-  //       .style("font-size", "14px")
-  //       .attr("font-family", 'Oswald')
-  //       .attr("transform", "translate(25, 32)");
-  //
-  //
-  //   let checkbox = svg.append("rect")
-  //     .attr("id", "check-mark")
-  //     .attr("width", 8)
-  //     .attr("height", 8)
-  //     .attr("fill", "grey")
-  //     .attr("transform", "translate(12, 22)")
-  //
-  // }
 
   drawTreeMap() {
     let that = this;
 
-    let svg = d3.select("svg#tree-map");
-    svg.attr("height", this.height).attr("width", this.width).attr("transform", "translate(0, 0)").call(that.resizeSVG);
-    svg.selectAll("a").remove();
+    let outter = d3.select("svg#tree-map");
+    // svg.attr("height", this.height).attr("width", this.width).attr("transform", "translate(0, 0)").call(that.resizeSVG);
+    outter.attr('height', this.height + this.margins.top + this.margins.bottom)
+      .attr('width', this.width + this.margins.left + this.margins.right).call(that.resizeSVG);
 
+    outter.append('svg').attr('id', 'outter');
+    let svg = outter.selectAll('#outter')
+      .attr('height', this.height)
+      .attr('width', this.width);
+
+    svg.selectAll("a").remove();
 
     let data = this.filterData();
 
@@ -129,6 +81,7 @@ class TreeMap {
       .attr("target", "_blank")
       .attr("transform", function(d) {
         return "translate(" + d.x0 + "," + d.y0 + ")";
+        // .attr('transform', `translate(${this.margins.left+20},${this.height-this.margins.bottom})`);
       });
 
     container.append("rect")
@@ -172,7 +125,7 @@ class TreeMap {
         }
       });
 
-    container.append("title")
+    container.append("title")  // for tooltip
       .text(function(d) {
         let parentName = d.data.parent;
         parentName = parentName.replace(/-/g, ' ');
@@ -206,7 +159,6 @@ class TreeMap {
 
       let museumName = this.museumNames[i];
 
-      // console.log(this.vizCoord.activeYearRange[0], this.vizCoord.activeYearRange[1])
       selectedMuseumData = this.museumData.filter(d => d.museum === museumName &&
         +d.acquisition_date >= this.vizCoord.activeYearRange[0] // acquisition year is between the range
         &&
@@ -243,7 +195,6 @@ class TreeMap {
       }
     }
 
-    // console.log(data);
     return data;
   }
 

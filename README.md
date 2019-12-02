@@ -7,7 +7,7 @@ README - The README file must give an overview of what you are handing in: which
 
 
 
-Directory Structure:
+## Directory Structure:
 
 ```.
 ├── bulma.css
@@ -47,38 +47,47 @@ Directory Structure:
 │   ├── treemap.js
 │   ├── vizCoordinator.js
 │   └── yearBrush.js
-├── landing.html
 ├── legend.png
 ├── Process-Book.pdf
 ├── README.md
-└── styles.css
+└── viz.html
 ```
 
-bulma.css:
+## Organization
+### HTML
+index.html: This is the landing page for our project. We wanted to seperate out the video and other requirements from the project to preserve the formatting and layout of Museum+Vis.
 
-index.html:
+vis.html: This is the html to Museum+Vis.
 
-landing.html:
+### CSS
+bulma.css: This is our style sheet. It is a combination of styles from [Bulma CSS](https://bulma.io/) (a CSS framework built on Flexbox and was used solely for layout) and our customized CSS. 
 
-kdePlot.js:
+### JS
+script.js: This files loads and processes the data. It also creates the VizCoordinator class.
 
-map.js: 
+vizCoordinator.js: This file contains the class responsible for updating all the classes and shared variables across the classes.
 
-museumTabs.js:
+### Data
+world.json: the shapefile data used in map.js
 
-portraits.js:
+cleaned-data.csv: the museum data cleaned and compiled from different sources
 
-script.js:
+museum-bio.csv: manually collected information about each museum
 
-treemap.js
+## Visualization Classes
+kdePlot.js: This file contains the class responsible for creating and updating the KDE Plot and KDE legend.
 
-vizCoordinator.js:
+map.js: This file contains the class responsible for creating and updating the geographic map and circle gylphs.
 
-yearBrush.js:
+museumTabs.js: This file contains the class responsible for creating and updating the text about the museums. It also initializes the story buttons and the tutorial for the site. The tutorial is created using [Shepherd.js Library](https://shepherdjs.dev/).
 
+portraits.js: This file contains the class responsible for creating the data portraits of the museums and initializing them as buttons.
 
+treemap.js: This file contains the class responsible for creating and updating the tree map.
 
+yearBrush.js: This file contains the class responsible for creating and updating the year slider.
 
-Website URL:
+## Links
+Website URL: [https://madicooley.github.io/museum_vis/](https://madicooley.github.io/museum_vis/)
 
 Video URL: 

@@ -28,6 +28,7 @@ class VizCoordinator {
       }
     ]
     this.activeYearOpt = this.yearOpts[0].key;
+    this.activeYearOptRange = this.yearOpts[0].value;
     this.activeYearRange = this.yearOpts[0].value;
 
     // initialize views to null
@@ -90,7 +91,7 @@ class VizCoordinator {
   }
 
   updateMuseum(newMuseum) {
-      console.log('update museum called')
+    //   console.log('update museum called')
     this.activeMuseum = newMuseum;
 
     // this.reDrawViz();
@@ -103,13 +104,14 @@ class VizCoordinator {
 
   updateYearOpts(index) {
     this.activeYearOpt = this.yearOpts[index].key;
+    this.activeYearOptRange = this.yearOpts[index].value;
     this.activeYearRange = this.yearOpts[index].value;
 
     this.yearBrush.initBrush();
   }
 
   reDrawViz() {
-      console.log('redrawViz called')
+    //   console.log('redrawViz called')
     this.kdePlot.drawKdePlot();
     this.worldMap.drawMuseum(this.activeMuseum);
 
