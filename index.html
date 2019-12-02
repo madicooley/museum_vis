@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- <META HTTP-EQUIV='Content-Security-Policy' CONTENT="default-src 'none';
+  base-uri 'self';
+  block-all-mixed-content;
+  child-src render.githubusercontent.com;
+  connect-src 'self' uploads.github.com status.github.com api.github.com www.google-analytics.com wss://live.github.com;
+  font-src 'self' https://fonts.gstatic.com;
+  form-action 'self' github.com gist.github.com;
+  frame-src render.githubusercontent.com;
+  img-src 'self';
+  media-src 'none';
+  object-src assets-cdn.github.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://d3js.org/d3.v5.js
+  https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js https://d3js.org/d3-geo-projection.v2.js;
+  style-src 'self' 'unsafe-inline' http://localhost:8080/bulma.css https://madicooley.github.io/museum_vis/bulma.css https://fonts.googleapis.com/"> -->
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MuseumVis</title>
+  <link rel="stylesheet" href="bulma.css" />
+
+</head>
+
+<body id="landing-page">
+  <h1>Museum+Vis</h1>
+  <h2>The secret life of museum artifacts</h2>
+
+
+  <p>Welcome to Museum Vis. Museum Vis is an interactive visualization that you
+    can use to explore the provenance of museum art collections. For this project
+    we individually acquired and processed art collection data from seven
+    different museums in North America.  </p>
+
+  <p>This visualization led to many interesting findings. For example, MoMA had a fire in 1958.
+    The visualization shows the negative effect this had on the collection up until the 80s. Click
+    the visualization button to see more. </p>
+
+  <button type="button" onclick="window.location.href = './viz.html';">Visualization</button>
+  <button type="button">Screen Cast</button>
+  <button type="button" onclick="window.location.href = 'https://github.com/madicooley/museum_vis/blob/master/Process%20Book.pdf';">Process Book</button>
+  <button type="button" onclick="window.location.href = 'https://github.com/madicooley/museum_vis/tree/master/data';">Data</button>
+</body>
+
+</html>

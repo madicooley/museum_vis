@@ -1,6 +1,3 @@
-/**
- *  Class that coordinates between the views when the date or selected museum is changed
- */
 class VizCoordinator {
 
   constructor(data) {
