@@ -79,6 +79,7 @@
       <div id="learnMore">
         <h2>Museum+Gallery</h2>
         <button onclick="on()">Learn More</button>
+
       </div>
 
       <svg id="portraits">
@@ -97,6 +98,15 @@
       <svg id="tree-map" style="transform:translate(-20,0)"></svg>
     </div>
   </div>
+
+  <script>
+    function on() {
+      document.getElementById("overlay").style.display = "block";
+    }
+    function off() {
+      document.getElementById("overlay").style.display = "none";
+    }
+  </script>
 
 </body>
 
